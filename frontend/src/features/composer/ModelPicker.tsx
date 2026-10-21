@@ -13,14 +13,15 @@ function Label(p: { text: string; pos: number[] }) {
   return <>{[...p.text].map((c, i) => (set.has(i) ? <mark key={i} class="hl">{c}</mark> : c))}</>;
 }
 
-export function ModelPicker(p: { sessionId: string; row?: SessionRow; onClose: () => void }) {
+// With onPick (no session yet) the picker only reports the choice; curKey marks the selected model.
+export function ModelPicker(p: { sessionId: string; row?: SessionRow; onClose: () => void; onPick?: (m: ModelInfo) => void; curKey?: string }) {
   const [q, setQ] = useState("");
   const [sel, setSel] = useState(0);
   const [ranked, setRanked] = useState<Item[] | null>(null);
   const [confirm, setConfirm] = useState<ModelInfo | null>(null);
   const input = useRef<HTMLInputElement>(null);
   const all = models.value;
-  const cur = findModel(all, p.row);
+  const cur = p.curKey ? all.find((m) => m.key === p.curKey) : findModel(all, p.row);
 
   useEffect(() => { if (!all.length) void loadModels(); input.current?.focus(); }, []);
 
@@ -53,6 +54,7 @@ export function ModelPicker(p: { sessionId: string; row?: SessionRow; onClose: (
 
   const choose = (m: ModelInfo) => {
     if (m.key === cur?.key) return p.onClose();
+    if (p.onPick) { p.onClose(); return p.onPick(m); }
     if (p.row && m.provider !== p.row.provider) return setConfirm(m);
     p.onClose();
     void setModel(p.sessionId, m.key);

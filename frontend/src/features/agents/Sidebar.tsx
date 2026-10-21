@@ -5,6 +5,7 @@ import type { Node } from "../../lib/bindings/github.com/sid/harness/internal/te
 import { keyLabel } from "../../lib/commands";
 import { currentProjectId, expanded, projects, sessionsByProject, termLayouts, toggleExpanded, type SessionRow } from "../../state/agents";
 import { sidebarOpen, termOpen } from "../../state/layout";
+import { newAgent } from "../../state/newagent";
 import { activateMain, activateSession, activeScope } from "../../state/scope";
 import { toastError } from "../../state/toast";
 import { openOverlay, overlay } from "../../state/ui";
@@ -162,7 +163,7 @@ export function Sidebar() {
         {overlay.value?.kind === "picker" && <ProjectPicker />}
       </div>
       <div class="px-2 pb-2">
-        <button class="btn flex w-full items-center justify-center gap-1.5" onClick={() => openOverlay({ kind: "newagent", projectId: currentProjectId.value ?? undefined })}>
+        <button class="btn flex w-full items-center justify-center gap-1.5" onClick={() => void newAgent(currentProjectId.value ?? undefined)}>
           <Icon name="plus" size={12} /> New Agent <span class="kbd ml-1">{keyLabel("agents.new")}</span>
         </button>
       </div>
@@ -178,12 +179,12 @@ export function Sidebar() {
               <div class="group flex h-7 items-center gap-1 px-4 text-[10.5px] font-semibold uppercase tracking-wide text-faint">
                 <span class="truncate">{pr.name}</span>
                 <button class="icon-btn-sm ml-auto opacity-0 hover:text-text group-hover:opacity-100" title="Project settings" onClick={() => openOverlay({ kind: "projectsettings", projectId: pr.id })}><Icon name="gear" size={11} /></button>
-                <button class="icon-btn-sm opacity-0 hover:text-text group-hover:opacity-100" title="New agent in project" onClick={() => openOverlay({ kind: "newagent", projectId: pr.id })}><Icon name="plus" size={11} /></button>
+                <button class="icon-btn-sm opacity-0 hover:text-text group-hover:opacity-100" title="New agent in project" onClick={() => void newAgent(pr.id)}><Icon name="plus" size={11} /></button>
               </div>
               <Row rowKey={mainKey} title="Main checkout" active={scope?.key === mainKey} onClick={() => activateMain(pr.id)} ensure={() => activateMain(pr.id)} />
               {live.map((s) => {
                 const key = `session:${s.id}`;
-                return <Row key={s.id} rowKey={key} session={s} title={s.title || "Untitled"} branch={s.branch} dirty={s.dirty} active={scope?.key === key} onClick={() => activateSession(s.id)} ensure={() => activateSession(s.id)} onMenu={openMenu(s)} />;
+                return <Row key={s.id} rowKey={key} session={s} title={s.title || s.branch || "New agent"} branch={s.branch} dirty={s.dirty} active={scope?.key === key} onClick={() => activateSession(s.id)} ensure={() => activateSession(s.id)} onMenu={openMenu(s)} />;
               })}
               {arch.length > 0 && (
                 <>
@@ -191,7 +192,7 @@ export function Sidebar() {
                     <Icon name="chevron" size={10} class={showArchived.value[pr.id] ? "rotate-90" : ""} /> Archived ({arch.length})
                   </div>
                   {showArchived.value[pr.id] && arch.map((s) => (
-                    <Row key={s.id} rowKey={`session:${s.id}`} session={s} title={s.title || "Untitled"} branch={s.branch} active={false} onClick={() => openAgentDialog({ kind: "restore", s })} ensure={() => activateSession(s.id)} onMenu={openMenu(s)} />
+                    <Row key={s.id} rowKey={`session:${s.id}`} session={s} title={s.title || s.branch || "New agent"} branch={s.branch} active={false} onClick={() => openAgentDialog({ kind: "restore", s })} ensure={() => activateSession(s.id)} onMenu={openMenu(s)} />
                   ))}
                 </>
               )}

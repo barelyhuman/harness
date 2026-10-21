@@ -76,7 +76,37 @@ func (s *SessionService) Send(sessionID string, m SendMessage) error {
 	if err != nil {
 		return err
 	}
+	if sess.Title == "" {
+		if t := titleFrom(m.Text); t != "" {
+			if err := s.sessions.Rename(sessionID, t); err == nil {
+				s.push()
+			}
+		}
+	}
 	return wrapErr(s.sendTo(sr, sess.Provider, toUserMessage(m), m.Delivery))
+}
+
+// titleFrom derives a short session title from a message: the first non-empty
+// line, whitespace collapsed, cut at a word boundary to ~60 runes.
+func titleFrom(text string) string {
+	const max = 60
+	for _, line := range strings.Split(text, "\n") {
+		f := strings.Fields(line)
+		if len(f) == 0 {
+			continue
+		}
+		t := strings.Join(f, " ")
+		r := []rune(t)
+		if len(r) <= max {
+			return t
+		}
+		cut := string(r[:max])
+		if i := strings.LastIndex(cut, " "); i > max/2 {
+			cut = cut[:i]
+		}
+		return strings.TrimRight(cut, " ,.;:") + "…"
+	}
+	return ""
 }
 
 func toUserMessage(m SendMessage) agent.UserMessage {
@@ -341,6 +371,12 @@ func (s *SessionService) CycleMode(sessionID string) error {
 		return badArg("provider has no modes: " + sess.Provider)
 	}
 	return s.applyMode(sr, sessionID, next)
+}
+
+// NextMode returns the mode after cur for provider (used before a session exists).
+func (s *SessionService) NextMode(provider, cur string) string {
+	n, _ := nextMode(provider, cur)
+	return n
 }
 
 // SetEffort stores the effort; it applies at the next host launch.

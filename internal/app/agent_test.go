@@ -33,7 +33,9 @@ func (fakeProvider) Command(o agent.StartOpts) (agent.Cmd, error) {
 	exe, _ := os.Executable()
 	return agent.Cmd{Path: exe, Env: append([]string{"APP_FAKE_CLI=1", "FAKE_RESUME=" + o.ResumeID}, o.Env...), Dir: o.Cwd}, nil
 }
-func (fakeProvider) NewSession(w io.Writer, o agent.StartOpts) agent.Session { return &fakeSession{w: w} }
+func (fakeProvider) NewSession(w io.Writer, o agent.StartOpts) agent.Session {
+	return &fakeSession{w: w}
+}
 
 type fakeSession struct{ w io.Writer }
 
@@ -350,6 +352,41 @@ func TestSendLaunchesHostAndPatches(t *testing.T) {
 	}
 }
 
+func TestTitleFrom(t *testing.T) {
+	long := strings.Repeat("word ", 30)
+	for in, want := range map[string]string{
+		"":                         "",
+		"  \n\n  ":                 "",
+		"\n  fix   the bug \nmore": "fix the bug",
+	} {
+		if got := titleFrom(in); got != want {
+			t.Fatalf("titleFrom(%q) = %q, want %q", in, got, want)
+		}
+	}
+	if got := titleFrom(long); len([]rune(got)) > 61 || !strings.HasSuffix(got, "…") {
+		t.Fatalf("long title %q", got)
+	}
+}
+
+func TestSendDerivesTitleOnce(t *testing.T) {
+	e := newEnv(t)
+	s := e.session(t, "fake", "fake/m1", "")
+	if err := e.svc.sessions.Rename(s.ID, ""); err != nil {
+		t.Fatal(err)
+	}
+	if err := e.svc.Send(s.ID, SendMessage{Text: "first prompt\nsecond line"}); err != nil {
+		t.Fatal(err)
+	}
+	waitFor(t, "idle", func() bool { return e.dbStatus(s.ID) == StatusIdle })
+	if err := e.svc.Send(s.ID, SendMessage{Text: "another"}); err != nil {
+		t.Fatal(err)
+	}
+	got, _ := e.svc.sessions.Get(s.ID)
+	if got.Title != "first prompt" {
+		t.Fatalf("title %q", got.Title)
+	}
+}
+
 func TestStatusAndRespond(t *testing.T) {
 	e := newEnv(t)
 	s := e.session(t, "fake", "fake/m1", "")
@@ -420,7 +457,9 @@ func TestRestartReattach(t *testing.T) {
 	if err := e.svc.Respond(s.ID, "req1", RespondOpts{Behavior: "allow"}); err != nil {
 		t.Fatal(err)
 	}
-	waitFor(t, "finished after reattach", func() bool { return strings.Contains(e.transcript(t, s.ID), "echo ask") && e.dbStatus(s.ID) == StatusIdle })
+	waitFor(t, "finished after reattach", func() bool {
+		return strings.Contains(e.transcript(t, s.ID), "echo ask") && e.dbStatus(s.ID) == StatusIdle
+	})
 	if len(e.rec.patches(s.ID)) == 0 {
 		t.Fatal("no live patches after reattach")
 	}
@@ -467,7 +506,9 @@ func TestSetModelOtherProviderForksInSameWorktree(t *testing.T) {
 	if err := e.svc.Send(s.ID, SendMessage{Text: "hello"}); err != nil {
 		t.Fatal(err)
 	}
-	waitFor(t, "idle", func() bool { return strings.Contains(e.transcript(t, s.ID), "echo hello") && e.dbStatus(s.ID) == StatusIdle })
+	waitFor(t, "idle", func() bool {
+		return strings.Contains(e.transcript(t, s.ID), "echo hello") && e.dbStatus(s.ID) == StatusIdle
+	})
 	os.WriteFile(filepath.Join(s.WorktreePath, "a.txt"), []byte("changed\n"), 0o644)
 
 	r, err := e.svc.SetModel(s.ID, "fake2/x1")

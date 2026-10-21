@@ -92,6 +92,13 @@ export function MainScope(projectID: string): $CancellablePromise<$models.ScopeI
 }
 
 /**
+ * NextMode returns the mode after cur for provider (used before a session exists).
+ */
+export function NextMode(provider: string, cur: string): $CancellablePromise<string> {
+    return $Call.ByID(916629156, provider, cur);
+}
+
+/**
  * RaisePR pushes the branch and opens a PR; returns the URL. Code "dirty" with
  * files when there are uncommitted changes.
  */

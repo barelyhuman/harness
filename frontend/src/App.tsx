@@ -20,7 +20,7 @@ import { Explorer } from "./features/explorer/Explorer";
 
 function ToggleBtn(p: { icon: string; on: boolean; cmd: string; title: string; onClick: () => void }) {
   return (
-    <button class={`no-drag rounded p-1 hover:bg-hover ${p.on ? "text-text" : "text-faint"}`} title={`${p.title} ${keyLabel(p.cmd)}`} onClick={p.onClick}>
+    <button class={`no-drag icon-btn hover:bg-hover ${p.on ? "text-text" : "text-faint"}`} title={`${p.title} ${keyLabel(p.cmd)}`} onClick={p.onClick}>
       <Icon name={p.icon} size={15} />
     </button>
   );
@@ -79,7 +79,7 @@ export function App() {
           )}
           {s ? <TabStrip scopeKey={s.key} /> : null}
           <div class="drag flex-1" />
-          <div class="flex items-center gap-0.5 pr-2">
+          <div class="flex items-center gap-1 pr-2">
             <ToggleBtn icon="panel" on={termOpen.value} cmd="view.toggleTerminal" title="Terminal" onClick={() => (termOpen.value = !termOpen.value)} />
             <ToggleBtn icon="right" on={rightOpen.value} cmd="view.toggleRightPane" title="Right Pane" onClick={() => (rightOpen.value = !rightOpen.value)} />
           </div>
@@ -90,9 +90,9 @@ export function App() {
             <>
               <Resizer dir="x" sign={-1} get={() => rightW.value} set={(v) => (rightW.value = clamp(v, LIMITS.right))} />
               <div class="flex min-h-0 shrink-0 flex-col bg-panel" style={{ width: rightW.value }}>
-                <div class="flex h-8 shrink-0 items-center gap-1 px-2">
+                <div class="flex h-9 shrink-0 items-center gap-1 px-2.5">
                   {(["scm", "explorer", "search"] as const).map((m) => (
-                    <button key={m} onClick={() => (rightMode.value = m)} class={`rounded px-2 py-0.5 text-[11.5px] ${rightMode.value === m ? "bg-sel text-text" : "text-muted hover:bg-hover"}`}>
+                    <button key={m} onClick={() => (rightMode.value = m)} class={`h-6 rounded-md px-2.5 text-[11.5px] ${rightMode.value === m ? "bg-sel text-text" : "text-muted hover:bg-hover"}`}>
                       {m === "scm" ? "Changes" : m === "explorer" ? "Explorer" : "Search"}
                     </button>
                   ))}

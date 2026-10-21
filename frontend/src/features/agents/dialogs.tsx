@@ -44,10 +44,10 @@ function FileList(p: { files?: string[] }) {
 function Frame(p: { title: string; children: any; actions: any }) {
   return (
     <Modal width={440} onClose={close}>
-      <div class="p-5">
+      <div class="p-6">
         <div class="mb-2 text-[14px] font-semibold">{p.title}</div>
         {p.children}
-        <div class="mt-4 flex justify-end gap-2">{p.actions}</div>
+        <div class="mt-5 flex justify-end gap-2">{p.actions}</div>
       </div>
     </Modal>
   );

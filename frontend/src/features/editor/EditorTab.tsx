@@ -108,10 +108,10 @@ export function EditorTab(props: { scopeKey: string; root: string; path: string 
   return (
     <div data-ctx="editor" class="relative flex h-full w-full flex-col bg-bg">
       {info.diskChanged && (
-        <div class="flex items-center gap-3 bg-amber-950/40 px-3 py-1.5 text-[12px] text-amber-200">
+        <div class="flex items-center gap-3 bg-amber-950/40 px-4 py-2 text-[12px] text-amber-200">
           <span class="flex-1">File changed on disk: {tabTitle(path)}</span>
-          <button class="rounded px-2 py-0.5 hover:bg-white/10" onClick={() => void reloadFromDisk(path)}>Reload</button>
-          <button class="rounded px-2 py-0.5 hover:bg-white/10" onClick={() => void keepMine(path)}>Keep mine</button>
+          <button class="btn-sm !rounded-md !bg-transparent hover:!bg-white/10" onClick={() => void reloadFromDisk(path)}>Reload</button>
+          <button class="btn-sm !rounded-md !bg-transparent hover:!bg-white/10" onClick={() => void keepMine(path)}>Keep mine</button>
         </div>
       )}
       <div class="relative min-h-0 flex-1">
@@ -127,9 +127,9 @@ export function EditorTab(props: { scopeKey: string; root: string; path: string 
             <div class="mb-1 text-[13px] font-medium text-neutral-100">Save conflict</div>
             <div class="mb-4 text-[12px] text-neutral-400">{tabTitle(path)} changed on disk since you opened it.</div>
             <div class="flex justify-end gap-2 text-[12px]">
-              <button class="rounded px-3 py-1 hover:bg-white/10" onClick={cancelConflict}>Cancel</button>
-              <button class="rounded px-3 py-1 hover:bg-white/10" onClick={compareConflict}>Compare</button>
-              <button class="rounded bg-red-900/60 px-3 py-1 text-red-100 hover:bg-red-900" onClick={overwriteConflict}>Overwrite</button>
+              <button class="btn-sm !h-7 !rounded-md !bg-transparent px-4 hover:!bg-white/10" onClick={cancelConflict}>Cancel</button>
+              <button class="btn-sm !h-7 !rounded-md !bg-transparent px-4 hover:!bg-white/10" onClick={compareConflict}>Compare</button>
+              <button class="btn-sm !h-7 !rounded-md !bg-red-900/60 px-4 text-red-100 hover:!bg-red-900" onClick={overwriteConflict}>Overwrite</button>
             </div>
           </div>
         </div>

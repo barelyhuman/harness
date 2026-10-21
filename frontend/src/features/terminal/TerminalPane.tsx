@@ -18,7 +18,7 @@ function FindBar({ e }: { e: Entry }) {
   const opts = { incremental: true, decorations: { matchBackground: "#5a4a1a", activeMatchBackground: "#8a6d1f", matchOverviewRuler: "#8a6d1f", activeMatchColorOverviewRuler: "#e5c07b" } };
   const close = () => { findFor.value = ""; e.term.focus(); };
   return (
-    <div class="absolute top-2 right-3 z-20 flex items-center gap-1 rounded-md bg-panel2 px-2 py-1 shadow-lg text-[12px]">
+    <div class="absolute top-2 right-3 z-20 flex items-center gap-1 rounded-md bg-panel2 px-2.5 py-1.5 shadow-lg text-[12px]">
       <input ref={ref} class="w-44 bg-transparent outline-none text-neutral-200 placeholder:text-neutral-500" placeholder="Find"
         onInput={(ev) => e.search.findNext((ev.target as HTMLInputElement).value, opts)}
         onKeyDown={(ev) => {
@@ -28,9 +28,9 @@ function FindBar({ e }: { e: Entry }) {
           else if (ev.metaKey && ev.key === "f") { ev.preventDefault(); (ev.target as HTMLInputElement).select(); }
         }} />
       <span class="text-neutral-500 tabular-nums min-w-8 text-right">{res ? (res.n ? `${res.i + 1}/${res.n}` : "0") : ""}</span>
-      <button class="px-1 text-neutral-400 hover:text-white" onClick={() => e.search.findPrevious(ref.current?.value ?? "", opts)}><IconArrowUp size={14} /></button>
-      <button class="px-1 text-neutral-400 hover:text-white" onClick={() => e.search.findNext(ref.current?.value ?? "", { ...opts, incremental: false })}><IconArrowDown size={14} /></button>
-      <button class="px-1 text-neutral-400 hover:text-white" onClick={close}><IconX size={14} /></button>
+      <button class="icon-btn-sm text-neutral-400 hover:bg-hover hover:text-white" onClick={() => e.search.findPrevious(ref.current?.value ?? "", opts)}><IconArrowUp size={14} /></button>
+      <button class="icon-btn-sm text-neutral-400 hover:bg-hover hover:text-white" onClick={() => e.search.findNext(ref.current?.value ?? "", { ...opts, incremental: false })}><IconArrowDown size={14} /></button>
+      <button class="icon-btn-sm text-neutral-400 hover:bg-hover hover:text-white" onClick={close}><IconX size={14} /></button>
     </div>
   );
 }
@@ -42,9 +42,9 @@ function Menu({ x, y, items, onClose }: { x: number; y: number; items: [string, 
     return () => window.removeEventListener("mousedown", h);
   }, []);
   return (
-    <div class="fixed z-50 min-w-44 rounded-md bg-panel2 py-1 shadow-xl text-[12px]" style={{ left: x, top: y }} onMouseDown={(e) => e.stopPropagation()}>
-      {items.map(([l, fn]) => l === "-" ? <div class="my-1 h-px bg-white/10" /> : (
-        <div class="px-3 py-1 text-neutral-200 hover:bg-white/10 cursor-default" onClick={() => { onClose(); fn(); }}>{l}</div>
+    <div class="menu fixed z-50 min-w-44 bg-panel2 shadow-xl text-[12px]" style={{ left: x, top: y }} onMouseDown={(e) => e.stopPropagation()}>
+      {items.map(([l, fn]) => l === "-" ? <div class="menu-sep" /> : (
+        <div class="menu-item text-neutral-200 hover:bg-white/10 cursor-default" onClick={() => { onClose(); fn(); }}>{l}</div>
       ))}
     </div>
   );

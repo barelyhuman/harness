@@ -14,7 +14,7 @@ const THEME = "harness-dark"; // TODO: swap for applyTheme() from features/edito
 
 function Btn(p: { title: string; onClick: () => void; children: any; label?: string }) {
   return (
-    <button type="button" title={p.title} onClick={p.onClick} class="flex h-[24px] cursor-pointer items-center gap-1 rounded-[5px] border-0 bg-transparent px-[6px] text-[12px] text-text hover:bg-hover">
+    <button type="button" title={p.title} onClick={p.onClick} class="flex h-7 cursor-pointer items-center gap-1 rounded-md border-0 bg-transparent px-2 text-[12px] text-text hover:bg-hover">
       {p.children}
       {p.label}
     </button>
@@ -259,7 +259,7 @@ export function DiffTab({ scopeKey, root, path: rawPath, staged }: { scopeKey: s
   const name = path.split("/").pop();
   return (
     <div class="flex h-full min-h-0 flex-col bg-bg" data-ctx="diff">
-      <div class="flex h-[30px] shrink-0 items-center gap-[2px] px-[8px] text-[12px] text-text">
+      <div class="flex h-9 shrink-0 items-center gap-1 px-2 text-[12px] text-text">
         <span class="mr-2 truncate">
           {name}
           <span class="opacity-60"> ({staged ? "Index" : "Working Tree"})</span>

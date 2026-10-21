@@ -32,7 +32,7 @@ function ActionBtn(p: { title: string; onClick: (e: MouseEvent) => void; childre
       type="button"
       title={p.title}
       aria-label={p.title}
-      class={"flex h-[22px] w-[22px] shrink-0 cursor-pointer items-center justify-center rounded-[5px] border-0 bg-transparent p-0 text-text hover:bg-hover " + (p.class ?? "")}
+      class={"icon-btn-sm shrink-0 cursor-pointer border-0 bg-transparent text-text hover:bg-hover " + (p.class ?? "")}
       onClick={(e) => {
         e.stopPropagation();
         p.onClick(e);
@@ -263,7 +263,7 @@ export function ScmPanel({ scopeKey, root }: { scopeKey: string; root: string })
         role="treeitem"
         aria-selected={selected}
         title={r.path + (r.origPath ? ` (from ${r.origPath})` : "") + " • " + r.title}
-        class={"group flex h-[22px] cursor-pointer items-center pr-[8px] text-[13px] leading-[22px] " + (selected ? "bg-sel text-white" : "hover:bg-hover") + (isCursor ? " outline outline-1 -outline-offset-1 outline-[#007fd4]" : "")}
+        class={"row group cursor-pointer gap-0 text-[13px] " + (selected ? "bg-sel text-white" : "hover:bg-hover") + (isCursor ? " outline outline-1 -outline-offset-1 outline-[#007fd4]" : "")}
         style={{ paddingLeft: 8 + indent + "px" }}
         onClick={(e) => clickRow(e, g, r)}
         onDblClick={() => openDiff(g, r, true)}
@@ -309,7 +309,7 @@ export function ScmPanel({ scopeKey, root }: { scopeKey: string; root: string })
       return [...byDir.entries()].sort(([a], [b]) => a.localeCompare(b)).flatMap(([dir, rs]) => {
         const depth = dir ? dir.split("/").length : 0;
         const out: any[] = [];
-        if (dir) out.push(<div key={g.id + "d" + dir} class="flex h-[22px] items-center text-[13px] opacity-80" style={{ paddingLeft: 8 + 0 + "px" }}><I.IconChevron open /> <span class="ml-1 truncate">{dir}</span></div>);
+        if (dir) out.push(<div key={g.id + "d" + dir} class="row gap-0 text-[13px] opacity-80" style={{ paddingLeft: 8 + 0 + "px" }}><I.IconChevron open /> <span class="ml-1 truncate">{dir}</span></div>);
         void depth;
         return out.concat(rs.map((r) => renderRow(g.id, r, dir ? 16 : 0, false)));
       });
@@ -317,7 +317,7 @@ export function ScmPanel({ scopeKey, root }: { scopeKey: string; root: string })
     return (
       <div key={g.id}>
         <div
-          class="group sticky top-0 z-[1] flex h-[22px] cursor-pointer items-center bg-panel pr-[8px] text-[11px] font-bold uppercase"
+          class="group sticky top-0 z-[1] flex h-7 cursor-pointer items-center bg-panel pr-[12px] text-[11px] font-bold uppercase"
           onClick={() => setCollapsed({ ...collapsed, [g.id]: open })}
         >
           <span class="flex w-4 shrink-0 justify-center"><I.IconChevron open={open} /></span>
@@ -339,7 +339,7 @@ export function ScmPanel({ scopeKey, root }: { scopeKey: string; root: string })
 
   const MenuItem = (p: { label: string; onClick: () => void; disabled?: boolean }) => (
     <div
-      class={"mx-[4px] cursor-pointer rounded-[4px] px-[20px] py-[3px] text-[13px] " + (p.disabled ? "opacity-40" : "hover:bg-sel hover:text-white")}
+      class={"menu-item cursor-pointer text-[13px] " + (p.disabled ? "opacity-40" : "hover:bg-sel hover:text-white")}
       onMouseDown={(e) => e.stopPropagation()}
       onClick={() => {
         if (p.disabled) return;
@@ -351,8 +351,8 @@ export function ScmPanel({ scopeKey, root }: { scopeKey: string; root: string })
       {p.label}
     </div>
   );
-  const Sep = () => <div class="mx-[8px] my-[4px] h-px bg-[#454545]" />;
-  const menuBox = "fixed z-50 min-w-[170px] rounded-[5px] bg-raise py-[4px] shadow-[0_2px_8px_#000a]";
+  const Sep = () => <div class="menu-sep" />;
+  const menuBox = "menu fixed z-50 min-w-[170px] bg-raise shadow-[0_2px_8px_#000a]";
 
   const hasChanges = allRows.length > 0;
   const isMac = true;
@@ -367,7 +367,7 @@ export function ScmPanel({ scopeKey, root }: { scopeKey: string; root: string })
       onKeyDown={onKey}
     >
       {/* header */}
-      <div class="flex h-[35px] shrink-0 items-center pl-[20px] pr-[8px]">
+      <div class="flex h-9 shrink-0 items-center pl-3 pr-2">
         <span class="text-[11px] font-normal uppercase">Source Control</span>
         <span class="flex-1" />
         <ActionBtn title="Commit" onClick={() => doCommit()}><I.IconCheck /></ActionBtn>
@@ -375,7 +375,7 @@ export function ScmPanel({ scopeKey, root }: { scopeKey: string; root: string })
         <ActionBtn title={tree ? "View as List" : "View as Tree"} onClick={() => setTree(!tree)}>{tree ? <I.IconList /> : <I.IconTree />}</ActionBtn>
         <ActionBtn title="More Actions..." onClick={(e) => { const r = (e.currentTarget as HTMLElement).getBoundingClientRect(); setMenu({ x: r.left, y: r.bottom, g: "more" }); }}><I.IconEllipsis /></ActionBtn>
       </div>
-      <div class="flex h-[22px] shrink-0 items-center gap-[4px] px-[20px] text-[12px] opacity-80">
+      <div class="flex h-7 shrink-0 items-center gap-[4px] px-3 text-[12px] opacity-80">
         <I.IconBranch />
         <span class="truncate">{branch}</span>
         {!!state && (state.ahead > 0 || state.behind > 0) && (
@@ -397,7 +397,7 @@ export function ScmPanel({ scopeKey, root }: { scopeKey: string; root: string })
       )}
 
       {/* commit box */}
-      <div class="shrink-0 px-[12px] pb-[8px] pt-[2px]">
+      <div class="shrink-0 px-3 pb-3 pt-1">
         <textarea
           ref={taRef}
           rows={1}
@@ -419,18 +419,18 @@ export function ScmPanel({ scopeKey, root }: { scopeKey: string; root: string })
           }}
         />
         {msgErr && <div class="mt-[2px] border border-[#be1100] bg-[#5a1d1d] px-[6px] py-[2px] text-[12px] text-white">{msgErr}</div>}
-        <div class="relative mt-[8px] flex h-[26px]">
+        <div class="relative mt-2 flex h-7">
           <button
             type="button"
             disabled={busy}
-            class="flex h-full flex-1 cursor-pointer items-center justify-center gap-[4px] rounded-l-[2px] border-0 bg-accent text-[13px] text-white hover:bg-accent disabled:opacity-60"
+            class="flex h-full flex-1 cursor-pointer items-center justify-center gap-[4px] rounded-l-md border-0 bg-accent text-[13px] text-white hover:bg-accent disabled:opacity-60"
             onClick={() => doCommit()}
           >
             <I.IconCheck /> Commit
           </button>
           <button
             type="button"
-            class="ml-px flex h-full w-[26px] cursor-pointer items-center justify-center rounded-r-[2px] border-0 bg-accent text-white hover:bg-accent"
+            class="ml-px flex h-full w-[26px] cursor-pointer items-center justify-center rounded-r-md border-0 bg-accent text-white hover:bg-accent"
             title="More Actions..."
             onMouseDown={(e) => e.stopPropagation()}
             onClick={() => setDropdown(!dropdown)}
@@ -438,7 +438,7 @@ export function ScmPanel({ scopeKey, root }: { scopeKey: string; root: string })
             <I.IconChevron open />
           </button>
           {dropdown && (
-            <div class="absolute right-0 top-[28px] z-50 min-w-[190px] rounded-[5px] bg-raise py-[4px] shadow-[0_2px_8px_#000a]">
+            <div class="menu absolute right-0 top-[32px] z-50 min-w-[190px] bg-raise shadow-[0_2px_8px_#000a]">
               <MenuItem label="Commit" onClick={() => doCommit()} />
               <MenuItem label="Commit (Amend)" onClick={() => doCommit(true)} />
               <Sep />
@@ -488,14 +488,14 @@ export function ScmPanel({ scopeKey, root }: { scopeKey: string; root: string })
 
       {dialog && (
         <div class="absolute inset-0 z-[60] flex items-start justify-center bg-black/40 pt-[60px]" onMouseDown={(e) => e.stopPropagation()}>
-          <div class="mx-[12px] w-full max-w-[320px] rounded-[5px] bg-raise p-[14px] shadow-[0_4px_16px_#000c]">
+          <div class="mx-[12px] w-full max-w-[320px] rounded-xl bg-raise p-[18px] shadow-[0_4px_16px_#000c]">
             <div class="text-[13px] font-semibold text-white">{dialog.message}</div>
             {dialog.detail && <div class="mt-[6px] text-[12px] opacity-80">{dialog.detail}</div>}
-            <div class="mt-[14px] flex justify-end gap-[8px]">
-              <button type="button" class="h-[26px] cursor-pointer rounded-[2px] border-0 bg-sel px-[12px] text-[13px] text-white hover:bg-[#45494e]" onClick={() => setDialog(null)}>Cancel</button>
+            <div class="mt-[18px] flex justify-end gap-[8px]">
+              <button type="button" class="h-7 cursor-pointer rounded-md border-0 bg-sel px-[16px] text-[13px] text-white hover:bg-[#45494e]" onClick={() => setDialog(null)}>Cancel</button>
               <button
                 type="button"
-                class="h-[26px] cursor-pointer rounded-[2px] border-0 bg-accent px-[12px] text-[13px] text-white hover:bg-accent"
+                class="h-7 cursor-pointer rounded-md border-0 bg-accent px-[16px] text-[13px] text-white hover:bg-accent"
                 ref={(el) => el?.focus()}
                 onClick={() => {
                   const d = dialog;

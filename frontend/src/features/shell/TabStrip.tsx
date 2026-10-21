@@ -16,12 +16,12 @@ export function TabStrip(p: { scopeKey: string }) {
             key={t.id}
             title={t.kind === "chat" ? "Chat (⌘0)" : t.path}
             onMouseDown={(e) => { if (e.button === 1) { e.preventDefault(); closeTab(p.scopeKey, t.id); } else activateTab(p.scopeKey, t.id); }}
-            class={`no-drag group flex shrink-0 cursor-default items-center gap-1.5 px-3 text-[12px] ${on ? "bg-bg text-text" : "text-muted hover:bg-hover"} ${t.kind === "file" && t.preview ? "italic" : ""}`}
+            class={`no-drag group flex shrink-0 cursor-default items-center gap-2 px-3.5 text-[12px] ${on ? "bg-bg text-text" : "text-muted hover:bg-hover"} ${t.kind === "file" && t.preview ? "italic" : ""}`}
           >
             <Icon name={t.kind === "chat" ? "chat" : t.kind === "diff" ? "diff" : "file"} size={12} class={on ? "text-accent" : ""} />
             <span class="max-w-[160px] truncate">{label(t)}</span>
             {t.kind !== "chat" && (
-              <button class="rounded p-0.5 text-faint opacity-0 hover:bg-sel hover:text-text group-hover:opacity-100" style={on ? { opacity: 1 } : {}} onMouseDown={(e) => e.stopPropagation()} onClick={() => closeTab(p.scopeKey, t.id)} aria-label="Close tab">
+              <button class="icon-btn-sm !h-[18px] !w-[18px] text-faint opacity-0 hover:bg-sel hover:text-text group-hover:opacity-100" style={on ? { opacity: 1 } : {}} onMouseDown={(e) => e.stopPropagation()} onClick={() => closeTab(p.scopeKey, t.id)} aria-label="Close tab">
                 <Icon name="x" size={10} />
               </button>
             )}

@@ -59,11 +59,11 @@ export function Palette() {
   };
   return (
     <Modal width={560} top label="Command palette">
-      <input class="bg-transparent px-4 py-3 text-[14px] outline-none" autofocus ref={(el) => el?.focus()} placeholder="Type a command..." value={q} onInput={(e) => setQ(e.currentTarget.value)} onKeyDown={key} />
-      <div ref={list} class="max-h-[50vh] overflow-y-auto py-1">
+      <input class="h-12 border-b border-border bg-transparent px-5 text-[14px] outline-none" autofocus ref={(el) => el?.focus()} placeholder="Type a command..." value={q} onInput={(e) => setQ(e.currentTarget.value)} onKeyDown={key} />
+      <div ref={list} class="max-h-[50vh] overflow-y-auto py-1.5">
         {items.length === 0 && <div class="px-4 py-3 text-muted">No matching commands</div>}
         {items.map((it, i) => (
-          <div key={it.id} onMouseMove={() => setSel(i)} onClick={() => run(it)} class={`flex cursor-default items-center gap-3 px-4 py-1.5 ${i === sel ? "bg-accent/20" : ""}`}>
+          <div key={it.id} onMouseMove={() => setSel(i)} onClick={() => run(it)} class={`pick-row cursor-default gap-3 ${i === sel ? "bg-accent/20" : ""}`}>
             <span class="min-w-0 flex-1 truncate"><Highlight text={it.title} positions={it.positions} /></span>
             <span class="kbd">{keyLabel(it.id)}</span>
           </div>

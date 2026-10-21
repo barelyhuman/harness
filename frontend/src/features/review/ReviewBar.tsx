@@ -25,8 +25,8 @@ export function ReviewBar(p: { sessionId: string; scopeKey: string }) {
       {dirty > 0 && <span class="shrink-0 text-[11px] text-warn">{dirty} changed file{dirty > 1 ? "s" : ""}</span>}
       {r.prUrl && <span class={`shrink-0 rounded border px-1 text-[10.5px] ${prColor(r.prState)}`}>PR {r.prState || "open"}</span>}
       <div class="flex-1" />
-      <button class="btn !py-0 text-[11px]" onClick={() => { rightMode.value = "scm"; rightOpen.value = true; }}>Review changes</button>
-      {!r.prUrl && <button class="btn !py-0 text-[11px]" onClick={() => window.dispatchEvent(new CustomEvent("harness:raise-pr", { detail: { scopeKey: p.scopeKey } }))}>Raise PR</button>}
+      <button class="btn btn-sm" onClick={() => { rightMode.value = "scm"; rightOpen.value = true; }}>Review changes</button>
+      {!r.prUrl && <button class="btn btn-sm" onClick={() => window.dispatchEvent(new CustomEvent("harness:raise-pr", { detail: { scopeKey: p.scopeKey } }))}>Raise PR</button>}
     </div>
   );
 }

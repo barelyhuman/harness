@@ -34,15 +34,15 @@ export function QuickOpen() {
   };
   return (
     <Modal width={620} top label="Quick open">
-      <input class="bg-transparent px-4 py-3 text-[14px] outline-none" autofocus ref={(el) => el?.focus()} placeholder="Go to file..." value={q} onInput={(e) => setQ(e.currentTarget.value)} onKeyDown={key} />
-      <div ref={list} class="max-h-[50vh] overflow-y-auto py-1">
+      <input class="h-12 border-b border-border bg-transparent px-5 text-[14px] outline-none" autofocus ref={(el) => el?.focus()} placeholder="Go to file..." value={q} onInput={(e) => setQ(e.currentTarget.value)} onKeyDown={key} />
+      <div ref={list} class="max-h-[50vh] overflow-y-auto py-1.5">
         {!scope && <div class="px-4 py-3 text-muted">Open a project first</div>}
         {res.map((r, i) => {
           const slash = r.path.lastIndexOf("/");
           const name = r.path.slice(slash + 1);
           const off = slash + 1;
           return (
-            <div key={r.path} onMouseMove={() => setSel(i)} onClick={() => open(r)} class={`flex cursor-default items-baseline gap-2 px-4 py-1 ${i === sel ? "bg-accent/20" : ""}`}>
+            <div key={r.path} onMouseMove={() => setSel(i)} onClick={() => open(r)} class={`pick-row cursor-default gap-3 ${i === sel ? "bg-accent/20" : ""}`}>
               <span class="shrink-0"><Highlight text={name} positions={r.positions?.filter((p) => p >= off).map((p) => p - off)} /></span>
               <span class="min-w-0 truncate text-[11px] text-faint"><Highlight text={r.path.slice(0, Math.max(0, slash))} positions={r.positions?.filter((p) => p < slash)} /></span>
             </div>

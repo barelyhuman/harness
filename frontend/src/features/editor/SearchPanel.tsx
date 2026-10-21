@@ -82,17 +82,17 @@ export function SearchPanel({ scopeKey, root }: { scopeKey: string; root: string
 
   const abs = (p: string) => (p.startsWith("/") ? p : root.replace(/\/+$/, "") + "/" + p);
   const total = results.reduce((n, r) => n + r.matches.length, 0);
-  const tog = (on: boolean) => `rounded px-1.5 py-0.5 text-[11px] ${on ? "bg-blue-500/30 text-blue-200" : "text-neutral-400 hover:bg-white/10"}`;
+  const tog = (on: boolean) => `inline-flex h-6 min-w-6 items-center justify-center rounded-md px-1.5 text-[11px] ${on ? "bg-blue-500/30 text-blue-200" : "text-neutral-400 hover:bg-white/10"}`;
 
   return (
     <div data-ctx="search" class="flex h-full min-h-0 flex-col text-[12px]">
-      <div class="space-y-1.5 p-2">
+      <div class="space-y-2 p-3">
         <div class="flex items-center gap-1">
           <input
             ref={input}
             value={query}
             placeholder="Search"
-            class="min-w-0 flex-1 rounded bg-bg px-2 py-1 outline-none focus:border-blue-500/60"
+            class="min-w-0 flex-1 rounded-md bg-bg px-2.5 py-1.5 outline-none focus:border-blue-500/60"
             onInput={(e) => setQuery((e.target as HTMLInputElement).value)}
           />
           <button class={tog(cs)} title="Match case" onClick={() => setCs(!cs)}>Aa</button>
@@ -101,7 +101,7 @@ export function SearchPanel({ scopeKey, root }: { scopeKey: string; root: string
         <input
           value={glob}
           placeholder="files to include (e.g. *.ts, !dist)"
-          class="w-full rounded bg-bg px-2 py-1 outline-none focus:border-blue-500/60"
+          class="w-full rounded-md bg-bg px-2.5 py-1.5 outline-none focus:border-blue-500/60"
           onInput={(e) => setGlob((e.target as HTMLInputElement).value)}
         />
         <div class="text-neutral-500">
@@ -116,7 +116,7 @@ export function SearchPanel({ scopeKey, root }: { scopeKey: string; root: string
           return (
             <div key={f.path}>
               <div
-                class="flex cursor-pointer items-center gap-1 px-2 py-0.5 hover:bg-white/5"
+                class="row cursor-pointer gap-1 hover:bg-white/5"
                 onClick={() => setCollapsed({ ...collapsed, [f.path]: open })}
               >
                 <span class="flex w-3 items-center text-neutral-500">{open ? <IconChevronDown size={12} /> : <IconChevronRight size={12} />}</span>
@@ -151,7 +151,7 @@ function MatchRow({ m, onOpen }: { m: Match; onOpen: () => void }) {
   }
   parts.push(text.slice(pos, pos + 300));
   return (
-    <div class="flex cursor-pointer gap-2 whitespace-pre py-px pl-7 pr-2 hover:bg-white/5" onClick={onOpen}>
+    <div class="mx-1.5 flex h-6 cursor-pointer items-center gap-2 whitespace-pre rounded-md pl-8 pr-2 hover:bg-white/5" onClick={onOpen}>
       <span class="shrink-0 text-neutral-600">{m.line}</span>
       <span class="truncate text-neutral-400">{parts}</span>
     </div>

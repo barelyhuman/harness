@@ -8,7 +8,7 @@ import { openFile } from "../../state/editor";
 import { toast, toastError } from "../../state/toast";
 import { CLASS_COLOR, fileIcon, joinPath, subscribeJSON } from "../scm/util";
 
-const ROW_H = 22;
+const ROW_H = 26;
 type Row = { kind: "entry"; e: Entry; depth: number } | { kind: "new"; parent: string; isDir: boolean; depth: number };
 type ScmRow = { path: string; class: string };
 type ScmState = { groups?: { rows?: ScmRow[] }[] };
@@ -203,11 +203,11 @@ export function Explorer({ scopeKey, root }: { scopeKey: string; root: string })
 
   return (
     <div data-ctx="explorer" class="relative flex h-full min-h-0 flex-col text-[12.5px] text-neutral-300">
-      <div class="flex items-center gap-1 px-2 py-1 text-[11px] text-neutral-500">
+      <div class="flex h-9 shrink-0 items-center gap-1 px-3 text-[11px] text-neutral-500">
         <span class="flex-1 truncate uppercase tracking-wide">{baseOf(r)}</span>
-        <button class="rounded px-1 hover:bg-white/10" title="New File" onClick={() => beginCreate(targetDir(entryOf(selected) ?? null), false)}>+ File</button>
-        <button class="rounded px-1 hover:bg-white/10" title="New Folder" onClick={() => beginCreate(targetDir(entryOf(selected) ?? null), true)}>+ Dir</button>
-        <button class="rounded px-1 hover:bg-white/10" title="Refresh" onClick={() => [...expanded].forEach((d) => void load(d))}><IconRefresh size={14} /></button>
+        <button class="btn-sm !h-6 !rounded-md !bg-transparent px-2 hover:!bg-white/10" title="New File" onClick={() => beginCreate(targetDir(entryOf(selected) ?? null), false)}>+ File</button>
+        <button class="btn-sm !h-6 !rounded-md !bg-transparent px-2 hover:!bg-white/10" title="New Folder" onClick={() => beginCreate(targetDir(entryOf(selected) ?? null), true)}>+ Dir</button>
+        <button class="icon-btn-sm hover:bg-white/10" title="Refresh" onClick={() => [...expanded].forEach((d) => void load(d))}><IconRefresh size={14} /></button>
       </div>
       <div
         ref={box}
@@ -222,7 +222,7 @@ export function Explorer({ scopeKey, root }: { scopeKey: string; root: string })
             const top = (start + k) * ROW_H;
             if (row.kind === "new") {
               return (
-                <div key={"new"} class="absolute left-0 right-0 flex items-center px-2" style={{ top, height: ROW_H, paddingLeft: 8 + row.depth * 12 + 16 }}>
+                <div key={"new"} class="absolute left-1.5 right-1.5 flex items-center px-2" style={{ top, height: ROW_H, paddingLeft: 8 + row.depth * 14 + 16 }}>
                   <NameInput initial="" onDone={(n) => void commitCreate(n)} onCancel={() => setCreating(null)} />
                 </div>
               );
@@ -235,8 +235,8 @@ export function Explorer({ scopeKey, root }: { scopeKey: string; root: string })
             return (
               <div
                 key={e.path}
-                class={`absolute left-0 right-0 flex cursor-default items-center gap-1 pr-2 ${selected === e.path ? "bg-white/10" : "hover:bg-white/5"}`}
-                style={{ top, height: ROW_H, paddingLeft: 8 + depth * 12 }}
+                class={`absolute left-1.5 right-1.5 flex cursor-default items-center gap-1.5 rounded-md pr-2 ${selected === e.path ? "bg-white/10" : "hover:bg-white/5"}`}
+                style={{ top, height: ROW_H, paddingLeft: 8 + depth * 14 }}
                 onClick={() => {
                   setSelected(e.path);
                   box.current?.focus();
@@ -261,9 +261,9 @@ export function Explorer({ scopeKey, root }: { scopeKey: string; root: string })
       </div>
       {menu && (
         <div class="fixed inset-0 z-50" onClick={() => setMenu(null)} onContextMenu={(e) => { e.preventDefault(); setMenu(null); }}>
-          <div class="absolute min-w-40 rounded-md bg-panel2 py-1 text-[12px] shadow-xl" style={{ left: menu.x, top: menu.y }}>
+          <div class="menu absolute min-w-40 bg-panel2 text-[12px] shadow-xl" style={{ left: menu.x, top: menu.y }}>
             {menuItems(menu.target).map(([label, fn]) => (
-              <div key={label} class="cursor-default px-3 py-1 hover:bg-blue-600/60" onClick={() => { setMenu(null); fn(); }}>{label}</div>
+              <div key={label} class="menu-item cursor-default hover:bg-sel" onClick={() => { setMenu(null); fn(); }}>{label}</div>
             ))}
           </div>
         </div>
@@ -274,8 +274,8 @@ export function Explorer({ scopeKey, root }: { scopeKey: string; root: string })
             <div class="mb-1 text-[13px] text-neutral-100">Move to Trash?</div>
             <div class="mb-4 truncate text-[12px] text-neutral-400">{confirmDel.name}</div>
             <div class="flex justify-end gap-2 text-[12px]">
-              <button class="rounded px-3 py-1 hover:bg-white/10" onClick={() => setConfirmDel(null)}>Cancel</button>
-              <button class="rounded bg-red-900/60 px-3 py-1 text-red-100 hover:bg-red-900" onClick={() => void doDelete(confirmDel)}>Delete</button>
+              <button class="btn-sm !h-7 !rounded-md !bg-transparent px-4 hover:!bg-white/10" onClick={() => setConfirmDel(null)}>Cancel</button>
+              <button class="btn-sm !h-7 !rounded-md !bg-red-900/60 px-4 text-red-100 hover:!bg-red-900" onClick={() => void doDelete(confirmDel)}>Delete</button>
             </div>
           </div>
         </div>

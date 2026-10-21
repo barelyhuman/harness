@@ -183,7 +183,7 @@ export function Composer(p: { sessionId: string }) {
 
   const m = findModel(models.value, row);
   const modelLabel = m?.label ?? (row?.model || "model");
-  const chip = "flex h-[22px] items-center gap-1 rounded-md px-1.5 text-[11.5px] text-muted hover:bg-hover hover:text-text";
+  const chip = "flex h-6 items-center gap-1 rounded-md px-2 text-[11.5px] text-muted hover:bg-hover hover:text-text";
 
   return (
     <div data-ctx="composer" class="relative px-3 pb-3 pt-1">
@@ -220,13 +220,13 @@ export function Composer(p: { sessionId: string }) {
             if (fs.some((f) => f.type.startsWith("image/"))) { e.preventDefault(); void addFiles(fs); }
           }}
         />
-        <div class="relative flex items-center gap-1 px-1.5 pb-1.5">
+        <div class="relative flex items-center gap-1.5 px-1.5 pb-2">
           <button class={chip} title="Model (⌘/)" onClick={() => { void loadModels(); pickerOpen.value = !pickerOpen.value; }}>{modelLabel}</button>
           <button class={chip} title="Mode (⇧Tab)" onClick={() => void cycleMode(sid)}>{row?.mode || "mode"}</button>
           <button class={chip} title="Effort (⌘E)" onClick={() => void cycleEffort(sid)}>{row?.effort ? `effort: ${row.effort}` : "effort"}</button>
           <div class="flex-1" />
-          {busy && <button class="btn !py-0 text-[11px]" onClick={() => void SessionService.Interrupt(sid).catch(toastError)}>Stop</button>}
-          <button class="btn btn-primary !py-0 text-[11px]" disabled={!text.trim() && !atts.length} onClick={() => void send("auto")}>{busy ? "Queue" : "Send"}</button>
+          {busy && <button class="btn btn-sm" onClick={() => void SessionService.Interrupt(sid).catch(toastError)}>Stop</button>}
+          <button class="btn btn-primary btn-sm" disabled={!text.trim() && !atts.length} onClick={() => void send("auto")}>{busy ? "Queue" : "Send"}</button>
           {pickerOpen.value && (
             <>
               <div class="fixed inset-0 z-20" onClick={() => (pickerOpen.value = false)} />
@@ -236,15 +236,15 @@ export function Composer(p: { sessionId: string }) {
         </div>
       </div>
       {menu && (
-        <div class="pop absolute bottom-full left-3 z-30 mb-1 max-h-[240px] w-[min(520px,calc(100%-24px))] overflow-y-auto rounded-lg bg-panel2 py-1 shadow-2xl">
+        <div class="pop absolute bottom-full left-3 z-30 mb-1 max-h-[240px] w-[min(520px,calc(100%-24px))] menu overflow-y-auto bg-panel2 shadow-2xl">
           {menu.kind === "file"
             ? menu.items.map((it, i) => (
-                <div key={it} class={`flex cursor-pointer gap-2 px-3 py-0.5 font-mono text-[12px] ${i === menu.sel ? "bg-sel" : "hover:bg-hover"}`} onMouseDown={(e) => { e.preventDefault(); accept(i); }}>
+                <div key={it} class={`menu-item cursor-pointer font-mono text-[12px] ${i === menu.sel ? "bg-sel" : "hover:bg-hover"}`} onMouseDown={(e) => { e.preventDefault(); accept(i); }}>
                   <span class="truncate">{it}</span>
                 </div>
               ))
             : menu.items.map((it, i) => (
-                <div key={it.cmd} class={`flex cursor-pointer gap-3 px-3 py-0.5 text-[12px] ${i === menu.sel ? "bg-sel" : "hover:bg-hover"}`} onMouseDown={(e) => { e.preventDefault(); accept(i); }}>
+                <div key={it.cmd} class={`menu-item cursor-pointer gap-3 text-[12px] ${i === menu.sel ? "bg-sel" : "hover:bg-hover"}`} onMouseDown={(e) => { e.preventDefault(); accept(i); }}>
                   <span class="font-mono">{it.cmd}</span><span class="truncate text-faint">{it.desc}</span>
                 </div>
               ))}

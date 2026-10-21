@@ -87,16 +87,16 @@ export function ModelPicker(p: { sessionId: string; row?: SessionRow; onClose: (
         </div>
       ) : (
         <>
-          <input ref={input} class="w-full bg-transparent px-3 py-2 text-[12.5px] outline-none placeholder:text-faint" placeholder="Search models…" value={q} onInput={(e) => setQ(e.currentTarget.value)} />
-          <div class="max-h-[300px] overflow-y-auto py-1">
+          <input ref={input} class="h-10 w-full bg-transparent px-4 text-[12.5px] outline-none placeholder:text-faint" placeholder="Search models…" value={q} onInput={(e) => setQ(e.currentTarget.value)} />
+          <div class="max-h-[300px] menu overflow-y-auto">
             {order.length === 0 && <div class="px-3 py-2 text-[12px] text-faint">{all.length ? "No match" : "Loading…"}</div>}
             {groups.map((g) => (
               <div key={g.provider}>
-                {g.provider && <div class="px-3 pb-0.5 pt-1.5 text-[10.5px] uppercase tracking-wide text-faint">{cap(g.provider)}</div>}
+                {g.provider && <div class="section-h text-faint">{cap(g.provider)}</div>}
                 {g.items.map((it) => {
                   const idx = order.indexOf(it);
                   return (
-                    <div key={it.m.key} class={`flex cursor-pointer items-center gap-2 px-3 py-1 text-[12.5px] ${idx === sel ? "bg-sel" : "hover:bg-hover"}`} onMouseEnter={() => setSel(idx)} onClick={() => choose(it.m)}>
+                    <div key={it.m.key} class={`menu-item cursor-pointer text-[12.5px] ${idx === sel ? "bg-sel" : "hover:bg-hover"}`} onMouseEnter={() => setSel(idx)} onClick={() => choose(it.m)}>
                       <span class={it.m.favourite ? "text-warn" : "text-transparent"}>{it.m.favourite ? <IconStarFilled size={12} /> : <IconStar size={12} />}</span>
                       <span class="min-w-0 flex-1 truncate"><Label text={it.m.label} pos={it.pos} /></span>
                       {ranked && <span class="text-[10.5px] text-faint">{it.m.provider}</span>}

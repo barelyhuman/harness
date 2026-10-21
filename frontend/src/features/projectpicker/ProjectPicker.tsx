@@ -7,7 +7,7 @@ import { toast, toastError } from "../../state/toast";
 import { closeOverlay } from "../../state/ui";
 import { Highlight, Icon } from "../shell/ui";
 
-const ROW = 28;
+const ROW = 34;
 const VIEW = 320;
 type Row = { key: string; label: string; positions?: number[] | null; entry?: Entry; projectId?: string; sub?: string };
 
@@ -150,12 +150,12 @@ export function ProjectPicker() {
       <div class="fixed inset-0 z-40" onMouseDown={closeOverlay} />
       <div class="pop absolute left-2 right-2 top-[44px] z-50 flex flex-col overflow-hidden rounded-xl bg-panel2 shadow-2xl shadow-black/60" style={{ minWidth: 360 }}>
         {mode === "path" && (
-          <div class="flex items-center gap-1 px-3 py-1.5 text-[11px] text-muted">
+          <div class="flex items-center gap-1 px-4 py-2 text-[11px] text-muted">
             <Icon name="folder" size={11} /> <span class="min-w-0 flex-1 truncate" title={dir}>{dir.replace(home, "~")}</span>
             {hidden && <span class="rounded bg-sel px-1">hidden</span>}
           </div>
         )}
-        <input ref={input} class="bg-transparent px-3 py-2 outline-none" placeholder={mode === "recent" ? "Search projects, or type / ~ . to browse" : "Filter, or type a path like ~/code/"} value={text} onInput={(e) => onInput(e.currentTarget.value)} onKeyDown={key} />
+        <input ref={input} class="h-10 bg-transparent px-4 outline-none" placeholder={mode === "recent" ? "Search projects, or type / ~ . to browse" : "Filter, or type a path like ~/code/"} value={text} onInput={(e) => onInput(e.currentTarget.value)} onKeyDown={key} />
         <div ref={scroller} class="overflow-y-auto" style={{ maxHeight: VIEW }} onScroll={(e) => setTop(e.currentTarget.scrollTop)}>
           <div style={{ height: rows.length * ROW, position: "relative" }}>
             {shown.map((r, j) => {
@@ -163,7 +163,7 @@ export function ProjectPicker() {
               const b = badges[r.key];
               return (
                 <div key={r.key} onMouseMove={() => setSel(i)} onClick={() => (mode === "path" && r.entry ? enterPath(r.entry.path) : openRow(r))} onDblClick={() => openRow(r)}
-                  class={`absolute inset-x-0 flex cursor-default items-center gap-2 px-3 ${i === sel ? "bg-accent/20" : ""}`} style={{ top: i * ROW, height: ROW }}>
+                  class={`absolute inset-x-1.5 flex cursor-default items-center gap-2.5 rounded-lg px-3 ${i === sel ? "bg-accent/20" : ""}`} style={{ top: i * ROW, height: ROW }}>
                   <Icon name={r.entry?.isRepo ? "branch" : "folder"} size={13} class={r.entry?.isRepo ? "text-accent" : "text-muted"} />
                   <span class="min-w-0 truncate"><Highlight text={r.label} positions={r.positions} /></span>
                   {r.sub && <span class="min-w-0 flex-1 truncate text-[11px] text-faint">{r.sub}</span>}
@@ -175,7 +175,7 @@ export function ProjectPicker() {
           </div>
           {rows.length === 0 && <div class="px-3 py-3 text-muted">{mode === "recent" ? "No projects. Type / or ~ to browse." : "Empty"}</div>}
         </div>
-        <div class="flex gap-3 px-3 py-1.5 text-[10.5px] text-faint">
+        <div class="flex gap-3 px-4 py-2 text-[10.5px] text-faint">
           <span>⏎ open</span><span>→ enter</span><span>← up</span><span>⌘. hidden</span><span>⌘⏎ new window</span>
         </div>
       </div>

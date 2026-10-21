@@ -1,0 +1,3 @@
+{"type": "user", "message": {"role": "user", "content": "Write a very long essay (2000 words) about the history of tea."}}
+{"type": "control_request", "request_id": "i1", "request": {"subtype": "interrupt"}}
+{"type": "user", "message": {"role": "user", "content": "Say the word ok."}}

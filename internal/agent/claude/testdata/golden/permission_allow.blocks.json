@@ -1,0 +1,86 @@
+[
+  {
+    "id": "user:1",
+    "type": "user",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "Create a file hello.txt containing the word hi using the Write tool. Do not use Bash."
+  },
+  {
+    "id": "tool:toolu_01MCDpXu2exPp1sUffrWY6pG",
+    "type": "tool",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Write hello.txt",
+    "tool": {
+      "toolId": "toolu_01MCDpXu2exPp1sUffrWY6pG",
+      "name": "Write",
+      "kind": "write",
+      "status": "ok",
+      "input": {
+        "file_path": "/private/tmp/claude-501/-Users-sid-code-harness/e2689941-5abc-4789-a3a2-4db26225c942/scratchpad/claude-spike/hello.txt",
+        "content": "hi\n"
+      },
+      "path": "hello.txt",
+      "output": "File created successfully at: /private/tmp/claude-501/-Users-sid-code-harness/e2689941-5abc-4789-a3a2-4db26225c942/scratchpad/claude-spike/hello.txt (file state is current in your context — no need to Read it back)",
+      "outputLines": 1,
+      "diff": "--- /dev/null\n+++ b/private/tmp/claude-501/-Users-sid-code-harness/e2689941-5abc-4789-a3a2-4db26225c942/scratchpad/claude-spike/hello.txt\n@@ -0,0 +1,1 @@\n+hi\n",
+      "added": 1
+    }
+  },
+  {
+    "id": "perm:e1d7cd76-3a33-4963-8cda-d8a8945ee239",
+    "type": "permission",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Allow Write hello.txt?",
+    "collapsed": true,
+    "permission": {
+      "reqId": "e1d7cd76-3a33-4963-8cda-d8a8945ee239",
+      "toolUseId": "toolu_01MCDpXu2exPp1sUffrWY6pG",
+      "tool": "Write",
+      "description": "hello.txt",
+      "input": {
+        "file_path": "/private/tmp/claude-501/-Users-sid-code-harness/e2689941-5abc-4789-a3a2-4db26225c942/scratchpad/claude-spike/hello.txt",
+        "content": "hi\n"
+      },
+      "options": [
+        {
+          "id": "allow",
+          "name": "Allow",
+          "kind": "allow_once"
+        },
+        {
+          "id": "allow_always",
+          "name": "Always allow",
+          "kind": "allow_always"
+        },
+        {
+          "id": "deny",
+          "name": "Deny",
+          "kind": "reject_once"
+        }
+      ],
+      "state": "allowed"
+    }
+  },
+  {
+    "id": "text:msg_011CgEqugSkCqjb4MayXqD5k:1",
+    "type": "assistant_text",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "I created `hello.txt` containing `hi` using the Write tool, without Bash. It's at `/private/tmp/claude-501/-Users-sid-code-harness/e2689941-5abc-4789-a3a2-4db26225c942/scratchpad/claude-spike/hello.txt`.\n\nThe file has a trailing newline after `hi`."
+  },
+  {
+    "id": "result:1",
+    "type": "result_footer",
+    "ts": "2026-10-21T00:00:00Z",
+    "footer": {
+      "status": "success",
+      "summary": "41.2k in · 372 out · $0.0028 · 5.5s",
+      "inputTokens": 41191,
+      "outputTokens": 372,
+      "cacheTokens": 29785,
+      "costUsd": 0.00276465,
+      "durationMs": 5549,
+      "model": "claude-haiku-5-5",
+      "contextWindow": 1000000
+    }
+  }
+]

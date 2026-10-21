@@ -1,0 +1,87 @@
+[
+  {
+    "id": "user:1",
+    "type": "user",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "Create a file hello.txt containing the word hi using the Write tool. Do not use Bash."
+  },
+  {
+    "id": "tool:toolu_01TCLAiH4ULAe5A7aNMnzr9d",
+    "type": "tool",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Write hello.txt",
+    "collapsed": true,
+    "tool": {
+      "toolId": "toolu_01TCLAiH4ULAe5A7aNMnzr9d",
+      "name": "Write",
+      "kind": "write",
+      "status": "error",
+      "input": {
+        "file_path": "/private/tmp/claude-501/-Users-sid-code-harness/e2689941-5abc-4789-a3a2-4db26225c942/scratchpad/claude-spike/hello.txt",
+        "content": "hi"
+      },
+      "path": "hello.txt",
+      "output": "User denied this action",
+      "outputLines": 1,
+      "denied": true
+    }
+  },
+  {
+    "id": "perm:59fcf9cc-b458-4621-a2c8-886bb8c41931",
+    "type": "permission",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Allow Write hello.txt?",
+    "collapsed": true,
+    "permission": {
+      "reqId": "59fcf9cc-b458-4621-a2c8-886bb8c41931",
+      "toolUseId": "toolu_01TCLAiH4ULAe5A7aNMnzr9d",
+      "tool": "Write",
+      "description": "hello.txt",
+      "input": {
+        "file_path": "/private/tmp/claude-501/-Users-sid-code-harness/e2689941-5abc-4789-a3a2-4db26225c942/scratchpad/claude-spike/hello.txt",
+        "content": "hi"
+      },
+      "options": [
+        {
+          "id": "allow",
+          "name": "Allow",
+          "kind": "allow_once"
+        },
+        {
+          "id": "allow_always",
+          "name": "Always allow",
+          "kind": "allow_always"
+        },
+        {
+          "id": "deny",
+          "name": "Deny",
+          "kind": "reject_once"
+        }
+      ],
+      "state": "denied",
+      "message": "User denied this action"
+    }
+  },
+  {
+    "id": "text:msg_011CgEqvSeKVniqHqLAzATDh:1",
+    "type": "assistant_text",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "I didn't create `hello.txt`. The Write call was denied when I tried it, so I've stopped rather than retrying or switching to another tool.\n\nThe intended file was `hello.txt` in `/private/tmp/claude-501/-Users-sid-code-harness/e2689941-5abc-4789-a3a2-4db26225c942/scratchpad/claude-spike/`, containing `hi`. If you want it written, approve the Write again, or tell me a different path or permission setting to use."
+  },
+  {
+    "id": "result:1",
+    "type": "result_footer",
+    "ts": "2026-10-21T00:00:00Z",
+    "footer": {
+      "status": "success",
+      "summary": "41.3k in · 642 out · $0.0012 · 5.1s",
+      "inputTokens": 41279,
+      "outputTokens": 642,
+      "cacheTokens": 38924,
+      "costUsd": 0.00118084,
+      "durationMs": 5062,
+      "model": "claude-haiku-5-5",
+      "contextWindow": 1000000
+    }
+  }
+]

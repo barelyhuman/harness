@@ -1,0 +1,85 @@
+[
+  {
+    "id": "user:1",
+    "type": "user",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "Use the Bash tool to run: for i in 1 2 3; do echo line$i; sleep 2; done  -- then tell me what it printed."
+  },
+  {
+    "id": "tool:toolu_01BB57BiBhj3Ytr23nWysYZa",
+    "type": "tool",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Bash: for i in 1 2 3; do echo line$i; sleep 2; done",
+    "tool": {
+      "toolId": "toolu_01BB57BiBhj3Ytr23nWysYZa",
+      "name": "Bash",
+      "kind": "bash",
+      "status": "ok",
+      "input": {
+        "command": "for i in 1 2 3; do echo line$i; sleep 2; done",
+        "description": "Print line1-3 with 2s delays"
+      },
+      "command": "for i in 1 2 3; do echo line$i; sleep 2; done",
+      "output": "line1\nline2\nline3",
+      "outputLines": 3
+    }
+  },
+  {
+    "id": "perm:8a005d23-9480-4488-8208-bb7ee9c1c907",
+    "type": "permission",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Allow Bash: for i in 1 2 3; do echo line$i; sleep 2; done?",
+    "collapsed": true,
+    "permission": {
+      "reqId": "8a005d23-9480-4488-8208-bb7ee9c1c907",
+      "toolUseId": "toolu_01BB57BiBhj3Ytr23nWysYZa",
+      "tool": "Bash",
+      "description": "Print line1-3 with 2s delays",
+      "reason": "A variable in this command can't be checked before it runs",
+      "input": {
+        "command": "for i in 1 2 3; do echo line$i; sleep 2; done",
+        "description": "Print line1-3 with 2s delays"
+      },
+      "options": [
+        {
+          "id": "allow",
+          "name": "Allow",
+          "kind": "allow_once"
+        },
+        {
+          "id": "allow_always",
+          "name": "Always allow",
+          "kind": "allow_always"
+        },
+        {
+          "id": "deny",
+          "name": "Deny",
+          "kind": "reject_once"
+        }
+      ],
+      "state": "allowed"
+    }
+  },
+  {
+    "id": "text:msg_011CgEr7CngbaxreUEKSbpYk:1",
+    "type": "assistant_text",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "The command printed:\n\n```\nline1\nline2\nline3\n```"
+  },
+  {
+    "id": "result:1",
+    "type": "result_footer",
+    "ts": "2026-10-21T00:00:00Z",
+    "footer": {
+      "status": "success",
+      "summary": "41.2k in · 250 out · $0.0022 · 10.6s",
+      "inputTokens": 41162,
+      "outputTokens": 250,
+      "cacheTokens": 32439,
+      "costUsd": 0.00219359,
+      "durationMs": 10610,
+      "model": "claude-haiku-5-5",
+      "contextWindow": 1000000
+    }
+  }
+]

@@ -1,0 +1,49 @@
+[
+  {
+    "id": "user:1",
+    "type": "user",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "Read README.md with the Read tool and tell me what it says in one short sentence."
+  },
+  {
+    "id": "tool:toolu_016kh7Twbi7oMm6kimjpLFwb",
+    "type": "tool",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Read README.md",
+    "collapsed": true,
+    "tool": {
+      "toolId": "toolu_016kh7Twbi7oMm6kimjpLFwb",
+      "name": "Read",
+      "kind": "read",
+      "status": "ok",
+      "input": {
+        "file_path": "/private/tmp/claude-501/-Users-sid-code-harness/e2689941-5abc-4789-a3a2-4db26225c942/scratchpad/claude-spike/README.md"
+      },
+      "path": "README.md",
+      "output": "1\thi\n2\t",
+      "outputLines": 2
+    }
+  },
+  {
+    "id": "text:msg_011CgEr9pAjWM5nszfNypCgF:1",
+    "type": "assistant_text",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "The README.md is a single word: \"hi\"."
+  },
+  {
+    "id": "result:1",
+    "type": "result_footer",
+    "ts": "2026-10-21T00:00:00Z",
+    "footer": {
+      "status": "success",
+      "summary": "38.2k in · 198 out · $0.0021 · 3.0s",
+      "inputTokens": 38188,
+      "outputTokens": 198,
+      "cacheTokens": 29485,
+      "costUsd": 0.00213405,
+      "durationMs": 2994,
+      "model": "claude-haiku-5-5",
+      "contextWindow": 1000000
+    }
+  }
+]

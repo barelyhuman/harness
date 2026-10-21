@@ -1,0 +1,80 @@
+[
+  {
+    "id": "user:1",
+    "type": "user",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "Run the shell command: sleep 40 \u0026\u0026 echo done. Do nothing else."
+  },
+  {
+    "id": "think:t1:0",
+    "type": "thinking",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Thinking",
+    "text": "Running the shell command `sleep 40 \u0026\u0026 echo done`.",
+    "collapsed": true
+  },
+  {
+    "id": "tool:tool_5d709a79-e1af-4805-a6aa-0dbee0415d8",
+    "type": "tool",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Bash: sleep 40 \u0026\u0026 echo done",
+    "tool": {
+      "toolId": "tool_5d709a79-e1af-4805-a6aa-0dbee0415d8",
+      "name": "Bash",
+      "kind": "bash",
+      "status": "error",
+      "input": {
+        "command": "sleep 40 \u0026\u0026 echo done"
+      },
+      "command": "sleep 40 \u0026\u0026 echo done",
+      "interrupted": true
+    }
+  },
+  {
+    "id": "perm:0",
+    "type": "permission",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Allow Bash: sleep 40 \u0026\u0026 echo done?",
+    "collapsed": true,
+    "permission": {
+      "reqId": "0",
+      "toolUseId": "tool_5d709a79-e1af-4805-a6aa-0dbee0415d8",
+      "tool": "Bash",
+      "reason": "Not in allowlist: sleep",
+      "input": {
+        "command": "sleep 40 \u0026\u0026 echo done"
+      },
+      "options": [
+        {
+          "id": "allow-once",
+          "name": "Allow once",
+          "kind": "allow_once"
+        },
+        {
+          "id": "allow-always",
+          "name": "Allow always",
+          "kind": "allow_always"
+        },
+        {
+          "id": "reject-once",
+          "name": "Reject",
+          "kind": "reject_once"
+        }
+      ],
+      "state": "allowed"
+    }
+  },
+  {
+    "id": "result:1",
+    "type": "result_footer",
+    "ts": "2026-10-21T00:00:00Z",
+    "footer": {
+      "status": "interrupted",
+      "summary": "Interrupted",
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "cacheTokens": 0,
+      "costUsd": 0
+    }
+  }
+]

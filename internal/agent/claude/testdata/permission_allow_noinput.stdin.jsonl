@@ -1,0 +1,2 @@
+{"type": "user", "message": {"role": "user", "content": "Create a file hello.txt containing the word hi using the Write tool. Do not use Bash."}}
+{"type": "control_response", "response": {"subtype": "success", "request_id": "d14c4394-54b4-4ebe-a2cf-c0c9e56ce1b6", "response": {"behavior": "allow"}}}

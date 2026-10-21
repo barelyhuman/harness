@@ -1,0 +1,2 @@
+{"type": "user", "message": {"role": "user", "content": "Use the Bash tool to run: for i in 1 2 3; do echo line$i; sleep 2; done  -- then tell me what it printed."}}
+{"type": "control_response", "response": {"subtype": "success", "request_id": "8a005d23-9480-4488-8208-bb7ee9c1c907", "response": {"behavior": "allow", "updatedInput": {"command": "for i in 1 2 3; do echo line$i; sleep 2; done", "description": "Print line1-3 with 2s delays"}}}}

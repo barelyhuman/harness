@@ -1,0 +1,227 @@
+[
+  {
+    "id": "user:1",
+    "type": "user",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "Run exactly this shell command: hostname"
+  },
+  {
+    "id": "think:t1:0",
+    "type": "thinking",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Thinking",
+    "text": "Running the `hostname` command.",
+    "collapsed": true
+  },
+  {
+    "id": "text:t1:1",
+    "type": "assistant_text",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "Running `hostname` now.\n"
+  },
+  {
+    "id": "tool:tool_a37120b2-8222-4fa5-83eb-acbcfc4c125",
+    "type": "tool",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Bash: hostname",
+    "collapsed": true,
+    "tool": {
+      "toolId": "tool_a37120b2-8222-4fa5-83eb-acbcfc4c125",
+      "name": "Bash",
+      "kind": "bash",
+      "status": "error",
+      "input": {
+        "command": "hostname"
+      },
+      "command": "hostname",
+      "denied": true
+    }
+  },
+  {
+    "id": "perm:0",
+    "type": "permission",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Allow Bash: hostname?",
+    "collapsed": true,
+    "permission": {
+      "reqId": "0",
+      "toolUseId": "tool_a37120b2-8222-4fa5-83eb-acbcfc4c125",
+      "tool": "Bash",
+      "reason": "Not in allowlist: hostname",
+      "input": {
+        "command": "hostname"
+      },
+      "options": [
+        {
+          "id": "allow-once",
+          "name": "Allow once",
+          "kind": "allow_once"
+        },
+        {
+          "id": "allow-always",
+          "name": "Allow always",
+          "kind": "allow_always"
+        },
+        {
+          "id": "reject-once",
+          "name": "Reject",
+          "kind": "reject_once"
+        }
+      ],
+      "state": "denied"
+    }
+  },
+  {
+    "id": "think:t1:2",
+    "type": "thinking",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Thinking",
+    "text": "The command was rejected or cancelled.",
+    "collapsed": true
+  },
+  {
+    "id": "text:t1:3",
+    "type": "assistant_text",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "Retrying the command.\n"
+  },
+  {
+    "id": "tool:tool_47be5b7a-c78c-47d9-a4e3-5681bebe2be",
+    "type": "tool",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Bash: hostname",
+    "collapsed": true,
+    "tool": {
+      "toolId": "tool_47be5b7a-c78c-47d9-a4e3-5681bebe2be",
+      "name": "Bash",
+      "kind": "bash",
+      "status": "error",
+      "input": {
+        "command": "hostname"
+      },
+      "command": "hostname",
+      "denied": true
+    }
+  },
+  {
+    "id": "perm:1",
+    "type": "permission",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Allow Bash: hostname?",
+    "collapsed": true,
+    "permission": {
+      "reqId": "1",
+      "toolUseId": "tool_47be5b7a-c78c-47d9-a4e3-5681bebe2be",
+      "tool": "Bash",
+      "reason": "Not in allowlist: hostname",
+      "input": {
+        "command": "hostname"
+      },
+      "options": [
+        {
+          "id": "allow-once",
+          "name": "Allow once",
+          "kind": "allow_once"
+        },
+        {
+          "id": "allow-always",
+          "name": "Allow always",
+          "kind": "allow_always"
+        },
+        {
+          "id": "reject-once",
+          "name": "Reject",
+          "kind": "reject_once"
+        }
+      ],
+      "state": "denied"
+    }
+  },
+  {
+    "id": "think:t1:4",
+    "type": "thinking",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Thinking",
+    "text": "The hostname command is being rejected.",
+    "collapsed": true
+  },
+  {
+    "id": "tool:tool_ca3f1231-8511-4b46-9d8d-1bc43033a0f",
+    "type": "tool",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Bash: hostname",
+    "collapsed": true,
+    "tool": {
+      "toolId": "tool_ca3f1231-8511-4b46-9d8d-1bc43033a0f",
+      "name": "Bash",
+      "kind": "bash",
+      "status": "error",
+      "input": {
+        "command": "hostname"
+      },
+      "command": "hostname",
+      "denied": true
+    }
+  },
+  {
+    "id": "perm:2",
+    "type": "permission",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Allow Bash: hostname?",
+    "collapsed": true,
+    "permission": {
+      "reqId": "2",
+      "toolUseId": "tool_ca3f1231-8511-4b46-9d8d-1bc43033a0f",
+      "tool": "Bash",
+      "reason": "Not in allowlist: hostname",
+      "input": {
+        "command": "hostname"
+      },
+      "options": [
+        {
+          "id": "allow-once",
+          "name": "Allow once",
+          "kind": "allow_once"
+        },
+        {
+          "id": "allow-always",
+          "name": "Allow always",
+          "kind": "allow_always"
+        },
+        {
+          "id": "reject-once",
+          "name": "Reject",
+          "kind": "reject_once"
+        }
+      ],
+      "state": "denied"
+    }
+  },
+  {
+    "id": "think:t1:5",
+    "type": "thinking",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Thinking",
+    "text": "The hostname command keeps being rejected or cancelled.",
+    "collapsed": true
+  },
+  {
+    "id": "text:t1:6",
+    "type": "assistant_text",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "The `hostname` command was rejected three times (likely cancelled at the approval step). Approve the shell command when prompted and I can run it again.\n\nIf you want to run it yourself in a terminal:\n\n```bash\nhostname\n```"
+  },
+  {
+    "id": "result:1",
+    "type": "result_footer",
+    "ts": "2026-10-21T00:00:00Z",
+    "footer": {
+      "status": "success",
+      "summary": "Done",
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "cacheTokens": 0,
+      "costUsd": 0
+    }
+  }
+]

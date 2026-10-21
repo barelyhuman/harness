@@ -1,0 +1,2 @@
+{"seq":1,"runId":"run","ts":"2026-10-21T00:00:00Z","kind":"error","data":{"code":"resume_not_found","message":"No conversation found with session ID: 00000000-0000-4000-8000-000000000000","fatal":true}}
+{"seq":2,"runId":"run","ts":"2026-10-21T00:00:00Z","kind":"run_result","data":{"providerSessionId":"00000000-0000-4000-8000-000000000000","status":"error","subtype":"error_during_execution","errors":["No conversation found with session ID: 00000000-0000-4000-8000-000000000000"]}}

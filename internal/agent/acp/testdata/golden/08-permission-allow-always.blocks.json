@@ -1,0 +1,97 @@
+[
+  {
+    "id": "user:1",
+    "type": "user",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "Run exactly this shell command: uname -s"
+  },
+  {
+    "id": "think:t1:0",
+    "type": "thinking",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Thinking",
+    "text": "Running the exact shell command `uname -s`.",
+    "collapsed": true
+  },
+  {
+    "id": "tool:tool_38864bb0-a3fc-4bee-8645-c3f708ca165",
+    "type": "tool",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Bash: uname -s",
+    "tool": {
+      "toolId": "tool_38864bb0-a3fc-4bee-8645-c3f708ca165",
+      "name": "Bash",
+      "kind": "bash",
+      "status": "ok",
+      "input": {
+        "command": "uname -s"
+      },
+      "command": "uname -s",
+      "output": "Darwin\n",
+      "outputLines": 1,
+      "exitCode": 0
+    }
+  },
+  {
+    "id": "perm:0",
+    "type": "permission",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Allow Bash: uname -s?",
+    "collapsed": true,
+    "permission": {
+      "reqId": "0",
+      "toolUseId": "tool_38864bb0-a3fc-4bee-8645-c3f708ca165",
+      "tool": "Bash",
+      "reason": "Not in allowlist: uname",
+      "input": {
+        "command": "uname -s"
+      },
+      "options": [
+        {
+          "id": "allow-once",
+          "name": "Allow once",
+          "kind": "allow_once"
+        },
+        {
+          "id": "allow-always",
+          "name": "Allow always",
+          "kind": "allow_always"
+        },
+        {
+          "id": "reject-once",
+          "name": "Reject",
+          "kind": "reject_once"
+        }
+      ],
+      "state": "allowed",
+      "always": true
+    }
+  },
+  {
+    "id": "think:t1:1",
+    "type": "thinking",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Thinking",
+    "text": "The command completed successfully.",
+    "collapsed": true
+  },
+  {
+    "id": "text:t1:2",
+    "type": "assistant_text",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "The command returned:\n\n```\nDarwin\n```\n\nThat indicates you're on macOS."
+  },
+  {
+    "id": "result:1",
+    "type": "result_footer",
+    "ts": "2026-10-21T00:00:00Z",
+    "footer": {
+      "status": "success",
+      "summary": "Done",
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "cacheTokens": 0,
+      "costUsd": 0
+    }
+  }
+]

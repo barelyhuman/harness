@@ -1,0 +1,68 @@
+[
+  {
+    "id": "user:1",
+    "type": "user",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "Run the shell command: echo hi from shell \u0026\u0026 ls -la   (use your shell tool, then tell me the output)"
+  },
+  {
+    "id": "think:t1:0",
+    "type": "thinking",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Thinking",
+    "text": "Running `echo hi from shell \u0026\u0026 ls -la` and will report the output.",
+    "collapsed": true
+  },
+  {
+    "id": "text:t1:1",
+    "type": "assistant_text",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "Running that command in the shell now.\n"
+  },
+  {
+    "id": "tool:tool_9772abe0-dafd-4724-aaa5-e3cf9481fda",
+    "type": "tool",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Bash: echo hi from shell \u0026\u0026 ls -la",
+    "tool": {
+      "toolId": "tool_9772abe0-dafd-4724-aaa5-e3cf9481fda",
+      "name": "Bash",
+      "kind": "bash",
+      "status": "ok",
+      "input": {
+        "command": "echo hi from shell \u0026\u0026 ls -la"
+      },
+      "command": "echo hi from shell \u0026\u0026 ls -la",
+      "output": "hi from shell\ntotal 16\ndrwxr-xr-x@  5 sid  wheel  160 Oct 21 11:10 .\ndrwx------@  7 sid  wheel  224 Oct 21 11:10 ..\ndrwxr-xr-x@ 12 sid  wheel  384 Oct 21 11:08 .git\n-rw-r--r--@  1 sid  wheel   10 Oct 21 11:10 hello.txt\n-rw-r--r--@  1 sid  wheel    8 Oct 21 11:10 notes.md\n",
+      "outputLines": 7,
+      "exitCode": 0
+    }
+  },
+  {
+    "id": "think:t1:2",
+    "type": "thinking",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Thinking",
+    "text": "The shell command executed successfully. I will present the output clearly.",
+    "collapsed": true
+  },
+  {
+    "id": "text:t1:3",
+    "type": "assistant_text",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "Here is the output:\n\n```\nhi from shell\ntotal 16\ndrwxr-xr-x@  5 sid  wheel  160 Oct 21 11:10 .\ndrwx------@  7 sid  wheel  224 Oct 21 11:10 ..\ndrwxr-xr-x@ 12 sid  wheel  384 Oct 21 11:08 .git\n-rw-r--r--@  1 sid  wheel   10 Oct 21 11:10 hello.txt\n-rw-r--r--@  1 sid  wheel    8 Oct 21 11:10 notes.md\n```\n\nThe command exited with code 0. The workspace contains a `.git` directory, `hello.txt`, and `notes.md`."
+  },
+  {
+    "id": "result:1",
+    "type": "result_footer",
+    "ts": "2026-10-21T00:00:00Z",
+    "footer": {
+      "status": "success",
+      "summary": "Done",
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "cacheTokens": 0,
+      "costUsd": 0
+    }
+  }
+]

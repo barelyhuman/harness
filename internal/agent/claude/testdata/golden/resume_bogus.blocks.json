@@ -1,0 +1,26 @@
+[
+  {
+    "id": "error:1",
+    "type": "error",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Session not found",
+    "text": "No conversation found with session ID: 00000000-0000-4000-8000-000000000000",
+    "error": {
+      "code": "resume_not_found",
+      "fatal": true
+    }
+  },
+  {
+    "id": "result:1",
+    "type": "result_footer",
+    "ts": "2026-10-21T00:00:00Z",
+    "footer": {
+      "status": "error",
+      "summary": "Failed",
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "cacheTokens": 0,
+      "costUsd": 0
+    }
+  }
+]

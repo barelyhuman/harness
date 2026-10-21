@@ -1,0 +1,7 @@
+{"type": "control_request", "request_id": "p1", "request": {"subtype": "set_permission_mode", "mode": "acceptEdits"}}
+{"type": "control_request", "request_id": "p2", "request": {"subtype": "set_permission_mode", "mode": "bogus"}}
+{"type": "control_request", "request_id": "init1", "request": {"subtype": "initialize"}}
+{"type": "control_request", "request_id": "lm", "request": {"subtype": "list_models"}}
+{"type": "control_request", "request_id": "u", "request": {"subtype": "get_context_usage"}}
+{"type": "control_request", "request_id": "x", "request": {"subtype": "nonsense"}}
+{"type": "user", "message": {"role": "user", "content": "Create file mode.txt with 'x' using the Write tool."}}

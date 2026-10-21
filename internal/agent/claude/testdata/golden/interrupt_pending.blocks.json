@@ -1,0 +1,76 @@
+[
+  {
+    "id": "user:1",
+    "type": "user",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "Using the Write tool, create c.txt with 'c'."
+  },
+  {
+    "id": "tool:toolu_0169yBjhSHsT6w5B3i1oaCZT",
+    "type": "tool",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Write c.txt",
+    "tool": {
+      "toolId": "toolu_0169yBjhSHsT6w5B3i1oaCZT",
+      "name": "Write",
+      "kind": "write",
+      "status": "error",
+      "input": {
+        "file_path": "/private/tmp/claude-501/-Users-sid-code-harness/e2689941-5abc-4789-a3a2-4db26225c942/scratchpad/claude-spike/c.txt",
+        "content": "c"
+      },
+      "path": "c.txt",
+      "output": "The user doesn't want to proceed with this tool use. The tool use was rejected (eg. if it was a file edit, the new_string was NOT written to the file). STOP what you are doing and wait for the user to tell you how to proceed.\n\nNote: The user's next message may contain a correction or preference. Pay close attention — if they explain what went wrong or how they'd prefer you to work, consider saving that to memory for future sessions.",
+      "outputLines": 3
+    }
+  },
+  {
+    "id": "perm:1e0f10eb-3c10-44d4-b0c9-e87f0f141757",
+    "type": "permission",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Allow Write c.txt?",
+    "collapsed": true,
+    "permission": {
+      "reqId": "1e0f10eb-3c10-44d4-b0c9-e87f0f141757",
+      "toolUseId": "toolu_0169yBjhSHsT6w5B3i1oaCZT",
+      "tool": "Write",
+      "description": "c.txt",
+      "input": {
+        "file_path": "/private/tmp/claude-501/-Users-sid-code-harness/e2689941-5abc-4789-a3a2-4db26225c942/scratchpad/claude-spike/c.txt",
+        "content": "c"
+      },
+      "options": [
+        {
+          "id": "allow",
+          "name": "Allow",
+          "kind": "allow_once"
+        },
+        {
+          "id": "allow_always",
+          "name": "Always allow",
+          "kind": "allow_always"
+        },
+        {
+          "id": "deny",
+          "name": "Deny",
+          "kind": "reject_once"
+        }
+      ],
+      "state": "cancelled"
+    }
+  },
+  {
+    "id": "result:1",
+    "type": "result_footer",
+    "ts": "2026-10-21T00:00:00Z",
+    "footer": {
+      "status": "interrupted",
+      "summary": "Interrupted · 2.1s",
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "cacheTokens": 0,
+      "costUsd": 0,
+      "durationMs": 2103
+    }
+  }
+]

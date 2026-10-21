@@ -1,0 +1,2 @@
+{"type": "user", "message": {"role": "user", "content": "Using the Write tool, create c.txt with 'c'."}}
+{"type": "control_request", "request_id": "i1", "request": {"subtype": "interrupt"}}

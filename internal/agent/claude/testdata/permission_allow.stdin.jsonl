@@ -1,0 +1,2 @@
+{"type": "user", "message": {"role": "user", "content": "Create a file hello.txt containing the word hi using the Write tool. Do not use Bash."}}
+{"type": "control_response", "response": {"subtype": "success", "request_id": "e1d7cd76-3a33-4963-8cda-d8a8945ee239", "response": {"behavior": "allow", "updatedInput": {"file_path": "/private/tmp/claude-501/-Users-sid-code-harness/e2689941-5abc-4789-a3a2-4db26225c942/scratchpad/claude-spike/hello.txt", "content": "hi\n"}}}}

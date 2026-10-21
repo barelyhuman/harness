@@ -1,0 +1,75 @@
+[
+  {
+    "id": "user:1",
+    "type": "user",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "Reply with just the word one."
+  },
+  {
+    "id": "think:t1:0",
+    "type": "thinking",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Thinking",
+    "text": "The user wants a reply containing only the word \"one\".",
+    "collapsed": true
+  },
+  {
+    "id": "text:t1:1",
+    "type": "assistant_text",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "one"
+  },
+  {
+    "id": "user:2",
+    "type": "user",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "Reply with just the word three."
+  },
+  {
+    "id": "think:t2:0",
+    "type": "thinking",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Thinking",
+    "text": "The user wants a reply containing only the word \"three\".",
+    "collapsed": true
+  },
+  {
+    "id": "text:t2:1",
+    "type": "assistant_text",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "three"
+  },
+  {
+    "id": "user:3",
+    "type": "user",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "What single words did I ask you to reply with earlier? List them."
+  },
+  {
+    "id": "think:t3:0",
+    "type": "thinking",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Thinking",
+    "text": "I cannot recall earlier instructions to reply with single words.",
+    "collapsed": true
+  },
+  {
+    "id": "text:t3:1",
+    "type": "assistant_text",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "You asked for two single-word replies:\n\n1. **one**\n2. **three**"
+  },
+  {
+    "id": "result:1",
+    "type": "result_footer",
+    "ts": "2026-10-21T00:00:00Z",
+    "footer": {
+      "status": "success",
+      "summary": "Done",
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "cacheTokens": 0,
+      "costUsd": 0
+    }
+  }
+]

@@ -1,0 +1,96 @@
+[
+  {
+    "id": "user:1",
+    "type": "user",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "Run exactly this shell command: touch permtest.txt \u0026\u0026 date"
+  },
+  {
+    "id": "think:t1:0",
+    "type": "thinking",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Thinking",
+    "text": "Running the exact shell command `touch permtest.txt \u0026\u0026 date`.",
+    "collapsed": true
+  },
+  {
+    "id": "tool:tool_85e849dd-4602-4022-a062-80a850e0d83",
+    "type": "tool",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Bash: touch permtest.txt \u0026\u0026 date",
+    "tool": {
+      "toolId": "tool_85e849dd-4602-4022-a062-80a850e0d83",
+      "name": "Bash",
+      "kind": "bash",
+      "status": "ok",
+      "input": {
+        "command": "touch permtest.txt \u0026\u0026 date"
+      },
+      "command": "touch permtest.txt \u0026\u0026 date",
+      "output": "Wed Oct 21 11:10:53 IST 2026\n",
+      "outputLines": 1,
+      "exitCode": 0
+    }
+  },
+  {
+    "id": "perm:0",
+    "type": "permission",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Allow Bash: touch permtest.txt \u0026\u0026 date?",
+    "collapsed": true,
+    "permission": {
+      "reqId": "0",
+      "toolUseId": "tool_85e849dd-4602-4022-a062-80a850e0d83",
+      "tool": "Bash",
+      "reason": "Not in allowlist: date, touch",
+      "input": {
+        "command": "touch permtest.txt \u0026\u0026 date"
+      },
+      "options": [
+        {
+          "id": "allow-once",
+          "name": "Allow once",
+          "kind": "allow_once"
+        },
+        {
+          "id": "allow-always",
+          "name": "Allow always",
+          "kind": "allow_always"
+        },
+        {
+          "id": "reject-once",
+          "name": "Reject",
+          "kind": "reject_once"
+        }
+      ],
+      "state": "allowed"
+    }
+  },
+  {
+    "id": "think:t1:1",
+    "type": "thinking",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Thinking",
+    "text": "The command ran successfully. It created permtest.txt and printed the current date.",
+    "collapsed": true
+  },
+  {
+    "id": "text:t1:2",
+    "type": "assistant_text",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "The command completed successfully:\n\n- Created `permtest.txt`\n- Date output: **Wed Oct 21 11:10:53 IST 2026**"
+  },
+  {
+    "id": "result:1",
+    "type": "result_footer",
+    "ts": "2026-10-21T00:00:00Z",
+    "footer": {
+      "status": "success",
+      "summary": "Done",
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "cacheTokens": 0,
+      "costUsd": 0
+    }
+  }
+]

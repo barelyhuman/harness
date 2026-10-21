@@ -1,0 +1,113 @@
+[
+  {
+    "id": "user:1",
+    "type": "user",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "Reply with just the word one."
+  },
+  {
+    "id": "think:t1:0",
+    "type": "thinking",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Thinking",
+    "text": "The user wants a reply containing only the word \"one\".",
+    "collapsed": true
+  },
+  {
+    "id": "text:t1:1",
+    "type": "assistant_text",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "one"
+  },
+  {
+    "id": "result:1",
+    "type": "result_footer",
+    "ts": "2026-10-21T00:00:00Z",
+    "footer": {
+      "status": "success",
+      "summary": "Done",
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "cacheTokens": 0,
+      "costUsd": 0
+    }
+  },
+  {
+    "id": "user:2",
+    "type": "user",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "Reply with just the word two."
+  },
+  {
+    "id": "text:t2:0",
+    "type": "assistant_text",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "\n\nUpgrade your plan to continue"
+  },
+  {
+    "id": "result:2",
+    "type": "result_footer",
+    "ts": "2026-10-21T00:00:00Z",
+    "footer": {
+      "status": "success",
+      "summary": "Done",
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "cacheTokens": 0,
+      "costUsd": 0
+    }
+  },
+  {
+    "id": "error:1",
+    "type": "error",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Error",
+    "text": "set_model \"nonexistent-model\": rpc error -32602: Invalid params (Invalid model value: nonexistent-model)",
+    "error": {
+      "code": "control_error"
+    }
+  },
+  {
+    "id": "error:2",
+    "type": "error",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Error",
+    "text": "set_mode \"bogus\": rpc error -32603: Internal error (Invalid mode ID: bogus. Valid modes: agent, plan, ask)",
+    "error": {
+      "code": "control_error"
+    }
+  },
+  {
+    "id": "user:3",
+    "type": "user",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "Reply with just the word three."
+  },
+  {
+    "id": "think:t3:0",
+    "type": "thinking",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Thinking",
+    "text": "The user wants a reply containing only the word \"three\".",
+    "collapsed": true
+  },
+  {
+    "id": "text:t3:1",
+    "type": "assistant_text",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "three"
+  },
+  {
+    "id": "result:3",
+    "type": "result_footer",
+    "ts": "2026-10-21T00:00:00Z",
+    "footer": {
+      "status": "success",
+      "summary": "Done",
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "cacheTokens": 0,
+      "costUsd": 0
+    }
+  }
+]

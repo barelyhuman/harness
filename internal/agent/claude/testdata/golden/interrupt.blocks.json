@@ -1,0 +1,56 @@
+[
+  {
+    "id": "user:1",
+    "type": "user",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "Write a very long essay (2000 words) about the history of tea."
+  },
+  {
+    "id": "text:msg_011CgEqza7PZFnvru47GRT3Z:1",
+    "type": "assistant_text",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "# A Brief History of Tea: From Medicinal Leaf to Global Commodity\n\nFew substances have shaped human history as quietly and as thoroughly as tea. It is, after water, the most widely consumed drink on earth. Its story runs through ancient Chinese medicine, Tang poetry, Song court ritual, Japanese monasteries, British drawing rooms, colonial plantations, and the opium wars. Tea has been a religious offering, a tax base, a tool of diplomacy, a symbol of rebellion, and a daily ritual for bill"
+  },
+  {
+    "id": "result:1",
+    "type": "result_footer",
+    "ts": "2026-10-21T00:00:00Z",
+    "footer": {
+      "status": "interrupted",
+      "summary": "Interrupted · 13.6s",
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "cacheTokens": 0,
+      "costUsd": 0,
+      "durationMs": 13606
+    }
+  },
+  {
+    "id": "user:2",
+    "type": "user",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "Say the word ok."
+  },
+  {
+    "id": "text:msg_011CgEr1aCsaAxirkHocbiDv:1",
+    "type": "assistant_text",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "ok"
+  },
+  {
+    "id": "result:2",
+    "type": "result_footer",
+    "ts": "2026-10-21T00:00:00Z",
+    "footer": {
+      "status": "success",
+      "summary": "22.1k in · 111 out · $0.0011 · 1.8s",
+      "inputTokens": 22083,
+      "outputTokens": 111,
+      "cacheTokens": 17973,
+      "costUsd": 0.00105703,
+      "durationMs": 1796,
+      "model": "claude-haiku-5-5",
+      "contextWindow": 1000000
+    }
+  }
+]

@@ -1,0 +1,68 @@
+[
+  {
+    "id": "user:1",
+    "type": "user",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "Say the word one."
+  },
+  {
+    "id": "text:msg_011CgEqytQhEAQmaaex4dFiv:1",
+    "type": "assistant_text",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "one"
+  },
+  {
+    "id": "result:1",
+    "type": "result_footer",
+    "ts": "2026-10-21T00:00:00Z",
+    "footer": {
+      "status": "success",
+      "summary": "18.0k in · 27 out · $0.0014 · 1.7s",
+      "inputTokens": 17961,
+      "outputTokens": 27,
+      "cacheTokens": 11471,
+      "costUsd": 0.00142601,
+      "durationMs": 1689,
+      "model": "claude-haiku-5-5",
+      "contextWindow": 1000000
+    }
+  },
+  {
+    "id": "user:2",
+    "type": "user",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "Say the word two."
+  },
+  {
+    "id": "text:msg_011CgEqz1wPHXbj1aj5LmE8u:0",
+    "type": "assistant_text",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "two"
+  },
+  {
+    "id": "result:2",
+    "type": "result_footer",
+    "ts": "2026-10-21T00:00:00Z",
+    "footer": {
+      "status": "success",
+      "summary": "20.4k in · 3 out · $0.0473 · 2.6s",
+      "inputTokens": 20449,
+      "outputTokens": 3,
+      "cacheTokens": 8859,
+      "costUsd": 0.0472719,
+      "durationMs": 2598,
+      "model": "claude-sonnet-5-5",
+      "contextWindow": 1000000
+    }
+  },
+  {
+    "id": "error:1",
+    "type": "error",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Error",
+    "text": "set_model: Model 'no-such-model' not found",
+    "error": {
+      "code": "not_found"
+    }
+  }
+]

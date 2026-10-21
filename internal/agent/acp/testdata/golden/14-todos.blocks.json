@@ -1,0 +1,147 @@
+[
+  {
+    "id": "user:1",
+    "type": "user",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "Make a todo list with 3 items (create a.txt, b.txt, c.txt each containing its letter), then do them, ticking off items as you go."
+  },
+  {
+    "id": "think:t1:0",
+    "type": "thinking",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Thinking",
+    "text": "I'll create three files named a.txt, b.txt, and c.txt, each containing its respective letter. Then I'll tick off the items as I complete them.",
+    "collapsed": true
+  },
+  {
+    "id": "text:t1:1",
+    "type": "assistant_text",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "Creating the todo list, then working through each file and marking items complete as I go.\n"
+  },
+  {
+    "id": "tool:tool_ff35f9d3-da47-47a6-a8a7-e475dfb068d",
+    "type": "tool",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Edit a.txt",
+    "tool": {
+      "toolId": "tool_ff35f9d3-da47-47a6-a8a7-e475dfb068d",
+      "name": "Edit",
+      "kind": "edit",
+      "status": "ok",
+      "input": {
+        "file_path": "/private/tmp/claude-501/-Users-sid-code-harness/e2689941-5abc-4789-a3a2-4db26225c942/scratchpad/acp-spike/a.txt"
+      },
+      "path": "a.txt",
+      "diff": "--- /dev/null\n+++ b/a.txt\n@@ -0,0 +1,1 @@\n+a\n",
+      "added": 1
+    }
+  },
+  {
+    "id": "todo",
+    "type": "todo",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Todos 3/3",
+    "todos": [
+      {
+        "content": "Create a.txt containing 'a'",
+        "status": "completed"
+      },
+      {
+        "content": "Create b.txt containing 'b'",
+        "status": "completed"
+      },
+      {
+        "content": "Create c.txt containing 'c'",
+        "status": "completed"
+      }
+    ]
+  },
+  {
+    "id": "think:t1:2",
+    "type": "thinking",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Thinking",
+    "text": "Created a.txt. Marked it complete. Now creating b.txt. Then c.txt.",
+    "collapsed": true
+  },
+  {
+    "id": "tool:tool_93f44279-142f-43b4-aad1-61aefc74bdb",
+    "type": "tool",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Edit b.txt",
+    "tool": {
+      "toolId": "tool_93f44279-142f-43b4-aad1-61aefc74bdb",
+      "name": "Edit",
+      "kind": "edit",
+      "status": "ok",
+      "input": {
+        "file_path": "/private/tmp/claude-501/-Users-sid-code-harness/e2689941-5abc-4789-a3a2-4db26225c942/scratchpad/acp-spike/b.txt"
+      },
+      "path": "b.txt",
+      "diff": "--- /dev/null\n+++ b/b.txt\n@@ -0,0 +1,1 @@\n+b\n",
+      "added": 1
+    }
+  },
+  {
+    "id": "think:t1:3",
+    "type": "thinking",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Thinking",
+    "text": "b.txt is done. Next: create c.txt, mark b complete, then complete c.",
+    "collapsed": true
+  },
+  {
+    "id": "tool:tool_a763fd0d-2467-43f4-86b4-2c3f57112a4",
+    "type": "tool",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Edit c.txt",
+    "tool": {
+      "toolId": "tool_a763fd0d-2467-43f4-86b4-2c3f57112a4",
+      "name": "Edit",
+      "kind": "edit",
+      "status": "ok",
+      "input": {
+        "file_path": "/private/tmp/claude-501/-Users-sid-code-harness/e2689941-5abc-4789-a3a2-4db26225c942/scratchpad/acp-spike/c.txt"
+      },
+      "path": "c.txt",
+      "diff": "--- /dev/null\n+++ b/c.txt\n@@ -0,0 +1,1 @@\n+c\n",
+      "added": 1
+    }
+  },
+  {
+    "id": "think:t1:4",
+    "type": "thinking",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Thinking",
+    "text": "Created a.txt, b.txt, and c.txt. Marked the last todo as completed.",
+    "collapsed": true
+  },
+  {
+    "id": "think:t1:5",
+    "type": "thinking",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Thinking",
+    "text": "Created a.txt, b.txt, and c.txt. Completed all three tasks.",
+    "collapsed": true
+  },
+  {
+    "id": "text:t1:6",
+    "type": "assistant_text",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "All three items are done:\n\n- **Create a.txt containing 'a'** — done\n- **Create b.txt containing 'b'** — done\n- **Create c.txt containing 'c'** — done\n\nEach file is in the project root with its letter as the content:\n- `a.txt` → `a`\n- `b.txt` → `b`\n- `c.txt` → `c`"
+  },
+  {
+    "id": "result:1",
+    "type": "result_footer",
+    "ts": "2026-10-21T00:00:00Z",
+    "footer": {
+      "status": "success",
+      "summary": "Done",
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "cacheTokens": 0,
+      "costUsd": 0
+    }
+  }
+]

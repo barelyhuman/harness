@@ -1,0 +1,68 @@
+[
+  {
+    "id": "user:1",
+    "type": "user",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "What does hello.txt contain? Answer in one sentence."
+  },
+  {
+    "id": "think:t1:0",
+    "type": "thinking",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Thinking",
+    "text": "Checking the contents of hello.txt.",
+    "collapsed": true
+  },
+  {
+    "id": "text:t1:1",
+    "type": "assistant_text",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "I'll read `hello.txt` in the workspace.\n"
+  },
+  {
+    "id": "tool:tool_385a8caa-1e9b-4a43-a4d7-2fcba7cdf24",
+    "type": "tool",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Read hello.txt",
+    "collapsed": true,
+    "tool": {
+      "toolId": "tool_385a8caa-1e9b-4a43-a4d7-2fcba7cdf24",
+      "name": "Read",
+      "kind": "read",
+      "status": "ok",
+      "input": {
+        "file_path": "/private/tmp/claude-501/-Users-sid-code-harness/e2689941-5abc-4789-a3a2-4db26225c942/scratchpad/acp-spike/hello.txt"
+      },
+      "path": "hello.txt",
+      "output": "hello world\n",
+      "outputLines": 1
+    }
+  },
+  {
+    "id": "think:t1:2",
+    "type": "thinking",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Thinking",
+    "text": "The file contains the text \"hello world\" on a single line.",
+    "collapsed": true
+  },
+  {
+    "id": "text:t1:3",
+    "type": "assistant_text",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "`hello.txt` contains the text `hello world` on a single line."
+  },
+  {
+    "id": "result:1",
+    "type": "result_footer",
+    "ts": "2026-10-21T00:00:00Z",
+    "footer": {
+      "status": "success",
+      "summary": "Done",
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "cacheTokens": 0,
+      "costUsd": 0
+    }
+  }
+]

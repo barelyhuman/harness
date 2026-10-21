@@ -1,0 +1,30 @@
+[
+  {
+    "id": "user:1",
+    "type": "user",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "What was the secret word? One word."
+  },
+  {
+    "id": "text:msg_011CgEr3UNwLc1soSK1yGZBr:0",
+    "type": "assistant_text",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "PINEAPPLE"
+  },
+  {
+    "id": "result:1",
+    "type": "result_footer",
+    "ts": "2026-10-21T00:00:00Z",
+    "footer": {
+      "status": "success",
+      "summary": "18.4k in · 10 out · $0.0028 · 1.4s",
+      "inputTokens": 18400,
+      "outputTokens": 10,
+      "cacheTokens": 12061,
+      "costUsd": 0.00281272,
+      "durationMs": 1403,
+      "model": "claude-haiku-5-5",
+      "contextWindow": 1000000
+    }
+  }
+]

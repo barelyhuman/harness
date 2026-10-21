@@ -1,0 +1,35 @@
+[
+  {
+    "id": "user:1",
+    "type": "user",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "Use your ask-question tool to ask me which color I like: red or blue. Then tell me what happened."
+  },
+  {
+    "id": "think:t1:0",
+    "type": "thinking",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Thinking",
+    "text": "I will ask the user which color they prefer: red or blue.",
+    "collapsed": true
+  },
+  {
+    "id": "text:t1:1",
+    "type": "assistant_text",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "I don't have an **ask-question** tool in this session — it isn't in the set of tools available to me here.\n\n**What happened:** You asked me to use that tool to choose between red and blue. I looked at my available tools (Shell, Read, Write, Grep, Task, SwitchMode, and others) and there is no ask-question or similar interactive prompt tool. So I can't invoke it.\n\n**The question anyway:** Which color do you like — **red** or **blue**? Reply with one and I'll use your answer."
+  },
+  {
+    "id": "result:1",
+    "type": "result_footer",
+    "ts": "2026-10-21T00:00:00Z",
+    "footer": {
+      "status": "success",
+      "summary": "Done",
+      "inputTokens": 0,
+      "outputTokens": 0,
+      "cacheTokens": 0,
+      "costUsd": 0
+    }
+  }
+]

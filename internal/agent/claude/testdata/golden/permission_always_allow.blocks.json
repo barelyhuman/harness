@@ -1,0 +1,108 @@
+[
+  {
+    "id": "user:1",
+    "type": "user",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "Using the Write tool, create a.txt with 'a', then b.txt with 'b'. Do not use Bash."
+  },
+  {
+    "id": "tool:toolu_01KTme4cadcGEu6AzDXuQh8G",
+    "type": "tool",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Write a.txt",
+    "tool": {
+      "toolId": "toolu_01KTme4cadcGEu6AzDXuQh8G",
+      "name": "Write",
+      "kind": "write",
+      "status": "ok",
+      "input": {
+        "file_path": "/private/tmp/claude-501/-Users-sid-code-harness/e2689941-5abc-4789-a3a2-4db26225c942/scratchpad/claude-spike/a.txt",
+        "content": "a"
+      },
+      "path": "a.txt",
+      "output": "File created successfully at: /private/tmp/claude-501/-Users-sid-code-harness/e2689941-5abc-4789-a3a2-4db26225c942/scratchpad/claude-spike/a.txt (file state is current in your context — no need to Read it back)",
+      "outputLines": 1,
+      "diff": "--- /dev/null\n+++ b/private/tmp/claude-501/-Users-sid-code-harness/e2689941-5abc-4789-a3a2-4db26225c942/scratchpad/claude-spike/a.txt\n@@ -0,0 +1,1 @@\n+a\n",
+      "added": 1
+    }
+  },
+  {
+    "id": "perm:5efd6129-085a-438d-bbd1-6a7ec27e9c16",
+    "type": "permission",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Allow Write a.txt?",
+    "collapsed": true,
+    "permission": {
+      "reqId": "5efd6129-085a-438d-bbd1-6a7ec27e9c16",
+      "toolUseId": "toolu_01KTme4cadcGEu6AzDXuQh8G",
+      "tool": "Write",
+      "description": "a.txt",
+      "input": {
+        "file_path": "/private/tmp/claude-501/-Users-sid-code-harness/e2689941-5abc-4789-a3a2-4db26225c942/scratchpad/claude-spike/a.txt",
+        "content": "a"
+      },
+      "options": [
+        {
+          "id": "allow",
+          "name": "Allow",
+          "kind": "allow_once"
+        },
+        {
+          "id": "allow_always",
+          "name": "Always allow",
+          "kind": "allow_always"
+        },
+        {
+          "id": "deny",
+          "name": "Deny",
+          "kind": "reject_once"
+        }
+      ],
+      "state": "allowed",
+      "always": true
+    }
+  },
+  {
+    "id": "tool:toolu_01THRxJg8U8ZsGVbXnpt4cHs",
+    "type": "tool",
+    "ts": "2026-10-21T00:00:00Z",
+    "title": "Write b.txt",
+    "tool": {
+      "toolId": "toolu_01THRxJg8U8ZsGVbXnpt4cHs",
+      "name": "Write",
+      "kind": "write",
+      "status": "ok",
+      "input": {
+        "file_path": "/private/tmp/claude-501/-Users-sid-code-harness/e2689941-5abc-4789-a3a2-4db26225c942/scratchpad/claude-spike/b.txt",
+        "content": "b"
+      },
+      "path": "b.txt",
+      "output": "File created successfully at: /private/tmp/claude-501/-Users-sid-code-harness/e2689941-5abc-4789-a3a2-4db26225c942/scratchpad/claude-spike/b.txt (file state is current in your context — no need to Read it back)",
+      "outputLines": 1,
+      "diff": "--- /dev/null\n+++ b/private/tmp/claude-501/-Users-sid-code-harness/e2689941-5abc-4789-a3a2-4db26225c942/scratchpad/claude-spike/b.txt\n@@ -0,0 +1,1 @@\n+b\n",
+      "added": 1
+    }
+  },
+  {
+    "id": "text:msg_011CgEr8YcpGXekdj3xLcTJy:0",
+    "type": "assistant_text",
+    "ts": "2026-10-21T00:00:00Z",
+    "text": "I created both files in the session's working directory using the Write tool, without Bash:\n\n- `a.txt` contains `a`\n- `b.txt` contains `b`\n\nBoth paths are under `/private/tmp/claude-501/-Users-sid-code-harness/e2689941-5abc-4789-a3a2-4db26225c942/scratchpad/claude-spike/`. The tool reported success for both. I didn't read them back."
+  },
+  {
+    "id": "result:1",
+    "type": "result_footer",
+    "ts": "2026-10-21T00:00:00Z",
+    "footer": {
+      "status": "success",
+      "summary": "42.3k in · 399 out · $0.0024 · 4.5s",
+      "inputTokens": 42265,
+      "outputTokens": 399,
+      "cacheTokens": 32803,
+      "costUsd": 0.00241953,
+      "durationMs": 4528,
+      "model": "claude-haiku-5-5",
+      "contextWindow": 1000000
+    }
+  }
+]

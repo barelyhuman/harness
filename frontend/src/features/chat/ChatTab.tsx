@@ -1,10 +1,16 @@
 import { IconArrowDown, IconChevronRight, IconCircle, IconCircleCheck, IconCircleHalf2 } from "@tabler/icons-preact";
 // Chat tab: transcript (Go-built blocks), pinned todos, composer. Spec 11.
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "preact/hooks";
-import { activeScope } from "../../state/scope";
+import { SessionService } from "../../lib/bindings/github.com/sid/harness/internal/app";
+import * as Sess from "../../lib/bindings/github.com/sid/harness/internal/app/sessionservice";
+import { currentProjectId, refreshSessions } from "../../state/agents";
+import { focusStart } from "../../state/newagent";
+import { activateSession, activeScope } from "../../state/scope";
+import { toastError } from "../../state/toast";
 import { transcriptFor, type Block } from "../../state/transcript";
 import { Composer } from "../composer/Composer";
-import { isBusy, sessionRow } from "../composer/actions";
+import { EFFORTS, isBusy, loadModels, models, pickerOpen, sessionRow } from "../composer/actions";
+import { ModelPicker } from "../composer/ModelPicker";
 import { ReviewBar } from "../review/ReviewBar";
 import { BlockView } from "./blocks";
 import { isBashPerm, respond } from "./cards";
@@ -138,10 +144,64 @@ function Todos(p: { todos: NonNullable<Block["todos"]> }) {
 }
 
 function Empty(p: { scopeKey: string }) {
+  const [text, setText] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [pick, setPick] = useState<{ key: string; provider: string; mode: string; effort: string } | null>(null);
+  const ta = useRef<HTMLTextAreaElement>(null);
+  useEffect(() => { void loadModels(); }, []);
+  useEffect(() => { ta.current?.focus(); }, [focusStart.value]);
+  const list = models.value;
+  const m = list.find((x) => x.key === pick?.key) ?? list.find((x) => x.favourite) ?? list[0];
+  const provider = m?.provider ?? "claude";
+  const mode = pick?.mode ?? "";
+  const effort = pick?.effort ?? "";
+  const set = (patch: Partial<NonNullable<typeof pick>>) => setPick({ key: m?.key ?? "claude/default", provider, mode, effort, ...patch });
+  const pid = p.scopeKey.startsWith("main:") ? p.scopeKey.slice("main:".length) : activeScope.value?.projectId ?? currentProjectId.value ?? "";
+  const go = async () => {
+    const prompt = text.trim();
+    if (!pid || !prompt || busy) return;
+    setBusy(true);
+    try {
+      const s = await SessionService.CreateSession(pid, {
+        title: "", provider, model: m?.key ?? "claude/default", mode, effort, scopeKind: "worktree", baseRef: "", forkedFrom: "",
+      });
+      await refreshSessions(pid);
+      await activateSession(s.id);
+      await Sess.Send(s.id, { text: prompt, attachments: [], delivery: "send" });
+    } catch (e) { toastError(e); setBusy(false); }
+  };
+  const chip = "flex h-6 items-center gap-1 rounded-md px-2 text-[11.5px] text-muted hover:bg-hover hover:text-text";
   return (
-    <div class="flex h-full flex-col items-center justify-center gap-3 text-center">
-      <div class="text-[13px] text-muted">Start an agent in this checkout</div>
-      <button class="btn btn-primary" onClick={() => window.dispatchEvent(new CustomEvent("harness:new-agent", { detail: { scopeKey: p.scopeKey } }))}>New agent</button>
+    <div class="flex h-full flex-col items-center justify-center gap-4 px-4">
+      <div class="text-center">
+        <div class="text-[15px] font-medium text-text">Start an agent</div>
+        <div class="mt-0.5 text-[12px] text-faint">In a new worktree</div>
+      </div>
+      <div class="w-full max-w-[640px] rounded-lg bg-panel2 focus-within:border-accent/60">
+        <textarea
+          ref={ta}
+          class="block max-h-[220px] min-h-[72px] w-full resize-none bg-transparent px-3 py-2 text-[13px] leading-[1.5] outline-none placeholder:text-faint"
+          autofocus
+          disabled={busy}
+          placeholder="What should the agent do?"
+          value={text}
+          onInput={(e) => setText(e.currentTarget.value)}
+          onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); void go(); } }}
+        />
+        <div class="relative flex items-center gap-1.5 px-1.5 pb-2">
+          <button class={chip} title="Model" onClick={() => { void loadModels(); pickerOpen.value = !pickerOpen.value; }}>{m?.label ?? "model"}</button>
+          <button class={chip} title="Mode" onClick={() => void Sess.NextMode(provider, mode).then((n) => set({ mode: n }))}>{mode || "mode"}</button>
+          <button class={chip} title="Effort" onClick={() => set({ effort: EFFORTS[(EFFORTS.indexOf(effort) + 1) % EFFORTS.length] })}>{effort ? `effort: ${effort}` : "effort"}</button>
+          <div class="flex-1" />
+          {pickerOpen.value && (
+            <>
+              <div class="fixed inset-0 z-20" onClick={() => (pickerOpen.value = false)} />
+              <ModelPicker sessionId="" curKey={m?.key} onClose={() => (pickerOpen.value = false)} onPick={(x) => set({ key: x.key, provider: x.provider, mode: x.provider === provider ? mode : "" })} />
+            </>
+          )}
+          <button class="btn btn-primary btn-sm" disabled={busy || !text.trim()} onClick={() => void go()}>Start <span class="opacity-60">⏎</span></button>
+        </div>
+      </div>
     </div>
   );
 }

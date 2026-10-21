@@ -6,7 +6,7 @@ export type Overlay =
   | { kind: "palette" }
   | { kind: "quickopen" }
   | { kind: "picker" }
-  | { kind: "newagent"; projectId?: string }
+  | { kind: "projectsettings"; projectId: string }
   | { kind: "quit"; shells: number };
 
 export const overlay = signal<Overlay | null>(null);

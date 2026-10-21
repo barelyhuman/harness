@@ -2,12 +2,13 @@
 import { SettingsService } from "../lib/bindings/github.com/sid/harness/internal/app";
 import { registerCommand } from "../lib/commands";
 import { activateSession, activeScope } from "./scope";
-import { projects, sessionsByProject } from "./agents";
+import { currentProjectId, projects, sessionsByProject } from "./agents";
 import { rightMode, rightOpen, sidebarOpen, termOpen } from "./layout";
 import { openOverlay, toggleOverlay } from "./ui";
 import { activateTab, closeTab, scopeTabs } from "./tabs";
 import { toast, toastError } from "./toast";
 import { openFile, searchRequest } from "./editor";
+import { newAgent } from "./newagent";
 import { openAgentDialog } from "../features/agents/dialogs";
 
 export function agentList() {
@@ -18,8 +19,16 @@ export function registerShellCommands(): void {
   const reg = registerCommand;
   reg({ id: "workbench.quickOpen", title: "Go to File...", keys: ["cmd+p"], run: () => openOverlay({ kind: "quickopen" }) });
   reg({ id: "workbench.commandPalette", title: "Show All Commands", keys: ["cmd+shift+p"], run: () => toggleOverlay({ kind: "palette" }) });
-  reg({ id: "agents.new", title: "New Agent", keys: ["cmd+n"], run: () => openOverlay({ kind: "newagent" }) });
+  reg({ id: "agents.new", title: "New Agent", keys: ["cmd+n"], run: () => void newAgent() });
   reg({ id: "projects.openPicker", title: "Open Project...", keys: ["cmd+o"], run: () => toggleOverlay({ kind: "picker" }) });
+  reg({
+    id: "projects.settings", title: "Project Settings...",
+    run: () => {
+      const id = currentProjectId.value;
+      if (!id) { toast("Open a project first.", "info"); return; }
+      openOverlay({ kind: "projectsettings", projectId: id });
+    },
+  });
   for (let i = 1; i <= 9; i++)
     reg({
       id: `agents.jump.${i}`, title: `Jump to Agent ${i}`, keys: [`cmd+${i}`],
@@ -60,7 +69,7 @@ export function initShellEvents(): void {
   window.addEventListener("harness:new-agent", (e) => {
     const k = (e as CustomEvent<{ scopeKey?: string }>).detail?.scopeKey ?? activeScope.value?.key ?? "";
     const projectId = k.startsWith("main:") ? k.slice("main:".length) : rowFor(k)?.projectId ?? activeScope.value?.projectId;
-    openOverlay({ kind: "newagent", projectId });
+    void newAgent(projectId);
   });
   window.addEventListener("harness:raise-pr", (e) => {
     const k = (e as CustomEvent<{ scopeKey?: string }>).detail?.scopeKey ?? activeScope.value?.key ?? "";

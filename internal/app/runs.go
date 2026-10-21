@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"os"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -834,6 +835,7 @@ func (s *supervisor) Rows() []SessionRow {
 			continue
 		}
 		for _, x := range list {
+			x = s.archiveIfWorktreeGone(x)
 			st := x.Status
 			if x.ArchivedAt != nil {
 				st = StatusArchived
@@ -852,6 +854,28 @@ func (s *supervisor) Rows() []SessionRow {
 		}
 	}
 	return out
+}
+
+// archiveIfWorktreeGone lazily archives a live worktree session whose
+// directory was deleted out from under us, so the sidebar doesn't keep
+// metadata for a checkout that no longer exists. The branch is kept, so the
+// session can still be restored.
+func (s *supervisor) archiveIfWorktreeGone(x workspace.Session) workspace.Session {
+	if x.ArchivedAt != nil || x.ScopeKind != workspace.ScopeWorktree || x.WorktreePath == "" {
+		return x
+	}
+	if _, err := os.Stat(x.WorktreePath); !errors.Is(err, os.ErrNotExist) {
+		return x
+	}
+	if err := s.sessions.Archive(x.ID, true); err != nil {
+		log.Printf("harness: auto-archive %s: %v", x.ID, err)
+		return x
+	}
+	s.release(x.ID)
+	if got, err := s.sessions.Get(x.ID); err == nil {
+		return got
+	}
+	return x
 }
 
 func (s *supervisor) pushNow() {

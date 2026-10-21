@@ -294,7 +294,7 @@ func (ss *Sessions) Archive(id string, force bool) error {
 		return err
 	}
 	if s.ScopeKind == ScopeWorktree && !shared {
-		if _, err := os.Stat(s.WorktreePath); err == nil {
+		if _, err := os.Stat(s.WorktreePath); err == nil && git.WorktreeRegistered(p.Path, s.WorktreePath) {
 			if err := git.WorktreeRemove(p.Path, s.WorktreePath, force); err != nil {
 				return err
 			}
@@ -361,7 +361,7 @@ func (ss *Sessions) Delete(id string, confirm bool) error {
 		return err
 	}
 	if s.ScopeKind == ScopeWorktree && !shared {
-		if _, err := os.Stat(s.WorktreePath); err == nil {
+		if _, err := os.Stat(s.WorktreePath); err == nil && git.WorktreeRegistered(p.Path, s.WorktreePath) {
 			if err := git.WorktreeRemove(p.Path, s.WorktreePath, true); err != nil {
 				return err
 			}

@@ -165,6 +165,22 @@ func WorktreeRemove(repo, path string, force bool) error {
 	return err
 }
 
+// WorktreeRegistered reports whether git still tracks path as a worktree of repo.
+func WorktreeRegistered(repo, path string) bool {
+	wts, err := WorktreeList(repo)
+	if err != nil {
+		return false
+	}
+	want, _ := filepath.EvalSymlinks(path)
+	for _, w := range wts {
+		got, _ := filepath.EvalSymlinks(w.Path)
+		if w.Path == path || (want != "" && got == want) {
+			return true
+		}
+	}
+	return false
+}
+
 // WorktreePrune drops administrative records of missing worktrees.
 func WorktreePrune(repo string) error {
 	_, err := runGit(repo, nil, "worktree", "prune")

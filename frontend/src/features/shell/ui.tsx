@@ -23,6 +23,7 @@ const P: Record<string, string> = {
   up: "M8 13V3M4 7l4-4 4 4",
   sparkle: "M8 2l1.3 3.7L13 7l-3.7 1.3L8 12l-1.3-3.7L3 7l3.7-1.3z",
   cursor: "M3 2l10 5-4.2 1.3L7 13z",
+  gear: "M8 5.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5zM8 1.5v1.6M8 12.9v1.6M2.6 8H1M15 8h-1.6M3.5 3.5l1.1 1.1M11.4 11.4l1.1 1.1M3.5 12.5l1.1-1.1M11.4 4.6l1.1-1.1",
 };
 export function Icon(p: { name: keyof typeof P | string; size?: number; class?: string }) {
   const s = p.size ?? 14;

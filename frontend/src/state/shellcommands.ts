@@ -2,7 +2,7 @@
 import { SettingsService } from "../lib/bindings/github.com/sid/harness/internal/app";
 import { registerCommand } from "../lib/commands";
 import { activateSession, activeScope } from "./scope";
-import { projects, sessionsByProject } from "./agents";
+import { currentProjectId, projects, sessionsByProject } from "./agents";
 import { rightMode, rightOpen, sidebarOpen, termOpen } from "./layout";
 import { openOverlay, toggleOverlay } from "./ui";
 import { activateTab, closeTab, scopeTabs } from "./tabs";
@@ -20,6 +20,14 @@ export function registerShellCommands(): void {
   reg({ id: "workbench.commandPalette", title: "Show All Commands", keys: ["cmd+shift+p"], run: () => toggleOverlay({ kind: "palette" }) });
   reg({ id: "agents.new", title: "New Agent", keys: ["cmd+n"], run: () => openOverlay({ kind: "newagent" }) });
   reg({ id: "projects.openPicker", title: "Open Project...", keys: ["cmd+o"], run: () => toggleOverlay({ kind: "picker" }) });
+  reg({
+    id: "projects.settings", title: "Project Settings...",
+    run: () => {
+      const id = currentProjectId.value;
+      if (!id) { toast("Open a project first.", "info"); return; }
+      openOverlay({ kind: "projectsettings", projectId: id });
+    },
+  });
   for (let i = 1; i <= 9; i++)
     reg({
       id: `agents.jump.${i}`, title: `Jump to Agent ${i}`, keys: [`cmd+${i}`],

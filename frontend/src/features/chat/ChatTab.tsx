@@ -1,7 +1,11 @@
 import { IconArrowDown, IconChevronRight, IconCircle, IconCircleCheck, IconCircleHalf2 } from "@tabler/icons-preact";
 // Chat tab: transcript (Go-built blocks), pinned todos, composer. Spec 11.
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "preact/hooks";
-import { activeScope } from "../../state/scope";
+import { SessionService } from "../../lib/bindings/github.com/sid/harness/internal/app";
+import * as Sess from "../../lib/bindings/github.com/sid/harness/internal/app/sessionservice";
+import { currentProjectId, refreshSessions } from "../../state/agents";
+import { activateSession, activeScope } from "../../state/scope";
+import { toastError } from "../../state/toast";
 import { transcriptFor, type Block } from "../../state/transcript";
 import { Composer } from "../composer/Composer";
 import { isBusy, sessionRow } from "../composer/actions";
@@ -138,10 +142,37 @@ function Todos(p: { todos: NonNullable<Block["todos"]> }) {
 }
 
 function Empty(p: { scopeKey: string }) {
+  const [text, setText] = useState("");
+  const [busy, setBusy] = useState(false);
+  const pid = p.scopeKey.startsWith("main:") ? p.scopeKey.slice("main:".length) : activeScope.value?.projectId ?? currentProjectId.value ?? "";
+  const go = async () => {
+    const prompt = text.trim();
+    if (!pid || !prompt || busy) return;
+    setBusy(true);
+    try {
+      const models = (await Sess.ListModels().catch(() => null)) ?? [];
+      const m = models.find((x) => x?.favourite) ?? models[0];
+      const s = await SessionService.CreateSession(pid, {
+        title: "", provider: m?.provider ?? "claude", model: m?.key ?? "claude/default", mode: "", effort: "", scopeKind: "worktree", baseRef: "", forkedFrom: "",
+      });
+      await refreshSessions(pid);
+      await activateSession(s.id);
+      await Sess.Send(s.id, { text: prompt, attachments: [], delivery: "send" });
+    } catch (e) { toastError(e); setBusy(false); }
+  };
   return (
-    <div class="flex h-full flex-col items-center justify-center gap-3 text-center">
+    <div class="flex h-full flex-col items-center justify-center gap-3 px-4 text-center">
       <div class="text-[13px] text-muted">Start an agent in this checkout</div>
-      <button class="btn btn-primary" onClick={() => window.dispatchEvent(new CustomEvent("harness:new-agent", { detail: { scopeKey: p.scopeKey } }))}>New agent</button>
+      <textarea
+        class="field h-24 w-full max-w-[640px] resize-none text-left"
+        autofocus
+        disabled={busy}
+        placeholder="What should the agent do?"
+        value={text}
+        onInput={(e) => setText(e.currentTarget.value)}
+        onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); void go(); } }}
+      />
+      <div class="kbd">⏎ to start</div>
     </div>
   );
 }

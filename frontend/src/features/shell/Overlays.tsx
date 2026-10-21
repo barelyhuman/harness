@@ -5,6 +5,7 @@ import { Modal } from "./ui";
 import { Palette } from "../palette/Palette";
 import { QuickOpen } from "../palette/QuickOpen";
 import { NewAgentSheet } from "../agents/NewAgentSheet";
+import { ProjectSettingsSheet } from "../agents/ProjectSettingsSheet";
 
 export function Toasts() {
   return (
@@ -43,6 +44,7 @@ export function Overlays() {
     case "palette": return <Palette />;
     case "quickopen": return <QuickOpen />;
     case "newagent": return <NewAgentSheet projectId={o.projectId} />;
+    case "projectsettings": return <ProjectSettingsSheet projectId={o.projectId} />;
     case "quit": return <QuitSheet shells={o.shells} />;
     default: return null; // picker is a popover rendered by the sidebar header
   }

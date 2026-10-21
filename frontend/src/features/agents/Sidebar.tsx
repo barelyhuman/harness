@@ -177,7 +177,8 @@ export function Sidebar() {
             <div key={pr.id} class="mt-3 first:mt-0">
               <div class="group flex h-7 items-center gap-1 px-4 text-[10.5px] font-semibold uppercase tracking-wide text-faint">
                 <span class="truncate">{pr.name}</span>
-                <button class="icon-btn-sm ml-auto opacity-0 hover:text-text group-hover:opacity-100" title="New agent in project" onClick={() => openOverlay({ kind: "newagent", projectId: pr.id })}><Icon name="plus" size={11} /></button>
+                <button class="icon-btn-sm ml-auto opacity-0 hover:text-text group-hover:opacity-100" title="Project settings" onClick={() => openOverlay({ kind: "projectsettings", projectId: pr.id })}><Icon name="gear" size={11} /></button>
+                <button class="icon-btn-sm opacity-0 hover:text-text group-hover:opacity-100" title="New agent in project" onClick={() => openOverlay({ kind: "newagent", projectId: pr.id })}><Icon name="plus" size={11} /></button>
               </div>
               <Row rowKey={mainKey} title="Main checkout" active={scope?.key === mainKey} onClick={() => activateMain(pr.id)} ensure={() => activateMain(pr.id)} />
               {live.map((s) => {

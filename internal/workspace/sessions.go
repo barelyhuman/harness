@@ -1,6 +1,7 @@
 package workspace
 
 import (
+	"crypto/sha1"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -8,6 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/sid/harness/internal/git"
 )
@@ -156,7 +158,7 @@ func (ss *Sessions) List(projectID string, includeArchived bool) ([]Session, err
 }
 
 // Create inserts a session; for worktree scope it also creates the worktree
-// at <repo parent>/<repo name>-worktrees/<slug> on branch harness/<slug>.
+// at <repo parent>/<repo name>-worktrees/<slug>-<hash> on branch harness/<slug>-<hash>.
 func (ss *Sessions) Create(projectID string, o CreateOpts) (Session, error) {
 	p, err := ss.projects.Get(projectID)
 	if err != nil {
@@ -210,14 +212,19 @@ func (ss *Sessions) Create(projectID string, o CreateOpts) (Session, error) {
 	return s, nil
 }
 
-// allocate finds a free <slug>[-N] where neither the dir, the branch nor a
-// session row uses it.
+// nameSuffix derives a short stable-looking suffix from the title, the current
+// time and the attempt number.
+func nameSuffix(slug string, t time.Time, n int) string {
+	h := sha1.Sum([]byte(fmt.Sprintf("%s|%d|%d", slug, t.UnixNano(), n)))
+	return fmt.Sprintf("%x", h[:3])
+}
+
+// allocate finds a free <slug>-<hash> where neither the dir, the branch nor a
+// session row uses it. The hash is seeded by the title and the current time.
 func (ss *Sessions) allocate(repo, wtRoot, slug string) (dir, branch string) {
-	for n := 1; ; n++ {
-		name := slug
-		if n > 1 {
-			name = fmt.Sprintf("%s-%d", slug, n)
-		}
+	now := time.Now()
+	for n := 0; ; n++ {
+		name := slug + "-" + nameSuffix(slug, now, n)
 		dir, branch = filepath.Join(wtRoot, name), "harness/"+name
 		if _, err := os.Lstat(dir); err == nil {
 			continue

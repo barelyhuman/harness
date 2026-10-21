@@ -524,3 +524,20 @@ func TestModesAndEffort(t *testing.T) {
 		t.Fatalf("%+v", got)
 	}
 }
+
+// ListSessions (used by the frontend's refresh) must report archived sessions
+// with the same status as the `sessions` push, or they reappear as live.
+func TestListSessionsReportsArchivedStatus(t *testing.T) {
+	e := newEnv(t)
+	s := e.session(t, "fake", "m1", workspace.ScopeMain)
+	if err := e.svc.ArchiveSession(s.ID, false); err != nil {
+		t.Fatal(err)
+	}
+	l, err := e.svc.ListSessions(e.proj.ID, true)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(l) != 1 || l[0].Status != StatusArchived {
+		t.Fatalf("ListSessions status = %+v, want %q", l, StatusArchived)
+	}
+}

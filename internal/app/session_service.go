@@ -54,6 +54,12 @@ func (s *SessionService) ListSessions(projectID string, includeArchived bool) ([
 	if l == nil {
 		l = []workspace.Session{}
 	}
+	// Same status derivation as supervisor.Rows so both paths agree.
+	for i := range l {
+		if l[i].ArchivedAt != nil {
+			l[i].Status = StatusArchived
+		}
+	}
 	return l, wrapErr(err)
 }
 

@@ -73,7 +73,7 @@ export function App() {
         </>
       )}
       <div class="flex min-w-0 flex-1 flex-col">
-        <div class="drag flex h-9 shrink-0 items-stretch border-b border-border bg-panel" style={{ paddingLeft: sidebarOpen.value ? 0 : 78 }}>
+        <div class="drag flex h-9 shrink-0 items-stretch bg-panel" style={{ paddingLeft: sidebarOpen.value ? 0 : 78 }}>
           {!sidebarOpen.value && (
             <div class="flex items-center pr-1"><ToggleBtn icon="sidebar" on={false} cmd="view.toggleSidebar" title="Show Sidebar" onClick={() => (sidebarOpen.value = true)} /></div>
           )}
@@ -90,7 +90,7 @@ export function App() {
             <>
               <Resizer dir="x" sign={-1} get={() => rightW.value} set={(v) => (rightW.value = clamp(v, LIMITS.right))} />
               <div class="flex min-h-0 shrink-0 flex-col bg-panel" style={{ width: rightW.value }}>
-                <div class="flex h-8 shrink-0 items-center gap-1 border-b border-border px-2">
+                <div class="flex h-8 shrink-0 items-center gap-1 px-2">
                   {(["scm", "explorer", "search"] as const).map((m) => (
                     <button key={m} onClick={() => (rightMode.value = m)} class={`rounded px-2 py-0.5 text-[11.5px] ${rightMode.value === m ? "bg-sel text-text" : "text-muted hover:bg-hover"}`}>
                       {m === "scm" ? "Changes" : m === "explorer" ? "Explorer" : "Search"}

@@ -133,7 +133,7 @@ function ContextMenu() {
   return (
     <>
       <div class="fixed inset-0 z-40" onMouseDown={close} onContextMenu={(e) => { e.preventDefault(); close(); }} />
-      <div class="pop fixed z-50 min-w-[160px] rounded-lg border border-border bg-raise py-1 shadow-xl shadow-black/50" style={{ left: Math.min(m.x, window.innerWidth - 180), top: Math.min(m.y, window.innerHeight - 160) }}>
+      <div class="pop fixed z-50 min-w-[160px] rounded-lg bg-raise py-1 shadow-xl shadow-black/50" style={{ left: Math.min(m.x, window.innerWidth - 180), top: Math.min(m.y, window.innerHeight - 160) }}>
         {items.map(([label, fn, danger]) => (
           <div key={label} onClick={() => { close(); fn(); }} class={`cursor-default px-3 py-1 hover:bg-accent/20 ${danger ? "text-err" : ""}`}>{label}</div>
         ))}
@@ -148,7 +148,7 @@ export function Sidebar() {
   const openMenu = (s: SessionRow) => (e: MouseEvent) => { e.preventDefault(); e.stopPropagation(); menu.value = { x: e.clientX, y: e.clientY, s }; };
   return (
     <>
-      <div class="drag flex h-9 shrink-0 items-center justify-end border-b border-border pr-2" style={{ paddingLeft: 78 }}>
+      <div class="drag flex h-9 shrink-0 items-center justify-end pr-2" style={{ paddingLeft: 78 }}>
         <button class="no-drag rounded p-1 text-muted hover:bg-hover hover:text-text" title={`Hide sidebar ${keyLabel("view.toggleSidebar")}`} onClick={() => (sidebarOpen.value = false)}>
           <Icon name="sidebar" size={15} />
         </button>

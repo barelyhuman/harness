@@ -1,3 +1,4 @@
+import { IconChevronRight, IconPhoto } from "@tabler/icons-preact";
 import { memo } from "preact/compat";
 import { useContext, useState } from "preact/hooks";
 import { SessionService } from "../../lib/bindings/github.com/sid/harness/internal/app";
@@ -16,7 +17,7 @@ function User(p: { b: Block }) {
         {p.b.text}
         {!!p.b.images?.length && (
           <div class="mt-1 flex flex-wrap gap-1">
-            {p.b.images.map((im, i) => <span key={i} class="rounded border border-border px-1.5 text-[10.5px] text-muted">▣ {im.name || im.mediaType}</span>)}
+            {p.b.images.map((im, i) => <span key={i} class="rounded px-1.5 text-[10.5px] text-muted"><IconPhoto size={11} class="mr-0.5 inline" /> {im.name || im.mediaType}</span>)}
           </div>
         )}
       </div>
@@ -34,10 +35,10 @@ function Thinking(p: { b: Block }) {
   return (
     <div class="px-0.5 text-[12px] text-faint">
       <button class="flex items-center gap-1 hover:text-muted" onClick={() => setOpen(!open)}>
-        <span class={`inline-block text-[9px] transition-transform ${open ? "rotate-90" : ""}`}>▶</span>
+        <IconChevronRight size={11} class={`inline-block transition-transform ${open ? "rotate-90" : ""}`} />
         <span class={p.b.streaming ? "animate-pulse" : ""}>{label}</span>
       </button>
-      {open && <div class="chat-sel mt-1 whitespace-pre-wrap border-l border-border pl-2.5 text-[12px] leading-[1.5] text-muted">{p.b.text}</div>}
+      {open && <div class="chat-sel mt-1 whitespace-pre-wrap pl-2.5 text-[12px] leading-[1.5] text-muted">{p.b.text}</div>}
     </div>
   );
 }

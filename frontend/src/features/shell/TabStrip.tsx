@@ -16,7 +16,7 @@ export function TabStrip(p: { scopeKey: string }) {
             key={t.id}
             title={t.kind === "chat" ? "Chat (⌘0)" : t.path}
             onMouseDown={(e) => { if (e.button === 1) { e.preventDefault(); closeTab(p.scopeKey, t.id); } else activateTab(p.scopeKey, t.id); }}
-            class={`no-drag group flex shrink-0 cursor-default items-center gap-1.5 border-r border-border px-3 text-[12px] ${on ? "bg-bg text-text" : "text-muted hover:bg-hover"} ${t.kind === "file" && t.preview ? "italic" : ""}`}
+            class={`no-drag group flex shrink-0 cursor-default items-center gap-1.5 px-3 text-[12px] ${on ? "bg-bg text-text" : "text-muted hover:bg-hover"} ${t.kind === "file" && t.preview ? "italic" : ""}`}
           >
             <Icon name={t.kind === "chat" ? "chat" : t.kind === "diff" ? "diff" : "file"} size={12} class={on ? "text-accent" : ""} />
             <span class="max-w-[160px] truncate">{label(t)}</span>

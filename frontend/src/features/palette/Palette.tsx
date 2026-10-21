@@ -59,7 +59,7 @@ export function Palette() {
   };
   return (
     <Modal width={560} top label="Command palette">
-      <input class="border-b border-border bg-transparent px-4 py-3 text-[14px] outline-none" autofocus ref={(el) => el?.focus()} placeholder="Type a command..." value={q} onInput={(e) => setQ(e.currentTarget.value)} onKeyDown={key} />
+      <input class="bg-transparent px-4 py-3 text-[14px] outline-none" autofocus ref={(el) => el?.focus()} placeholder="Type a command..." value={q} onInput={(e) => setQ(e.currentTarget.value)} onKeyDown={key} />
       <div ref={list} class="max-h-[50vh] overflow-y-auto py-1">
         {items.length === 0 && <div class="px-4 py-3 text-muted">No matching commands</div>}
         {items.map((it, i) => (

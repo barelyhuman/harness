@@ -64,7 +64,7 @@ export function Resizer(p: { dir: "x" | "y"; get: () => number; set: (v: number)
     <div
       onPointerDown={down}
       onDblClick={p.onDoubleClick}
-      class={`no-drag shrink-0 z-20 relative ${p.dir === "x" ? "w-[1px] cursor-col-resize bg-border" : "h-[1px] cursor-row-resize bg-border"} hover:bg-accent/70 transition-colors`}
+      class={`no-drag shrink-0 z-20 relative ${p.dir === "x" ? "w-[1px] cursor-col-resize bg-transparent" : "h-[1px] cursor-row-resize bg-transparent"} hover:bg-accent/70 transition-colors`}
     >
       <div class={`absolute ${p.dir === "x" ? "-left-[3px] w-[7px] inset-y-0" : "-top-[3px] h-[7px] inset-x-0"}`} />
     </div>
@@ -83,7 +83,7 @@ export function Modal(p: { children: ComponentChildren; width?: number; top?: bo
   }, []);
   return (
     <div class="fixed inset-0 z-50 flex justify-center bg-black/40" style={{ alignItems: p.top ? "flex-start" : "center", paddingTop: p.top ? 80 : 0 }} onMouseDown={(e) => e.target === e.currentTarget && close()}>
-      <div ref={ref} role="dialog" aria-label={p.label} class="pop rounded-xl border border-border bg-panel2 shadow-2xl shadow-black/60 max-h-[75vh] flex flex-col overflow-hidden" style={{ width: p.width ?? 520, maxWidth: "92vw" }}>
+      <div ref={ref} role="dialog" aria-label={p.label} class="pop rounded-xl bg-panel2 shadow-2xl shadow-black/60 max-h-[75vh] flex flex-col overflow-hidden" style={{ width: p.width ?? 520, maxWidth: "92vw" }}>
         {p.children}
       </div>
     </div>

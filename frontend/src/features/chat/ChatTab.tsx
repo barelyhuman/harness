@@ -1,3 +1,4 @@
+import { IconArrowDown, IconChevronRight, IconCircle, IconCircleCheck, IconCircleHalf2 } from "@tabler/icons-preact";
 // Chat tab: transcript (Go-built blocks), pinned todos, composer. Spec 11.
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "preact/hooks";
 import { activeScope } from "../../state/scope";
@@ -103,8 +104,8 @@ function List(p: { items: Block[]; loaded: boolean }) {
         <div class="h-2" />
       </div>
       {jump && (
-        <button class="pop absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full border border-border bg-raise px-3 py-1 text-[11.5px] shadow-lg hover:bg-raise" onClick={() => { stuck.current = true; setJump(false); toBottom(); }}>
-          ↓ Jump to latest
+        <button class="pop absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-raise px-3 py-1 text-[11.5px] shadow-lg hover:bg-raise" onClick={() => { stuck.current = true; setJump(false); toBottom(); }}>
+          <IconArrowDown size={12} class="mr-1 inline" />Jump to latest
         </button>
       )}
     </div>
@@ -116,9 +117,9 @@ function Todos(p: { todos: NonNullable<Block["todos"]> }) {
   const done = p.todos.filter((t) => t.status === "completed").length;
   if (!p.todos.length) return null;
   return (
-    <div class="mx-3 mb-1 rounded-md border border-border/70 bg-panel2/70 text-[12px]">
+    <div class="mx-3 mb-1 rounded-md bg-panel2/70 text-[12px]">
       <button class="flex w-full items-center gap-2 px-2 py-1 text-left text-muted hover:text-text" onClick={() => setOpen(!open)}>
-        <span class={`inline-block text-[9px] transition-transform ${open ? "rotate-90" : ""}`}>▶</span>
+        <IconChevronRight size={11} class={`inline-block transition-transform ${open ? "rotate-90" : ""}`} />
         <span>Todos</span><span class="text-faint">{done}/{p.todos.length}</span>
         <span class="h-[3px] max-w-[120px] flex-1 overflow-hidden rounded bg-border"><span class="block h-full bg-run" style={{ width: `${(done / p.todos.length) * 100}%` }} /></span>
       </button>
@@ -126,7 +127,7 @@ function Todos(p: { todos: NonNullable<Block["todos"]> }) {
         <ul class="max-h-[140px] overflow-y-auto px-2 pb-1.5">
           {p.todos.map((t, i) => (
             <li key={i} class={`flex gap-1.5 py-px ${t.status === "completed" ? "text-faint line-through" : t.status === "in_progress" ? "text-text" : "text-muted"}`}>
-              <span class="w-3 shrink-0 text-center">{t.status === "completed" ? "✓" : t.status === "in_progress" ? "◐" : "○"}</span>
+              <span class="w-3 shrink-0 text-center">{t.status === "completed" ? <IconCircleCheck size={12} /> : t.status === "in_progress" ? <IconCircleHalf2 size={12} /> : <IconCircle size={12} />}</span>
               <span>{t.content}</span>
             </li>
           ))}

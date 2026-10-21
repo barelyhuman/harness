@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@preact/signals": "^2.11.3",
+    "@tabler/icons-preact": "^3.49.0",
     "@wailsio/runtime": "^3.0.0-beta.34",
     "@xterm/addon-fit": "^0.11.0",
     "@xterm/addon-search": "^0.16.0",
@@ -30,5 +31,10 @@
     "tailwindcss": "^4.3.3",
     "typescript": "^7.0.2",
     "vite": "^8.3.4"
+  },
+  "overrides": {
+    "@tabler/icons-preact": {
+      "preact": "$preact"
+    }
   }
 }

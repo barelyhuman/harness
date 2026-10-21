@@ -11,9 +11,9 @@ const css = `
 .md code { font-family: var(--font-mono); font-size: .92em; background: #ffffff10; padding: .08em .35em; border-radius: 4px }
 .md blockquote { border-left: 2px solid var(--color-border); margin: .5em 0; padding: 0 .8em; color: var(--color-muted) }
 .md hr { border: 0; border-top: 1px solid var(--color-border); margin: .8em 0 }
-.md table { border-collapse: collapse; margin: .5em 0; font-size: .95em } .md th,.md td { border: 1px solid var(--color-border); padding: 2px 8px }
-.md .cb { margin: .5em 0; border: 1px solid var(--color-border); border-radius: 7px; background: #101012; overflow: hidden }
-.md .cb-bar { display: flex; justify-content: space-between; align-items: center; padding: 2px 8px; font-size: 10.5px; color: var(--color-faint); border-bottom: 1px solid #ffffff0a }
+.md table { border-collapse: collapse; margin: .5em 0; font-size: .95em } .md th,.md td { background: #ffffff08; padding: 2px 8px }
+.md .cb { margin: .5em 0;  border-radius: 7px; background: #101012; overflow: hidden }
+.md .cb-bar { display: flex; justify-content: space-between; align-items: center; padding: 2px 8px; font-size: 10.5px; color: var(--color-faint); }
 .md .cb-copy { background: none; border: 0; color: var(--color-faint); cursor: pointer; padding: 0 2px; opacity: 0 }
 .md .cb:hover .cb-copy { opacity: 1 } .md .cb-copy:hover { color: var(--color-text) }
 .md .cb pre { margin: 0; padding: 7px 10px; overflow-x: auto }

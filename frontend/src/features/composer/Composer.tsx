@@ -1,3 +1,4 @@
+import { IconClock, IconX } from "@tabler/icons-preact";
 import { signal } from "@preact/signals";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { SearchService, SessionService } from "../../lib/bindings/github.com/sid/harness/internal/app";
@@ -182,26 +183,26 @@ export function Composer(p: { sessionId: string }) {
 
   const m = findModel(models.value, row);
   const modelLabel = m?.label ?? (row?.model || "model");
-  const chip = "flex h-[22px] items-center gap-1 rounded-md border border-border/70 px-1.5 text-[11.5px] text-muted hover:bg-hover hover:text-text";
+  const chip = "flex h-[22px] items-center gap-1 rounded-md px-1.5 text-[11.5px] text-muted hover:bg-hover hover:text-text";
 
   return (
     <div data-ctx="composer" class="relative px-3 pb-3 pt-1">
       {q.length > 0 && (
         <div class="mb-1 flex flex-wrap gap-1">
-          {q.map((t, i) => <span key={i} class="max-w-[260px] truncate rounded-full border border-border/60 px-2 py-0.5 text-[11px] text-faint" title="Queued: sent after the current run">⏳ {t}</span>)}
+          {q.map((t, i) => <span key={i} class="max-w-[260px] truncate rounded-full px-2 py-0.5 text-[11px] text-faint" title="Queued: sent after the current run"><IconClock size={11} class="mr-1 inline" />{t}</span>)}
         </div>
       )}
       <div
-        class="rounded-lg border border-border bg-panel2 focus-within:border-accent/60"
+        class="rounded-lg bg-panel2 focus-within:border-accent/60"
         onDragOver={(e) => { if (e.dataTransfer?.types.includes("Files")) e.preventDefault(); }}
         onDrop={(e) => { const fs = [...(e.dataTransfer?.files ?? [])]; if (fs.some((f) => f.type.startsWith("image/"))) { e.preventDefault(); void addFiles(fs); } }}
       >
         {atts.length > 0 && (
           <div class="flex flex-wrap gap-1.5 px-2 pt-2">
             {atts.map((a, i) => (
-              <div key={i} class="group relative h-12 w-12 overflow-hidden rounded border border-border">
+              <div key={i} class="group relative h-12 w-12 overflow-hidden rounded">
                 <img src={`data:${a.mediaType};base64,${a.data}`} class="h-full w-full object-cover" alt={a.name} />
-                <button class="absolute right-0 top-0 hidden h-4 w-4 items-center justify-center bg-black/70 text-[10px] group-hover:flex" onClick={() => setAtts(atts.filter((_, j) => j !== i))}>✕</button>
+                <button class="absolute right-0 top-0 hidden h-4 w-4 items-center justify-center bg-black/70 text-[10px] group-hover:flex" onClick={() => setAtts(atts.filter((_, j) => j !== i))}><IconX size={10} /></button>
               </div>
             ))}
           </div>
@@ -235,7 +236,7 @@ export function Composer(p: { sessionId: string }) {
         </div>
       </div>
       {menu && (
-        <div class="pop absolute bottom-full left-3 z-30 mb-1 max-h-[240px] w-[min(520px,calc(100%-24px))] overflow-y-auto rounded-lg border border-border bg-panel2 py-1 shadow-2xl">
+        <div class="pop absolute bottom-full left-3 z-30 mb-1 max-h-[240px] w-[min(520px,calc(100%-24px))] overflow-y-auto rounded-lg bg-panel2 py-1 shadow-2xl">
           {menu.kind === "file"
             ? menu.items.map((it, i) => (
                 <div key={it} class={`flex cursor-pointer gap-2 px-3 py-0.5 font-mono text-[12px] ${i === menu.sel ? "bg-sel" : "hover:bg-hover"}`} onMouseDown={(e) => { e.preventDefault(); accept(i); }}>

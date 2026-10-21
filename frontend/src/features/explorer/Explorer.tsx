@@ -1,3 +1,4 @@
+import { IconChevronDown, IconChevronRight, IconRefresh } from "@tabler/icons-preact";
 // Lazy, virtualised file tree. Directories load on expand via ProjectService.ListDir and refresh on
 // `fs/<scopeKey>` events; git colours come from `scm/<scopeKey>` row classes.
 import { useCallback, useEffect, useMemo, useRef, useState } from "preact/hooks";
@@ -206,7 +207,7 @@ export function Explorer({ scopeKey, root }: { scopeKey: string; root: string })
         <span class="flex-1 truncate uppercase tracking-wide">{baseOf(r)}</span>
         <button class="rounded px-1 hover:bg-white/10" title="New File" onClick={() => beginCreate(targetDir(entryOf(selected) ?? null), false)}>+ File</button>
         <button class="rounded px-1 hover:bg-white/10" title="New Folder" onClick={() => beginCreate(targetDir(entryOf(selected) ?? null), true)}>+ Dir</button>
-        <button class="rounded px-1 hover:bg-white/10" title="Refresh" onClick={() => [...expanded].forEach((d) => void load(d))}>{"↻"}</button>
+        <button class="rounded px-1 hover:bg-white/10" title="Refresh" onClick={() => [...expanded].forEach((d) => void load(d))}><IconRefresh size={14} /></button>
       </div>
       <div
         ref={box}
@@ -230,7 +231,7 @@ export function Explorer({ scopeKey, root }: { scopeKey: string; root: string })
             const open = e.isDir && expanded.has(e.path);
             const cls = colors.get(e.path);
             const color = cls ? CLASS_COLOR[cls] : undefined;
-            const [glyph, gcolor] = fileIcon(e.name);
+            const [FileGlyph, gcolor] = fileIcon(e.name);
             return (
               <div
                 key={e.path}
@@ -245,8 +246,8 @@ export function Explorer({ scopeKey, root }: { scopeKey: string; root: string })
                 onDblClick={() => { if (!e.isDir) openFile(scopeKey, e.path, false); }}
                 onContextMenu={(ev) => { ev.preventDefault(); setSelected(e.path); setMenu({ x: ev.clientX, y: ev.clientY, target: e }); }}
               >
-                <span class="w-3 shrink-0 text-center text-[9px] text-neutral-500">{e.isDir ? (open ? "▼" : "▶") : ""}</span>
-                {!e.isDir && <span class="w-4 shrink-0 text-center text-[8px] font-bold" style={{ color: gcolor }}>{glyph}</span>}
+                <span class="flex w-3 shrink-0 items-center justify-center text-neutral-500">{e.isDir ? (open ? <IconChevronDown size={12} /> : <IconChevronRight size={12} />) : ""}</span>
+                {!e.isDir && <span class="flex w-4 shrink-0 items-center justify-center" style={{ color: gcolor }}><FileGlyph size={14} /></span>}
                 {renaming === e.path ? (
                   <NameInput initial={e.name} onDone={(n) => void commitRename(e, n)} onCancel={() => setRenaming("")} />
                 ) : (
@@ -260,7 +261,7 @@ export function Explorer({ scopeKey, root }: { scopeKey: string; root: string })
       </div>
       {menu && (
         <div class="fixed inset-0 z-50" onClick={() => setMenu(null)} onContextMenu={(e) => { e.preventDefault(); setMenu(null); }}>
-          <div class="absolute min-w-40 rounded-md border border-neutral-700 bg-panel2 py-1 text-[12px] shadow-xl" style={{ left: menu.x, top: menu.y }}>
+          <div class="absolute min-w-40 rounded-md bg-panel2 py-1 text-[12px] shadow-xl" style={{ left: menu.x, top: menu.y }}>
             {menuItems(menu.target).map(([label, fn]) => (
               <div key={label} class="cursor-default px-3 py-1 hover:bg-blue-600/60" onClick={() => { setMenu(null); fn(); }}>{label}</div>
             ))}
@@ -269,7 +270,7 @@ export function Explorer({ scopeKey, root }: { scopeKey: string; root: string })
       )}
       {confirmDel && (
         <div class="absolute inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div class="w-72 rounded-lg border border-neutral-700 bg-panel2 p-4 shadow-xl">
+          <div class="w-72 rounded-lg bg-panel2 p-4 shadow-xl">
             <div class="mb-1 text-[13px] text-neutral-100">Move to Trash?</div>
             <div class="mb-4 truncate text-[12px] text-neutral-400">{confirmDel.name}</div>
             <div class="flex justify-end gap-2 text-[12px]">

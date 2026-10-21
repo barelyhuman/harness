@@ -1,3 +1,5 @@
+import type { ComponentType } from "preact";
+import { IconBraces, IconBrandGolang, IconBrandPython, IconFileLock, IconFileSettings, IconFileText, IconFileTypeCss, IconFileTypeHtml, IconFileTypeJs, IconFileTypeJsx, IconFileTypeRs, IconFileTypeSql, IconFileTypeSvg, IconFileTypeTs, IconFileTypeTsx, IconMarkdown, IconPhoto, IconTerminal2 } from "@tabler/icons-preact";
 import { bus } from "../../lib/bus";
 
 export type ErrInfo = { code: string; message: string; files?: string[]; etag?: string };
@@ -42,14 +44,15 @@ export const CLASS_COLOR: Record<string, string> = {
   "scm-conflict": "#e4676b",
 };
 
-const EXT_ICON: Record<string, [string, string]> = {
-  ts: ["TS", "#3b9cdc"], tsx: ["TX", "#3b9cdc"], js: ["JS", "#e5c04b"], jsx: ["JX", "#e5c04b"], mjs: ["JS", "#e5c04b"],
-  go: ["GO", "#4fc3d9"], rs: ["RS", "#dea584"], py: ["PY", "#5b9bd5"], json: ["{}", "#cbcb41"], md: ["M↓", "#6a9fd4"],
-  css: ["#", "#a074c4"], html: ["<>", "#e37933"], yml: ["Y", "#cb6b6b"], yaml: ["Y", "#cb6b6b"], sh: ["$", "#8dc149"],
-  toml: ["T", "#9c9c9c"], sql: ["Q", "#dad8d8"], svg: ["S", "#ffb13b"], png: ["▣", "#a074c4"], lock: ["L", "#9c9c9c"],
+type FileIconC = ComponentType<{ size?: number; stroke?: number; color?: string }>;
+const EXT_ICON: Record<string, [FileIconC, string]> = {
+  ts: [IconFileTypeTs, "#3b9cdc"], tsx: [IconFileTypeTsx, "#3b9cdc"], js: [IconFileTypeJs, "#e5c04b"], jsx: [IconFileTypeJsx, "#e5c04b"], mjs: [IconFileTypeJs, "#e5c04b"],
+  go: [IconBrandGolang, "#4fc3d9"], rs: [IconFileTypeRs, "#dea584"], py: [IconBrandPython, "#5b9bd5"], json: [IconBraces, "#cbcb41"], md: [IconMarkdown, "#6a9fd4"],
+  css: [IconFileTypeCss, "#a074c4"], html: [IconFileTypeHtml, "#e37933"], yml: [IconFileSettings, "#cb6b6b"], yaml: [IconFileSettings, "#cb6b6b"], sh: [IconTerminal2, "#8dc149"],
+  toml: [IconFileSettings, "#9c9c9c"], sql: [IconFileTypeSql, "#dad8d8"], svg: [IconFileTypeSvg, "#ffb13b"], png: [IconPhoto, "#a074c4"], lock: [IconFileLock, "#9c9c9c"],
 };
-export function fileIcon(name: string): [string, string] {
+export function fileIcon(name: string): [FileIconC, string] {
   const i = name.lastIndexOf(".");
   const ext = i >= 0 ? name.slice(i + 1).toLowerCase() : "";
-  return EXT_ICON[ext] ?? ["≡", "#9da5b4"];
+  return EXT_ICON[ext] ?? [IconFileText, "#9da5b4"];
 }

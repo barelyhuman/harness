@@ -8,7 +8,7 @@
   --color-raise: #232326;
   --color-hover: #ffffff0f;
   --color-sel: #ffffff17;
-  --color-border: #2a2a2d;
+  --color-border: #232326;
   --color-text: #d8d8da;
   --color-muted: #8a8a90;
   --color-faint: #5c5c62;
@@ -44,11 +44,11 @@ button { font: inherit; color: inherit; }
 mark.hl { background: none; color: var(--color-accent); font-weight: 600; }
 
 .kbd { font-family: var(--font-sans); font-size: 11px; color: var(--color-muted); letter-spacing: .04em; }
-.btn { border: 1px solid var(--color-border); background: var(--color-raise); border-radius: 6px; padding: 3px 10px; cursor: pointer; }
+.btn { border: 0; background: var(--color-raise); border-radius: 6px; padding: 3px 10px; cursor: pointer; }
 .btn:hover { background: #2c2c30; }
 .btn-primary { background: var(--color-accent); color: #0b0b0d; border-color: transparent; font-weight: 600; }
 .btn-primary:hover { background: #82adff; }
 .btn-danger { background: #5b2323; border-color: #7a2c2c; }
 .btn:disabled { opacity: .5; pointer-events: none; }
-.field { background: var(--color-bg); border: 1px solid var(--color-border); border-radius: 6px; padding: 4px 8px; outline: none; width: 100%; }
+.field { background: var(--color-bg); border: 1px solid transparent; border-radius: 6px; padding: 4px 8px; outline: none; width: 100%; }
 .field:focus { border-color: var(--color-accent); }

@@ -35,7 +35,7 @@ async function archive(s: SessionRow, force: boolean) {
 
 function FileList(p: { files?: string[] }) {
   return (
-    <div class="my-2 max-h-40 overflow-auto rounded border border-border bg-bg p-2 font-mono text-[11px] text-muted">
+    <div class="my-2 max-h-40 overflow-auto rounded bg-bg p-2 font-mono text-[11px] text-muted">
       {(p.files ?? []).map((f) => <div key={f}>{f}</div>)}
     </div>
   );

@@ -1,3 +1,4 @@
+import { IconChevronDown, IconChevronRight } from "@tabler/icons-preact";
 // Find in files: SearchService.Grep -> `search/<streamID>` frames, grouped by file.
 import { useEffect, useRef, useState } from "preact/hooks";
 import { bus } from "../../lib/bus";
@@ -85,13 +86,13 @@ export function SearchPanel({ scopeKey, root }: { scopeKey: string; root: string
 
   return (
     <div data-ctx="search" class="flex h-full min-h-0 flex-col text-[12px]">
-      <div class="space-y-1.5 border-b border-neutral-800 p-2">
+      <div class="space-y-1.5 p-2">
         <div class="flex items-center gap-1">
           <input
             ref={input}
             value={query}
             placeholder="Search"
-            class="min-w-0 flex-1 rounded border border-neutral-700 bg-bg px-2 py-1 outline-none focus:border-blue-500/60"
+            class="min-w-0 flex-1 rounded bg-bg px-2 py-1 outline-none focus:border-blue-500/60"
             onInput={(e) => setQuery((e.target as HTMLInputElement).value)}
           />
           <button class={tog(cs)} title="Match case" onClick={() => setCs(!cs)}>Aa</button>
@@ -100,7 +101,7 @@ export function SearchPanel({ scopeKey, root }: { scopeKey: string; root: string
         <input
           value={glob}
           placeholder="files to include (e.g. *.ts, !dist)"
-          class="w-full rounded border border-neutral-700 bg-bg px-2 py-1 outline-none focus:border-blue-500/60"
+          class="w-full rounded bg-bg px-2 py-1 outline-none focus:border-blue-500/60"
           onInput={(e) => setGlob((e.target as HTMLInputElement).value)}
         />
         <div class="text-neutral-500">
@@ -118,7 +119,7 @@ export function SearchPanel({ scopeKey, root }: { scopeKey: string; root: string
                 class="flex cursor-pointer items-center gap-1 px-2 py-0.5 hover:bg-white/5"
                 onClick={() => setCollapsed({ ...collapsed, [f.path]: open })}
               >
-                <span class="w-3 text-neutral-500">{open ? "▾" : "▸"}</span>
+                <span class="flex w-3 items-center text-neutral-500">{open ? <IconChevronDown size={12} /> : <IconChevronRight size={12} />}</span>
                 <span class="truncate text-neutral-200">{f.path.split("/").pop()}</span>
                 <span class="truncate text-neutral-500">{f.path.includes("/") ? f.path.slice(0, f.path.lastIndexOf("/")) : ""}</span>
                 <span class="ml-auto rounded bg-white/10 px-1 text-[10px]">{f.matches.length}</span>

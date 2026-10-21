@@ -1,3 +1,4 @@
+import { IconCheck, IconX } from "@tabler/icons-preact";
 import { memo } from "preact/compat";
 import { useContext, useState } from "preact/hooks";
 import { SessionService } from "../../lib/bindings/github.com/sid/harness/internal/app";
@@ -32,7 +33,7 @@ function PermissionImpl(p: { b: Block }) {
     const ok = perm.state === "allowed";
     return (
       <div class="flex items-center gap-1.5 px-2 text-[11.5px] text-faint">
-        <span class={ok ? "text-run" : "text-err"}>{ok ? "✓" : "✗"}</span>
+        <span class={`inline-flex `}>{ok ? <IconCheck size={13} /> : <IconX size={13} />}</span>
         <span>{label}</span><span class="truncate font-mono">{cmd || perm.tool}</span>
         {perm.message && <span class="truncate">· {perm.message}</span>}
       </div>
@@ -42,7 +43,7 @@ function PermissionImpl(p: { b: Block }) {
   let inputJson = "";
   if (!bash && perm.input != null) { try { inputJson = JSON.stringify(perm.input, null, 1); } catch { /* ignore */ } }
   return (
-    <div class={`rounded-md border bg-panel2 ${active ? "border-warn/60" : "border-border"}`}>
+    <div class={`rounded-md bg-panel2 ${active ? "ring-1 ring-warn/60" : ""}`}>
       <div class="flex items-center gap-1.5 px-2 pt-1.5 text-[12px]">
         <span class="inline-block h-[7px] w-[7px] rounded-full bg-warn" />
         <span class="text-muted">{bash ? "Run command?" : `Allow ${perm.tool}?`}</span>
@@ -78,14 +79,14 @@ function PlanImpl(p: { b: Block }) {
   const [asking, setAsking] = useState(false);
   const pending = plan.state === "pending";
   return (
-    <div class="rounded-md border border-border bg-panel2">
-      <div class="flex items-center gap-2 border-b border-border/60 px-2 py-1 text-[12px]">
+    <div class="rounded-md bg-panel2">
+      <div class="flex items-center gap-2 px-2 py-1 text-[12px]">
         <span class="font-medium">Plan</span>
         {!pending && <span class={`text-[11px] ${plan.state === "allowed" ? "text-run" : "text-faint"}`}>{plan.state === "allowed" ? "approved" : plan.state}</span>}
       </div>
       <div class="chat-sel max-h-[420px] overflow-auto px-3 py-2"><Markdown text={p.b.text ?? ""} /></div>
       {pending && (
-        <div class="border-t border-border/60 p-2">
+        <div class="p-2">
           {asking && (
             <textarea class="field mb-2 h-16 resize-none" placeholder="What should change? (optional)" value={fb} autoFocus onInput={(e) => setFb(e.currentTarget.value)} />
           )}

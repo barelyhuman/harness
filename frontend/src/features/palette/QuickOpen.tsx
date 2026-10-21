@@ -34,7 +34,7 @@ export function QuickOpen() {
   };
   return (
     <Modal width={620} top label="Quick open">
-      <input class="border-b border-border bg-transparent px-4 py-3 text-[14px] outline-none" autofocus ref={(el) => el?.focus()} placeholder="Go to file..." value={q} onInput={(e) => setQ(e.currentTarget.value)} onKeyDown={key} />
+      <input class="bg-transparent px-4 py-3 text-[14px] outline-none" autofocus ref={(el) => el?.focus()} placeholder="Go to file..." value={q} onInput={(e) => setQ(e.currentTarget.value)} onKeyDown={key} />
       <div ref={list} class="max-h-[50vh] overflow-y-auto py-1">
         {!scope && <div class="px-4 py-3 text-muted">Open a project first</div>}
         {res.map((r, i) => {

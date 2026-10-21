@@ -1,3 +1,4 @@
+import { IconDiamond, IconX } from "@tabler/icons-preact";
 import { useEffect, useRef, useState } from "preact/hooks";
 import type { ComponentChildren } from "preact";
 import { bus } from "../../lib/bus";
@@ -132,10 +133,10 @@ function TabStrip({ scopeKey, root }: { scopeKey: string; root: string }) {
 
   const selectGo = (id: string) => { setScopeFlag(agentTabSelected, scopeKey, false); void T.ActivateTab(scopeKey, id); };
   const closeTab = async (t: Tab) => { for (const n of leaves(t.root)) await T.ClosePane(scopeKey, n.paneId!); };
-  const cls = (on: boolean) => `group flex items-center gap-1.5 h-full px-3 text-[12px] border-r border-white/5 select-none cursor-default ${on ? "bg-bg text-neutral-100" : "text-neutral-500 hover:text-neutral-300 bg-panel"}`;
+  const cls = (on: boolean) => `group flex items-center gap-1.5 h-full px-3 text-[12px] select-none cursor-default ${on ? "bg-bg text-neutral-100" : "text-neutral-500 hover:text-neutral-300 bg-panel"}`;
 
   return (
-    <div class="flex h-8 shrink-0 items-stretch bg-panel border-b border-white/5 overflow-x-auto">
+    <div class="flex h-8 shrink-0 items-stretch bg-panel overflow-x-auto">
       {tabs.map((t, i) => {
         const on = !agentSel && (l?.active ?? tabs[0]?.id) === t.id;
         return (
@@ -157,13 +158,13 @@ function TabStrip({ scopeKey, root }: { scopeKey: string; root: string }) {
                   else if (e.key === "Escape") setEditing(null);
                 }} />
             ) : <span class="truncate max-w-40">{t.title || "shell"}</span>}
-            <button class="opacity-0 group-hover:opacity-100 text-neutral-500 hover:text-white leading-none" title="Close tab" onClick={(e) => { e.stopPropagation(); void closeTab(t); }}>×</button>
+            <button class="opacity-0 group-hover:opacity-100 text-neutral-500 hover:text-white leading-none" title="Close tab" onClick={(e) => { e.stopPropagation(); void closeTab(t); }}><IconX size={12} /></button>
           </div>
         );
       })}
       {agentOn && (
         <div class={cls(agentSel)} onClick={() => setScopeFlag(agentTabSelected, scopeKey, true)}>
-          <span class="text-[#c792ea]">◆</span><span>Agent</span>
+          <span class="text-[#c792ea]"><IconDiamond size={12} /></span><span>Agent</span>
         </div>
       )}
       <button class="px-3 text-neutral-500 hover:text-white" title="New terminal" onClick={() => { setScopeFlag(agentTabSelected, scopeKey, false); void T.NewTab(scopeKey, root); }}>+</button>
@@ -200,7 +201,7 @@ export function TerminalPanel({ scopeKey, root }: { scopeKey: string; root: stri
   } else if (!tab) {
     body = (
       <div class="flex h-full items-center justify-center text-neutral-500 text-[12px]">
-        {l ? <button class="rounded border border-white/10 px-3 py-1 hover:text-white" onClick={() => void T.NewTab(scopeKey, root)}>New terminal</button> : "Starting terminal…"}
+        {l ? <button class="rounded px-3 py-1 hover:text-white" onClick={() => void T.NewTab(scopeKey, root)}>New terminal</button> : "Starting terminal…"}
       </div>
     );
   } else {

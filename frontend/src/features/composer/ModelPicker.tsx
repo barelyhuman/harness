@@ -1,3 +1,4 @@
+import { IconCheck, IconStar, IconStarFilled } from "@tabler/icons-preact";
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { ProjectService } from "../../lib/bindings/github.com/sid/harness/internal/app";
 import type { ModelInfo } from "../../lib/bindings/github.com/sid/harness/internal/app/models";
@@ -73,7 +74,7 @@ export function ModelPicker(p: { sessionId: string; row?: SessionRow; onClose: (
   useEffect(() => { setSel(0); }, [q]);
 
   return (
-    <div class="pop absolute bottom-full left-0 z-30 mb-1 w-[320px] overflow-hidden rounded-lg border border-border bg-panel2 shadow-2xl" onKeyDown={onKey}>
+    <div class="pop absolute bottom-full left-0 z-30 mb-1 w-[320px] overflow-hidden rounded-lg bg-panel2 shadow-2xl" onKeyDown={onKey}>
       {confirm ? (
         <div class="p-3 text-[12px]">
           <div class="font-medium">Switch to {cap(confirm.provider)}?</div>
@@ -86,7 +87,7 @@ export function ModelPicker(p: { sessionId: string; row?: SessionRow; onClose: (
         </div>
       ) : (
         <>
-          <input ref={input} class="w-full border-b border-border bg-transparent px-3 py-2 text-[12.5px] outline-none placeholder:text-faint" placeholder="Search models…" value={q} onInput={(e) => setQ(e.currentTarget.value)} />
+          <input ref={input} class="w-full bg-transparent px-3 py-2 text-[12.5px] outline-none placeholder:text-faint" placeholder="Search models…" value={q} onInput={(e) => setQ(e.currentTarget.value)} />
           <div class="max-h-[300px] overflow-y-auto py-1">
             {order.length === 0 && <div class="px-3 py-2 text-[12px] text-faint">{all.length ? "No match" : "Loading…"}</div>}
             {groups.map((g) => (
@@ -96,10 +97,10 @@ export function ModelPicker(p: { sessionId: string; row?: SessionRow; onClose: (
                   const idx = order.indexOf(it);
                   return (
                     <div key={it.m.key} class={`flex cursor-pointer items-center gap-2 px-3 py-1 text-[12.5px] ${idx === sel ? "bg-sel" : "hover:bg-hover"}`} onMouseEnter={() => setSel(idx)} onClick={() => choose(it.m)}>
-                      <span class={it.m.favourite ? "text-warn" : "text-transparent"}>★</span>
+                      <span class={it.m.favourite ? "text-warn" : "text-transparent"}>{it.m.favourite ? <IconStarFilled size={12} /> : <IconStar size={12} />}</span>
                       <span class="min-w-0 flex-1 truncate"><Label text={it.m.label} pos={it.pos} /></span>
                       {ranked && <span class="text-[10.5px] text-faint">{it.m.provider}</span>}
-                      {it.m.key === cur?.key && <span class="text-accent">✓</span>}
+                      {it.m.key === cur?.key && <span class="text-accent"><IconCheck size={12} /></span>}
                     </div>
                   );
                 })}

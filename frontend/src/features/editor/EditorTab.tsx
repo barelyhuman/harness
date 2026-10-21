@@ -108,7 +108,7 @@ export function EditorTab(props: { scopeKey: string; root: string; path: string 
   return (
     <div data-ctx="editor" class="relative flex h-full w-full flex-col bg-bg">
       {info.diskChanged && (
-        <div class="flex items-center gap-3 border-b border-amber-900/50 bg-amber-950/40 px-3 py-1.5 text-[12px] text-amber-200">
+        <div class="flex items-center gap-3 bg-amber-950/40 px-3 py-1.5 text-[12px] text-amber-200">
           <span class="flex-1">File changed on disk: {tabTitle(path)}</span>
           <button class="rounded px-2 py-0.5 hover:bg-white/10" onClick={() => void reloadFromDisk(path)}>Reload</button>
           <button class="rounded px-2 py-0.5 hover:bg-white/10" onClick={() => void keepMine(path)}>Keep mine</button>
@@ -123,7 +123,7 @@ export function EditorTab(props: { scopeKey: string; root: string; path: string 
       </div>
       {c && c.path === path && (
         <div class="absolute inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div class="w-[380px] rounded-lg border border-neutral-700 bg-panel2 p-4 shadow-xl">
+          <div class="w-[380px] rounded-lg bg-panel2 p-4 shadow-xl">
             <div class="mb-1 text-[13px] font-medium text-neutral-100">Save conflict</div>
             <div class="mb-4 text-[12px] text-neutral-400">{tabTitle(path)} changed on disk since you opened it.</div>
             <div class="flex justify-end gap-2 text-[12px]">

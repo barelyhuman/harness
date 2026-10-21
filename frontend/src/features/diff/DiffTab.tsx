@@ -1,3 +1,4 @@
+import { IconCircleFilled } from "@tabler/icons-preact";
 import { useEffect, useRef, useState } from "preact/hooks";
 import type * as Monaco from "monaco-editor";
 import { ensureMonaco } from "../../lib/monaco-setup";
@@ -258,11 +259,11 @@ export function DiffTab({ scopeKey, root, path: rawPath, staged }: { scopeKey: s
   const name = path.split("/").pop();
   return (
     <div class="flex h-full min-h-0 flex-col bg-bg" data-ctx="diff">
-      <div class="flex h-[30px] shrink-0 items-center gap-[2px] border-b border-border px-[8px] text-[12px] text-text">
+      <div class="flex h-[30px] shrink-0 items-center gap-[2px] px-[8px] text-[12px] text-text">
         <span class="mr-2 truncate">
           {name}
           <span class="opacity-60"> ({staged ? "Index" : "Working Tree"})</span>
-          {dirty && <span class="ml-1">●</span>}
+          {dirty && <IconCircleFilled size={8} class="ml-1 inline" />}
         </span>
         <span class="flex-1" />
         <Btn title="Previous Change (⇧⌥F5)" onClick={() => api.current?.next("previous")}><I.IconPrev /></Btn>

@@ -253,7 +253,7 @@ export function ScmPanel({ scopeKey, root }: { scopeKey: string; root: string })
 
   // ---- rendering ----------------------------------------------------------
   const renderRow = (g: string, r: SCMRow, indent: number, showDir: boolean) => {
-    const [letter, color] = fileIcon(r.name);
+    const [FileGlyph, color] = fileIcon(r.name);
     const selected = isSel(g, r.path);
     const isCursor = cursor?.g === g && cursor.path === r.path;
     const staged = g === "staged";
@@ -274,7 +274,7 @@ export function ScmPanel({ scopeKey, root }: { scopeKey: string; root: string })
           setMenu({ x: e.clientX, y: e.clientY, g, row: r });
         }}
       >
-        <span class="mr-[6px] inline-flex h-4 w-4 shrink-0 items-center justify-center text-[9px] font-bold" style={{ color }}>{letter}</span>
+        <span class="mr-[6px] inline-flex h-4 w-4 shrink-0 items-center justify-center" style={{ color }}><FileGlyph size={16} stroke={1.5} /></span>
         <span class="shrink-0 truncate" style={{ color: r.class === "scm-deleted" ? CLASS_COLOR[r.class] : undefined, textDecoration: r.class === "scm-deleted" ? "line-through" : undefined }}>{r.name}</span>
         {showDir && r.dir && (
           <span class="ml-[6px] min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-[0.9em] opacity-60" style={{ direction: "rtl", textAlign: "left" }}>
@@ -352,7 +352,7 @@ export function ScmPanel({ scopeKey, root }: { scopeKey: string; root: string })
     </div>
   );
   const Sep = () => <div class="mx-[8px] my-[4px] h-px bg-[#454545]" />;
-  const menuBox = "fixed z-50 min-w-[170px] rounded-[5px] border border-border bg-raise py-[4px] shadow-[0_2px_8px_#000a]";
+  const menuBox = "fixed z-50 min-w-[170px] rounded-[5px] bg-raise py-[4px] shadow-[0_2px_8px_#000a]";
 
   const hasChanges = allRows.length > 0;
   const isMac = true;
@@ -438,7 +438,7 @@ export function ScmPanel({ scopeKey, root }: { scopeKey: string; root: string })
             <I.IconChevron open />
           </button>
           {dropdown && (
-            <div class="absolute right-0 top-[28px] z-50 min-w-[190px] rounded-[5px] border border-border bg-raise py-[4px] shadow-[0_2px_8px_#000a]">
+            <div class="absolute right-0 top-[28px] z-50 min-w-[190px] rounded-[5px] bg-raise py-[4px] shadow-[0_2px_8px_#000a]">
               <MenuItem label="Commit" onClick={() => doCommit()} />
               <MenuItem label="Commit (Amend)" onClick={() => doCommit(true)} />
               <Sep />
@@ -488,7 +488,7 @@ export function ScmPanel({ scopeKey, root }: { scopeKey: string; root: string })
 
       {dialog && (
         <div class="absolute inset-0 z-[60] flex items-start justify-center bg-black/40 pt-[60px]" onMouseDown={(e) => e.stopPropagation()}>
-          <div class="mx-[12px] w-full max-w-[320px] rounded-[5px] border border-border bg-raise p-[14px] shadow-[0_4px_16px_#000c]">
+          <div class="mx-[12px] w-full max-w-[320px] rounded-[5px] bg-raise p-[14px] shadow-[0_4px_16px_#000c]">
             <div class="text-[13px] font-semibold text-white">{dialog.message}</div>
             {dialog.detail && <div class="mt-[6px] text-[12px] opacity-80">{dialog.detail}</div>}
             <div class="mt-[14px] flex justify-end gap-[8px]">

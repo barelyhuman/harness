@@ -27,7 +27,7 @@ export function DiffView(p: { diff: string; max?: number }) {
   const max = p.max ?? 60;
   const shown = all ? lines : lines.slice(0, max);
   return (
-    <div class="overflow-x-auto border-t border-border/60 bg-bg py-1 font-mono text-[11.5px] leading-[1.5]">
+    <div class="overflow-x-auto bg-bg py-1 font-mono text-[11.5px] leading-[1.5]">
       {shown.map((l, i) => {
         const c = l.startsWith("@@") ? "diff-h" : l.startsWith("+++") || l.startsWith("---") || l.startsWith("diff ") || l.startsWith("index ") ? "diff-m" : l[0] === "+" ? "diff-a" : l[0] === "-" ? "diff-r" : "";
         return <span key={i} class={`diff-l ${c}`}>{l || " "}</span>;
@@ -41,7 +41,7 @@ export function DiffView(p: { diff: string; max?: number }) {
 
 function Shell(p: { status: string; denied?: boolean; head: any; actions?: any; body?: any; open?: boolean; onToggle?: () => void }) {
   return (
-    <div class="overflow-hidden rounded-md border border-border/80 bg-panel2/70">
+    <div class="overflow-hidden rounded-md bg-panel2/70">
       <div class="flex min-h-[26px] items-center gap-1.5 px-2 text-[12px]">
         <StatusIcon status={p.status} denied={p.denied} />
         <div class="flex min-w-0 flex-1 items-center gap-1.5" onClick={p.onToggle} style={p.onToggle ? "cursor:pointer" : ""}>{p.head}</div>
@@ -74,10 +74,10 @@ function BashCard(p: { b: Block }) {
       head={<><span class="text-faint">$</span><span class="truncate font-mono text-[12px]" title={t.command}>{firstLine(t.command ?? "")}</span>{failed && <span class="shrink-0 rounded bg-err/15 px-1 text-[10.5px] text-err">exit {t.exitCode}</span>}{t.interrupted && <span class="shrink-0 text-[10.5px] text-warn">interrupted</span>}</>}
       actions={<button class="shrink-0 text-[11px] text-muted hover:text-text" onClick={() => void ensureAgentTerminal(scopeKey).catch(toastError)}>Open in terminal</button>}
       body={lines.length > 0 && (
-        <div class="border-t border-border/60 bg-bg">
+        <div class="bg-bg">
           <pre class="chat-sel m-0 max-h-[360px] overflow-auto px-2 py-1 font-mono text-[11.5px] leading-[1.5] text-muted">{shown.join("\n")}</pre>
           {long && (
-            <button class="w-full border-t border-border/40 py-0.5 text-[11px] text-muted hover:text-text" onClick={() => setExpanded(!expanded)}>
+            <button class="w-full py-0.5 text-[11px] text-muted hover:text-text" onClick={() => setExpanded(!expanded)}>
               {expanded ? "Show less" : `Show ${Math.max(n, lines.length) - 20} more lines`}
             </button>
           )}
@@ -141,7 +141,7 @@ function TaskCard(p: { b: Block }) {
       onToggle={() => setOpen(!open)}
       head={<><span class="shrink-0 text-muted">Task</span><span class="truncate">{p.b.title || t.name}</span>{kids.length > 0 && <span class="shrink-0 text-[11px] text-faint">{kids.length} step{kids.length > 1 ? "s" : ""}</span>}</>}
       body={open && kids.length > 0 && (
-        <div class="space-y-1 border-t border-border/60 py-1.5 pl-3 pr-1.5">
+        <div class="space-y-1 py-1.5 pl-3 pr-1.5">
           {kids.map((c) => <BlockView key={c.id} b={c} />)}
         </div>
       )}
@@ -162,9 +162,9 @@ function GenericCard(p: { b: Block }) {
       onToggle={() => setOpen(!open)}
       head={<><span class="shrink-0 text-muted">{t.name}</span><span class="truncate text-faint">{p.b.title}</span></>}
       body={open && (
-        <div class="border-t border-border/60 bg-bg">
+        <div class="bg-bg">
           <pre class="chat-sel m-0 max-h-[300px] overflow-auto px-2 py-1 font-mono text-[11.5px] text-muted">{json}</pre>
-          {t.output && <pre class="chat-sel m-0 max-h-[300px] overflow-auto border-t border-border/40 px-2 py-1 font-mono text-[11.5px] text-muted">{t.output}</pre>}
+          {t.output && <pre class="chat-sel m-0 max-h-[300px] overflow-auto px-2 py-1 font-mono text-[11.5px] text-muted">{t.output}</pre>}
         </div>
       )}
     />

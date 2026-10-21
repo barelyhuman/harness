@@ -148,14 +148,14 @@ export function ProjectPicker() {
   return (
     <>
       <div class="fixed inset-0 z-40" onMouseDown={closeOverlay} />
-      <div class="pop absolute left-2 right-2 top-[44px] z-50 flex flex-col overflow-hidden rounded-xl border border-border bg-panel2 shadow-2xl shadow-black/60" style={{ minWidth: 360 }}>
+      <div class="pop absolute left-2 right-2 top-[44px] z-50 flex flex-col overflow-hidden rounded-xl bg-panel2 shadow-2xl shadow-black/60" style={{ minWidth: 360 }}>
         {mode === "path" && (
-          <div class="flex items-center gap-1 border-b border-border px-3 py-1.5 text-[11px] text-muted">
+          <div class="flex items-center gap-1 px-3 py-1.5 text-[11px] text-muted">
             <Icon name="folder" size={11} /> <span class="min-w-0 flex-1 truncate" title={dir}>{dir.replace(home, "~")}</span>
             {hidden && <span class="rounded bg-sel px-1">hidden</span>}
           </div>
         )}
-        <input ref={input} class="border-b border-border bg-transparent px-3 py-2 outline-none" placeholder={mode === "recent" ? "Search projects, or type / ~ . to browse" : "Filter, or type a path like ~/code/"} value={text} onInput={(e) => onInput(e.currentTarget.value)} onKeyDown={key} />
+        <input ref={input} class="bg-transparent px-3 py-2 outline-none" placeholder={mode === "recent" ? "Search projects, or type / ~ . to browse" : "Filter, or type a path like ~/code/"} value={text} onInput={(e) => onInput(e.currentTarget.value)} onKeyDown={key} />
         <div ref={scroller} class="overflow-y-auto" style={{ maxHeight: VIEW }} onScroll={(e) => setTop(e.currentTarget.scrollTop)}>
           <div style={{ height: rows.length * ROW, position: "relative" }}>
             {shown.map((r, j) => {
@@ -168,14 +168,14 @@ export function ProjectPicker() {
                   <span class="min-w-0 truncate"><Highlight text={r.label} positions={r.positions} /></span>
                   {r.sub && <span class="min-w-0 flex-1 truncate text-[11px] text-faint">{r.sub}</span>}
                   <span class="flex-1" />
-                  {b && <span class="shrink-0 rounded border border-border px-1.5 text-[10px] text-muted">{b.branch}{b.worktrees > 1 ? ` · ${b.worktrees} wt` : ""}</span>}
+                  {b && <span class="shrink-0 rounded px-1.5 text-[10px] text-muted">{b.branch}{b.worktrees > 1 ? ` · ${b.worktrees} wt` : ""}</span>}
                 </div>
               );
             })}
           </div>
           {rows.length === 0 && <div class="px-3 py-3 text-muted">{mode === "recent" ? "No projects. Type / or ~ to browse." : "Empty"}</div>}
         </div>
-        <div class="flex gap-3 border-t border-border px-3 py-1.5 text-[10.5px] text-faint">
+        <div class="flex gap-3 px-3 py-1.5 text-[10.5px] text-faint">
           <span>⏎ open</span><span>→ enter</span><span>← up</span><span>⌘. hidden</span><span>⌘⏎ new window</span>
         </div>
       </div>

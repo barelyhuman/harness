@@ -10,7 +10,7 @@ export function Toasts() {
   return (
     <div class="pointer-events-none fixed bottom-4 right-4 z-[70] flex flex-col items-end gap-2">
       {toasts.value.map((t) => (
-        <div key={t.id} onClick={() => dismissToast(t.id)} class={`pop pointer-events-auto max-w-[420px] cursor-default rounded-lg border px-3 py-2 text-[12px] shadow-xl shadow-black/50 ${t.kind === "error" ? "border-err/40 bg-[#2a1717] text-red-200" : t.kind === "success" ? "border-run/40 bg-[#14231a] text-green-200" : "border-border bg-raise text-text"}`}>
+        <div key={t.id} onClick={() => dismissToast(t.id)} class={`pop pointer-events-auto max-w-[420px] cursor-default rounded-lg border border-transparent px-3 py-2 text-[12px] shadow-xl shadow-black/50 ${t.kind === "error" ? "border-err/40 bg-[#2a1717] text-red-200" : t.kind === "success" ? "border-run/40 bg-[#14231a] text-green-200" : "bg-raise text-text"}`}>
           {t.msg}
         </div>
       ))}

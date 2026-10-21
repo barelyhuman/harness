@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -94,8 +95,10 @@ func TestWorktreeLifecycle(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	wantDir := filepath.Join(filepath.Dir(p.Path), "myrepo-worktrees", "add-login")
-	if a.WorktreePath != wantDir || a.Branch != "harness/add-login" || a.BaseRef != "main" {
+	wantDir := a.WorktreePath
+	branchRe := regexp.MustCompile(`^harness/add-login-[0-9a-f]{6}$`)
+	if wantDir != filepath.Join(filepath.Dir(p.Path), "myrepo-worktrees", strings.TrimPrefix(a.Branch, "harness/")) ||
+		!branchRe.MatchString(a.Branch) || a.BaseRef != "main" {
 		t.Fatalf("%+v", a)
 	}
 	if _, err := os.Stat(filepath.Join(wantDir, "a.txt")); err != nil {
@@ -105,13 +108,12 @@ func TestWorktreeLifecycle(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !strings.HasSuffix(b.WorktreePath, "add-login-2") || b.Branch != "harness/add-login-2" {
+	if !branchRe.MatchString(b.Branch) || b.Branch == a.Branch {
 		t.Fatalf("collision: %+v", b)
 	}
 	// Pre-existing branch also forces a suffix.
-	sh(t, p.Path, "branch", "harness/other")
 	c, err := ss.Create(p.ID, CreateOpts{Title: "other", ScopeKind: ScopeWorktree})
-	if err != nil || c.Branch != "harness/other-2" {
+	if err != nil || !regexp.MustCompile(`^harness/other-[0-9a-f]{6}$`).MatchString(c.Branch) {
 		t.Fatalf("%+v %v", c, err)
 	}
 	sc, _ := ss.Scope(a.ID)
@@ -126,7 +128,7 @@ func TestWorktreeLifecycle(t *testing.T) {
 	if _, err := os.Stat(wantDir); !os.IsNotExist(err) {
 		t.Error("worktree should be gone")
 	}
-	sh(t, p.Path, "rev-parse", "--verify", "harness/add-login")
+	sh(t, p.Path, "rev-parse", "--verify", a.Branch)
 	if l, _ := ss.List(p.ID, false); len(l) != 2 {
 		t.Errorf("active list %d", len(l))
 	}
@@ -154,7 +156,7 @@ func TestWorktreeLifecycle(t *testing.T) {
 	if _, err := os.Stat(wantDir); !os.IsNotExist(err) {
 		t.Error("dir should be gone")
 	}
-	if out := sh(t, p.Path, "branch", "--list", "harness/add-login"); strings.TrimSpace(out) != "" {
+	if out := sh(t, p.Path, "branch", "--list", a.Branch); strings.TrimSpace(out) != "" {
 		t.Errorf("branch remains: %q", out)
 	}
 	if _, err := ss.Get(a.ID); !errors.Is(err, ErrNotFound) {
@@ -165,9 +167,8 @@ func TestWorktreeLifecycle(t *testing.T) {
 	if err := ss.Delete(b.ID, true); err != nil {
 		t.Fatal(err)
 	}
-	// After delete the slug is reusable.
 	d, err := ss.Create(p.ID, CreateOpts{Title: "Add Login", ScopeKind: ScopeWorktree})
-	if err != nil || d.Branch != "harness/add-login" {
+	if err != nil || !branchRe.MatchString(d.Branch) {
 		t.Fatalf("%+v %v", d, err)
 	}
 }

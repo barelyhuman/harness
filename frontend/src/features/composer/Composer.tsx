@@ -8,6 +8,8 @@ import { toast, toastError } from "../../state/toast";
 import { scopeRoot } from "../chat/ctx";
 import { cycleEffort, cycleMode, findModel, isBusy, loadModels, models, pickerOpen, registerComposerCommands, sessionRow } from "./actions";
 import { ModelPicker } from "./ModelPicker";
+import { RoleChip } from "./RoleChip";
+import { loadRoles, rolesByProject, setRole } from "../../state/roles";
 
 type Draft = { text: string; atts: Attachment[] };
 const drafts = new Map<string, Draft>();
@@ -181,6 +183,9 @@ export function Composer(p: { sessionId: string }) {
     }
   };
 
+  const pid = row?.projectId ?? "";
+  useEffect(() => { if (pid) void loadRoles(pid); }, [pid]);
+  const roles = rolesByProject.value[pid]?.roles;
   const m = findModel(models.value, row);
   const modelLabel = m?.label ?? (row?.model || "model");
   const chip = "flex h-6 items-center gap-1 rounded-md px-2 text-[11.5px] text-muted hover:bg-hover hover:text-text";
@@ -224,6 +229,12 @@ export function Composer(p: { sessionId: string }) {
           <button class={chip} title="Model (⌘/)" onClick={() => { void loadModels(); pickerOpen.value = !pickerOpen.value; }}>{modelLabel}</button>
           <button class={chip} title="Mode (⇧Tab)" onClick={() => void cycleMode(sid)}>{row?.mode || "mode"}</button>
           <button class={chip} title="Effort (⌘E)" onClick={() => void cycleEffort(sid)}>{row?.effort ? `effort: ${row.effort}` : "effort"}</button>
+          {pid && row?.mode === "plan" && (
+            <RoleChip label="→" value={roles?.executor ?? ""} placeholder="same model" title="Executor: takes over when you approve the plan" onPick={(k) => void setRole(pid, "executor", k)} />
+          )}
+          {pid && row?.provider === "claude" && (
+            <RoleChip label="Explore" value={roles?.explorer ?? ""} placeholder="built-in" title="Explorer subagent model (applies at the next agent launch)" onPick={(k) => void setRole(pid, "explorer", k)} />
+          )}
           <div class="flex-1" />
           {busy && <button class="btn btn-sm" onClick={() => void SessionService.Interrupt(sid).catch(toastError)}>Stop</button>}
           <button class="btn btn-primary btn-sm" disabled={!text.trim() && !atts.length} onClick={() => void send("auto")}>{busy ? "Queue" : "Send"}</button>

@@ -29,6 +29,15 @@ export function registerShellCommands(): void {
       openOverlay({ kind: "projectsettings", projectId: id });
     },
   });
+  for (const [role, label] of [["planner", "Planner"], ["executor", "Executor"], ["explorer", "Explorer"]] as const)
+    reg({
+      id: `agents.role.${role}`, title: `Agents: Set ${label} Model...`,
+      run: () => {
+        const id = currentProjectId.value;
+        if (!id) { toast("Open a project first.", "info"); return; }
+        openOverlay({ kind: "projectsettings", projectId: id, role });
+      },
+    });
   for (let i = 1; i <= 9; i++)
     reg({
       id: `agents.jump.${i}`, title: `Jump to Agent ${i}`, keys: [`cmd+${i}`],

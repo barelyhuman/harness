@@ -143,6 +143,7 @@ func New(o Options) (*App, error) {
 		return nil, fmt.Errorf("settings: %w", err)
 	}
 	a.SessionSvc.settings = a.SettingsSvc
+	a.Sup.roles = a.SessionSvc.agentRoles
 	if !o.SkipRecover {
 		a.Sup.wg.Add(1)
 		go func() { defer a.Sup.wg.Done(); a.Sup.Recover() }()

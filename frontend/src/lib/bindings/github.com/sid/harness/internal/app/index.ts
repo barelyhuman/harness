@@ -27,6 +27,7 @@ export {
 };
 
 export type {
+    AgentRolesInfo,
     Attachment,
     BusInfo,
     CreateSessionOpts,

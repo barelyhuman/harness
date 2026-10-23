@@ -1,12 +1,13 @@
 // Overlay state (palette, quick open, sheets, picker). One overlay at a time.
 import { effect, signal } from "@preact/signals";
 import { setContext } from "../lib/commands";
+import type { Role } from "./roles";
 
 export type Overlay =
   | { kind: "palette" }
   | { kind: "quickopen" }
   | { kind: "picker" }
-  | { kind: "projectsettings"; projectId: string }
+  | { kind: "projectsettings"; projectId: string; role?: Role }
   | { kind: "quit"; shells: number };
 
 export const overlay = signal<Overlay | null>(null);

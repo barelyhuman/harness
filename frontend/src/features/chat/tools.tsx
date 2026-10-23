@@ -134,12 +134,14 @@ function TaskCard(p: { b: Block }) {
   const t = p.b.tool!;
   const kids = p.b.children ?? [];
   const [open, setOpen] = useState(!p.b.collapsed);
+  // Subagent name (e.g. "explorer") when the Task/Agent call names one.
+  const agent = (t.input as { subagent_type?: unknown } | undefined)?.subagent_type;
   return (
     <Shell
       status={t.status}
       open={open}
       onToggle={() => setOpen(!open)}
-      head={<><span class="shrink-0 text-muted">Task</span><span class="truncate">{p.b.title || t.name}</span>{kids.length > 0 && <span class="shrink-0 text-[11px] text-faint">{kids.length} step{kids.length > 1 ? "s" : ""}</span>}</>}
+      head={<><span class="shrink-0 text-muted">{typeof agent === "string" && agent ? agent : "Task"}</span><span class="truncate">{p.b.title || t.name}</span>{kids.length > 0 && <span class="shrink-0 text-[11px] text-faint">{kids.length} step{kids.length > 1 ? "s" : ""}</span>}</>}
       body={open && kids.length > 0 && (
         <div class="space-y-1 py-1.5 pl-3 pr-1.5">
           {kids.map((c) => <BlockView key={c.id} b={c} />)}

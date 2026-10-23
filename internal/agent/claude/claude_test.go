@@ -350,6 +350,7 @@ func TestCommand(t *testing.T) {
 		AllowedTools: []string{"Read", "Bash(ls:*)"}, DisallowedTools: []string{"WebFetch"},
 		Settings:           []json.RawMessage{json.RawMessage(`{"a":{"x":1,"y":2},"b":1}`), json.RawMessage(`{"a":{"y":3}}`)},
 		AppendSystemPrompt: []string{"one", "", "two"},
+		Agents:             map[string]agent.SubagentDef{"explorer": {Description: "d", Prompt: "p", Tools: []string{"Read"}, Model: "haiku"}},
 		Env:                []string{"K=V"},
 	})
 	if err != nil {
@@ -360,7 +361,9 @@ func TestCommand(t *testing.T) {
 		"--permission-mode", "plan", "--model", "sonnet", "--effort", "high", "--resume", "SID",
 		"--mcp-config", "m.json", "--add-dir", "/a", "--add-dir", "/b",
 		"--allowedTools", "Read,Bash(ls:*)", "--disallowedTools", "WebFetch",
-		"--settings", `{"a":{"x":1,"y":3},"b":1}`, "--append-system-prompt", "one\n\ntwo"}
+		"--settings", `{"a":{"x":1,"y":3},"b":1}`,
+		"--agents", `{"explorer":{"description":"d","prompt":"p","tools":["Read"],"model":"haiku"}}`,
+		"--append-system-prompt", "one\n\ntwo"}
 	if !reflect.DeepEqual(c.Args, want) {
 		t.Errorf("args\n got %q\nwant %q", c.Args, want)
 	}
@@ -369,7 +372,7 @@ func TestCommand(t *testing.T) {
 	}
 	c, _ = p.Command(agent.StartOpts{})
 	for _, a := range c.Args {
-		if a == "--model" || a == "--settings" || a == "--resume" {
+		if a == "--model" || a == "--settings" || a == "--resume" || a == "--agents" {
 			t.Errorf("unexpected %s in minimal argv", a)
 		}
 	}

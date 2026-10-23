@@ -1,6 +1,7 @@
 package app
 
 import (
+	"log"
 	"os/exec"
 	"strings"
 
@@ -24,9 +25,12 @@ type SendMessage struct {
 }
 
 // RespondOpts is the Respond payload. Behavior: allow | allow_always | deny.
+// Executor (plan proposals only) overrides the project's executor model for
+// this approval; empty uses the project role.
 type RespondOpts struct {
 	Behavior string `json:"behavior"`
 	Message  string `json:"message"`
+	Executor string `json:"executor"`
 }
 
 // ModelSwitch is the SetModel/CycleModel result. ForkedSessionID is set when
@@ -134,8 +138,12 @@ func (s *SessionService) sendTo(sr *sessRun, provider string, um agent.UserMessa
 	return sr.deliver(um)
 }
 
-// Respond answers a permission request or plan proposal.
-func (s *SessionService) Respond(sessionID, reqID string, o RespondOpts) error {
+// Respond answers a permission request or plan proposal. Approving a plan
+// hands the work to the executor model when one is set: within the planner's
+// provider the model is switched live and plan mode is left; across
+// providers the plan is declined in the planner and a new session is forked
+// in the same worktree (ForkedSessionID) with the plan as its handoff.
+func (s *SessionService) Respond(sessionID, reqID string, o RespondOpts) (ModelSwitch, error) {
 	var b agent.Behavior
 	switch o.Behavior {
 	case "allow":
@@ -145,17 +153,84 @@ func (s *SessionService) Respond(sessionID, reqID string, o RespondOpts) error {
 	case "deny":
 		b = agent.BehaviorDeny
 	default:
-		return badArg("behavior must be allow, allow_always or deny")
+		return ModelSwitch{}, badArg("behavior must be allow, allow_always or deny")
 	}
-	sr, _, err := s.live(sessionID)
+	sr, sess, err := s.live(sessionID)
 	if err != nil {
-		return err
+		return ModelSwitch{}, err
 	}
 	c := sr.liveClient()
 	if c == nil {
-		return wrapErr(errNoRun)
+		return ModelSwitch{}, wrapErr(errNoRun)
 	}
-	return wrapErr(c.Permission(reqID, agent.Decision{Behavior: b, Message: o.Message}))
+	sr.mu.Lock()
+	plan, isPlan := sr.st.plans[reqID]
+	isPlan = isPlan && sr.st.perms[reqID]
+	sr.mu.Unlock()
+	if !isPlan {
+		return ModelSwitch{}, wrapErr(c.Permission(reqID, agent.Decision{Behavior: b, Message: o.Message}))
+	}
+	if b == agent.BehaviorDeny {
+		err := c.Permission(reqID, agent.Decision{Behavior: b, Message: o.Message})
+		if err == nil && o.Message == "" { // feedback means "revise", not "rejected"
+			s.specStatus(sessionID, SpecRejected)
+		}
+		return ModelSwitch{}, wrapErr(err)
+	}
+	exec := o.Executor
+	if exec == "" {
+		exec = s.agentRoles(sess.ProjectID).Executor
+	}
+	if exec != "" && agent.ModelProvider(exec) == "" {
+		return ModelSwitch{}, badArg("executor must be <provider>/<id>")
+	}
+	if exec == "" || exec == sessionModelKey(sess) || s.models.SameProvider(sessionModelKey(sess), exec) {
+		if err := c.Permission(reqID, agent.Decision{Behavior: b, Message: o.Message}); err != nil {
+			return ModelSwitch{}, wrapErr(err)
+		}
+		s.specStatus(sessionID, SpecApproved)
+		if exec != "" && exec != sessionModelKey(sess) {
+			if _, err := s.SetModel(sessionID, exec); err != nil {
+				return ModelSwitch{}, err
+			}
+		}
+		if exec != "" {
+			if err := s.applyMode(sr, sessionID, defaultMode(sess.Provider)); err != nil {
+				return ModelSwitch{}, err
+			}
+		}
+		return ModelSwitch{}, nil
+	}
+	// Cross-provider: the planner stops here and the executor takes over.
+	if err := c.Permission(reqID, agent.Decision{Behavior: agent.BehaviorDeny,
+		Message: "Plan approved; handed off to executor " + exec + ". Stop here."}); err != nil {
+		return ModelSwitch{}, wrapErr(err)
+	}
+	s.specStatus(sessionID, SpecApproved)
+	sess, _ = s.sessions.Get(sessionID)
+	id, err := s.fork(sr, sess, exec, planHandoff(plan, sess.SpecPath))
+	return ModelSwitch{ForkedSessionID: id}, err
+}
+
+func (s *SessionService) specStatus(sessionID, status string) {
+	sess, err := s.sessions.Get(sessionID)
+	if err != nil || sess.SpecPath == "" {
+		return
+	}
+	if err := setSpecStatus(sess.SpecPath, status); err != nil {
+		log.Printf("harness: plan spec status for %s: %v", sessionID, err)
+	}
+}
+
+func planHandoff(plan, specPath string) string {
+	var b strings.Builder
+	b.WriteString("## Approved plan\n\n")
+	if specPath != "" {
+		b.WriteString("Saved at " + specPath + ".\n\n")
+	}
+	b.WriteString(strings.TrimSpace(plan))
+	b.WriteString("\n\nThe plan above was approved by the user. Implement it now.")
+	return b.String()
 }
 
 // Interrupt stops the current turn and drops any held messages.
@@ -259,7 +334,7 @@ func (s *SessionService) SetModel(sessionID, modelKey string) (ModelSwitch, erro
 		s.push()
 		return ModelSwitch{}, nil
 	}
-	id, err := s.fork(sr, sess, modelKey)
+	id, err := s.fork(sr, sess, modelKey, "")
 	return ModelSwitch{ForkedSessionID: id}, err
 }
 
@@ -277,7 +352,9 @@ func (s *SessionService) CycleModel(sessionID string, dir int) (ModelSwitch, err
 	return s.SetModel(sessionID, m.Key())
 }
 
-func (s *SessionService) fork(src *sessRun, sess workspace.Session, modelKey string) (string, error) {
+// fork starts a session on modelKey's provider in sess's worktree, seeded
+// with a handoff message; extra (if any) is appended to it.
+func (s *SessionService) fork(src *sessRun, sess workspace.Session, modelKey, extra string) (string, error) {
 	sc, err := s.sessions.Scope(sess.ID)
 	if err != nil {
 		return "", wrapErr(err)
@@ -287,6 +364,9 @@ func (s *SessionService) fork(src *sessRun, sess workspace.Session, modelKey str
 	stat := gitOut(sc.Root, "diff", "--stat", "HEAD")
 	diff := gitOut(sc.Root, "diff", "HEAD")
 	msg := agent.BuildHandoff(evs, stat, diff, 0)
+	if extra != "" {
+		msg += "\n\n" + extra
+	}
 
 	fork, err := s.sessions.Create(sess.ProjectID, workspace.CreateOpts{
 		Title: sess.Title, Provider: provider, Model: modelKey, Mode: defaultMode(provider),

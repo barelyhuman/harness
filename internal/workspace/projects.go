@@ -33,6 +33,17 @@ type Project struct {
 	Name       string   `json:"name"`
 	LastOpened int64    `json:"lastOpened"`
 	SetupCmds  []string `json:"setupCmds"`
+	// AgentRoles are per-project overrides of the settings.json agents.* keys.
+	AgentRoles AgentRoles `json:"agentRoles"`
+}
+
+// AgentRoles name the model (key <provider>/<id>) used for each agent role
+// and where approved plans are written. Empty fields mean "not set".
+type AgentRoles struct {
+	Planner  string `json:"planner,omitempty"`
+	Executor string `json:"executor,omitempty"`
+	Explorer string `json:"explorer,omitempty"`
+	SpecsDir string `json:"specsDir,omitempty"`
 }
 
 // Projects manages the projects table.
@@ -40,14 +51,14 @@ type Projects struct{ db *sql.DB }
 
 func NewProjects(db *sql.DB) *Projects { return &Projects{db: db} }
 
-const projCols = "id, path, name, last_opened, setup_cmds"
+const projCols = "id, path, name, last_opened, setup_cmds, agent_roles"
 
 type scanner interface{ Scan(...any) error }
 
 func scanProject(r scanner) (Project, error) {
 	var p Project
-	var cmds string
-	if err := r.Scan(&p.ID, &p.Path, &p.Name, &p.LastOpened, &cmds); err != nil {
+	var cmds, roles string
+	if err := r.Scan(&p.ID, &p.Path, &p.Name, &p.LastOpened, &cmds, &roles); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return p, ErrNotFound
 		}
@@ -57,6 +68,11 @@ func scanProject(r scanner) (Project, error) {
 	if cmds != "" {
 		if err := json.Unmarshal([]byte(cmds), &p.SetupCmds); err != nil {
 			return p, fmt.Errorf("workspace: bad setup_cmds: %w", err)
+		}
+	}
+	if roles != "" {
+		if err := json.Unmarshal([]byte(roles), &p.AgentRoles); err != nil {
+			return p, fmt.Errorf("workspace: bad agent_roles: %w", err)
 		}
 	}
 	return p, nil
@@ -124,6 +140,12 @@ func (ps *Projects) SetSetupCmds(id string, cmds []string) error {
 	}
 	b, _ := json.Marshal(cmds)
 	return mustAffect(ps.db.Exec("UPDATE projects SET setup_cmds = ? WHERE id = ?", string(b), id))
+}
+
+// SetAgentRoles replaces the project's agent role overrides.
+func (ps *Projects) SetAgentRoles(id string, r AgentRoles) error {
+	b, _ := json.Marshal(r)
+	return mustAffect(ps.db.Exec("UPDATE projects SET agent_roles = ? WHERE id = ?", string(b), id))
 }
 
 func mustAffect(r sql.Result, err error) error {

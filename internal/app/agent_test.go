@@ -51,6 +51,10 @@ func (s *fakeSession) Feed(line []byte) ([]agent.Event, error) {
 		return []agent.Event{agent.NewEvent(agent.KindTextDelta, "", agent.BlockDelta{MessageID: "m", Text: m.V})}, nil
 	case "perm":
 		return []agent.Event{agent.NewEvent(agent.KindPermissionRequest, "", agent.PermissionRequest{ReqID: m.ID, Tool: "Bash"})}, nil
+	case "plan":
+		return []agent.Event{agent.NewEvent(agent.KindPlanProposal, "", agent.PlanProposal{ReqID: m.ID, Text: m.V})}, nil
+	case "mode":
+		return []agent.Event{agent.NewEvent(agent.KindModeChanged, "", agent.ModeChanged{Mode: m.V})}, nil
 	case "result":
 		return []agent.Event{agent.NewEvent(agent.KindRunResult, "", agent.RunResult{Status: "success"})}, nil
 	}
@@ -80,8 +84,9 @@ func (s *fakeSession) Closed(code int, tail string) []agent.Event {
 func printJSON(m map[string]string) { b, _ := json.Marshal(m); fmt.Println(string(b)) }
 
 // fakeCLI: on {"user":X}: init (psid = FAKE_RESUME or "psid-1"); X=="ask" requests
-// a permission and waits for {"allow":..}; X=="slow" delays 400ms; then echoes
-// "echo X" and a result.
+// a permission and waits for {"allow":..}; X=="plan" proposes a plan, waits
+// for the answer and reports mode "default" when allowed; X=="slow" delays
+// 400ms; then echoes "echo X" and a result.
 func fakeCLI() {
 	dec := json.NewDecoder(os.Stdin)
 	for {
@@ -99,6 +104,20 @@ func fakeCLI() {
 		}
 		printJSON(map[string]string{"t": "init", "id": id})
 		switch u {
+		case "plan":
+			printJSON(map[string]string{"t": "plan", "id": "req1", "v": "# The plan\n\n1. do it"})
+			for {
+				var a map[string]string
+				if dec.Decode(&a) != nil {
+					os.Exit(0)
+				}
+				if a["allow"] != "" {
+					if a["behavior"] == "allow" {
+						printJSON(map[string]string{"t": "mode", "v": "default"})
+					}
+					break
+				}
+			}
 		case "ask":
 			printJSON(map[string]string{"t": "perm", "id": "req1"})
 			for {
@@ -240,6 +259,7 @@ func newEnv(t *testing.T) *env {
 	reg.SetProviderModels("fake", []agent.Model{{ID: "m1", Name: "M1"}, {ID: "m2"}})
 	reg.SetProviderModels("fake2", []agent.Model{{ID: "x1"}})
 	e.svc = &SessionService{sessions: workspace.NewSessions(st.DB), projects: ps, db: st.DB, sup: e.sup, models: reg}
+	e.sup.roles = e.svc.agentRoles
 	return e
 }
 
@@ -395,10 +415,10 @@ func TestStatusAndRespond(t *testing.T) {
 	}
 	waitFor(t, "needs_approval", func() bool { return e.dbStatus(s.ID) == StatusNeedsApproval })
 	time.Sleep(150 * time.Millisecond) // let the debounced push go out
-	if err := e.svc.Respond(s.ID, "req1", RespondOpts{Behavior: "bogus"}); err == nil {
+	if _, err := e.svc.Respond(s.ID, "req1", RespondOpts{Behavior: "bogus"}); err == nil {
 		t.Fatal("bad behavior accepted")
 	}
-	if err := e.svc.Respond(s.ID, "req1", RespondOpts{Behavior: "allow_always"}); err != nil {
+	if _, err := e.svc.Respond(s.ID, "req1", RespondOpts{Behavior: "allow_always"}); err != nil {
 		t.Fatal(err)
 	}
 	waitFor(t, "idle", func() bool { return e.dbStatus(s.ID) == StatusIdle })
@@ -409,7 +429,7 @@ func TestStatusAndRespond(t *testing.T) {
 	if !strings.Contains(e.transcript(t, s.ID), "echo ask") {
 		t.Fatal(e.transcript(t, s.ID))
 	}
-	if err := e.svc.Respond(s.ID, "req1", RespondOpts{Behavior: "allow"}); err != nil {
+	if _, err := e.svc.Respond(s.ID, "req1", RespondOpts{Behavior: "allow"}); err != nil {
 		t.Fatal(err) // reply to a finished request is harmless
 	}
 }
@@ -454,7 +474,7 @@ func TestRestartReattach(t *testing.T) {
 	if got := e.transcript(t, s.ID); !strings.Contains(got, "user:ask") {
 		t.Fatalf("transcript not rebuilt: %s", got)
 	}
-	if err := e.svc.Respond(s.ID, "req1", RespondOpts{Behavior: "allow"}); err != nil {
+	if _, err := e.svc.Respond(s.ID, "req1", RespondOpts{Behavior: "allow"}); err != nil {
 		t.Fatal(err)
 	}
 	waitFor(t, "finished after reattach", func() bool {

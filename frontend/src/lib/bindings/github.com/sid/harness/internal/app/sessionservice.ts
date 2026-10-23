@@ -23,6 +23,14 @@ import * as workspace$0 from "../workspace/models.js";
 import * as $models from "./models.js";
 
 /**
+ * AgentRoles returns the planner/executor/explorer models and specs dir of a
+ * project: project overrides win over settings.json agents.* keys.
+ */
+export function AgentRoles(projectID: string): $CancellablePromise<$models.AgentRolesInfo> {
+    return $Call.ByID(1904083212, projectID);
+}
+
+/**
  * ArchiveSession removes the worktree (keeps the branch). Without force a
  * dirty worktree fails with code "dirty" (files listed when known).
  */
@@ -118,9 +126,13 @@ export function RenameSession(id: string, title: string): $CancellablePromise<vo
 }
 
 /**
- * Respond answers a permission request or plan proposal.
+ * Respond answers a permission request or plan proposal. Approving a plan
+ * hands the work to the executor model when one is set: within the planner's
+ * provider the model is switched live and plan mode is left; across
+ * providers the plan is declined in the planner and a new session is forked
+ * in the same worktree (ForkedSessionID) with the plan as its handoff.
  */
-export function Respond(sessionID: string, reqID: string, o: $models.RespondOpts): $CancellablePromise<void> {
+export function Respond(sessionID: string, reqID: string, o: $models.RespondOpts): $CancellablePromise<$models.ModelSwitch> {
     return $Call.ByID(2242911647, sessionID, reqID, o);
 }
 
@@ -143,6 +155,15 @@ export function Scope(sessionID: string): $CancellablePromise<$models.ScopeInfo>
  */
 export function Send(sessionID: string, m: $models.SendMessage): $CancellablePromise<void> {
     return $Call.ByID(1936437980, sessionID, m);
+}
+
+/**
+ * SetAgentRole sets a project override for role (planner | executor |
+ * explorer: a model key <provider>/<id>; specsDir: a path). An empty value
+ * clears the override so the settings.json default applies again.
+ */
+export function SetAgentRole(projectID: string, role: string, value: string): $CancellablePromise<$models.AgentRolesInfo> {
+    return $Call.ByID(3475449583, projectID, role, value);
 }
 
 /**

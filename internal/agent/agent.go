@@ -107,8 +107,20 @@ type StartOpts struct {
 	Settings []json.RawMessage
 	// AppendSystemPrompt chunks are combined into one argument.
 	AppendSystemPrompt []string
+	// Agents are subagents the main agent may delegate to, by name
+	// (Claude --agents; ignored by providers without custom subagents).
+	Agents map[string]SubagentDef
+
 	// Env entries (KEY=VALUE) added to the host environment.
 	Env []string
+}
+
+// SubagentDef defines one custom subagent. Model is a provider-local id.
+type SubagentDef struct {
+	Description string   `json:"description"`
+	Prompt      string   `json:"prompt"`
+	Tools       []string `json:"tools,omitempty"`
+	Model       string   `json:"model,omitempty"`
 }
 
 // Cmd is what the host should exec.

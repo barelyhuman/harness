@@ -50,6 +50,7 @@ type Session struct {
 	Status            string `json:"status"`
 	PRURL             string `json:"prUrl"`
 	PRState           string `json:"prState"`
+	SpecPath          string `json:"specPath"`
 	Created           int64  `json:"created"`
 	Updated           int64  `json:"updated"`
 	ArchivedAt        *int64 `json:"archivedAt"`
@@ -87,14 +88,14 @@ func NewSessions(db *sql.DB) *Sessions {
 }
 
 const sessCols = `id, project_id, title, provider, provider_session_id, model, mode, effort, scope_kind,
- worktree_path, branch, base_ref, forked_from, status, pr_url, pr_state, created, updated, archived_at`
+ worktree_path, branch, base_ref, forked_from, status, pr_url, pr_state, spec_path, created, updated, archived_at`
 
 func scanSession(r scanner) (Session, error) {
 	var s Session
 	var arch sql.NullInt64
 	err := r.Scan(&s.ID, &s.ProjectID, &s.Title, &s.Provider, &s.ProviderSessionID, &s.Model, &s.Mode, &s.Effort,
 		&s.ScopeKind, &s.WorktreePath, &s.Branch, &s.BaseRef, &s.ForkedFrom, &s.Status, &s.PRURL, &s.PRState,
-		&s.Created, &s.Updated, &arch)
+		&s.SpecPath, &s.Created, &s.Updated, &arch)
 	if errors.Is(err, sql.ErrNoRows) {
 		return s, ErrNotFound
 	}
@@ -250,6 +251,8 @@ func (ss *Sessions) SetProviderSessionID(id, psid string) error {
 	return ss.set(id, "provider_session_id", psid)
 }
 func (ss *Sessions) SetStatus(id, status string) error { return ss.set(id, "status", status) }
+func (ss *Sessions) SetMode(id, mode string) error     { return ss.set(id, "mode", mode) }
+func (ss *Sessions) SetSpecPath(id, path string) error { return ss.set(id, "spec_path", path) }
 
 // SetPR stores the PR url and state.
 func (ss *Sessions) SetPR(id, url, state string) error {

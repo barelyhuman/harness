@@ -147,3 +147,7 @@ No streaming of command output. Sequence for `for i in 1 2 3; do echo line$i; sl
 9. Spec 10 lifecycle: confirmed the CLI stays alive after `result`. Exit on stdin close is code 0. `--resume` with a bad id exits 1 with the stderr text above.
 10. `usage{in,out,cache,costUsd}`: `result.usage` is per-turn, but `total_cost_usd` and `modelUsage` are cumulative per process; compute costUsd per turn by differencing.
 11. No `initialize` handshake required (the Agent SDK sends one, but it only configures hooks/SDK MCP; plain CLI works without).
+
+## Custom subagents (`--agents`)
+
+`--agents '<json>'` accepts an inline JSON object, `{name: {description, prompt, tools?, model?}}`. Verified: `system/init.agents` then lists the name next to the built-ins. Harness uses this to define the `explorer` subagent (read-only tools, cheap model).

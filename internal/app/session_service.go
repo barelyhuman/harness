@@ -3,6 +3,7 @@ package app
 import (
 	"database/sql"
 	"log"
+	"strings"
 
 	"github.com/sid/harness/internal/agent"
 	"github.com/sid/harness/internal/git"
@@ -68,6 +69,15 @@ func (s *SessionService) ListSessions(projectID string, includeArchived bool) ([
 // "setup" terminal tab of the session scope; their failure never blocks the
 // session (the tab shows it). The agent host launches on the first Send.
 func (s *SessionService) CreateSession(projectID string, o CreateSessionOpts) (workspace.Session, error) {
+	// A plan-mode session with no explicit model runs on the planner.
+	if o.Model == "" && strings.EqualFold(o.Mode, "plan") {
+		if pl := s.agentRoles(projectID).Planner; pl != "" {
+			o.Provider, o.Model = agent.ModelProvider(pl), pl
+			if m, ok := normalizeMode(o.Provider, "plan"); ok {
+				o.Mode = m
+			}
+		}
+	}
 	sess, err := s.sessions.Create(projectID, workspace.CreateOpts{
 		Title: o.Title, Provider: o.Provider, Model: o.Model, Mode: o.Mode, Effort: o.Effort,
 		ScopeKind: o.ScopeKind, BaseRef: o.BaseRef, ForkedFrom: o.ForkedFrom,

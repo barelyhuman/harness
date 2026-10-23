@@ -22,7 +22,7 @@ func TestOpenWALAndMigrate(t *testing.T) {
 		t.Fatalf("mode=%q err=%v", mode, err)
 	}
 	v, _ := s.Version()
-	if v != 1 {
+	if v != 2 {
 		t.Fatalf("version %d", v)
 	}
 	for _, tbl := range []string{"projects", "sessions", "runs", "ui_state", "kv"} {

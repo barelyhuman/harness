@@ -1,14 +1,26 @@
 import { IconCheck, IconX } from "@tabler/icons-preact";
 import { memo } from "preact/compat";
-import { useContext, useState } from "preact/hooks";
+import { useContext, useEffect, useState } from "preact/hooks";
 import { SessionService } from "../../lib/bindings/github.com/sid/harness/internal/app";
+import { openFile } from "../../state/editor";
+import { loadRoles, rolesByProject } from "../../state/roles";
+import { activateSession } from "../../state/scope";
 import type { Block } from "../../state/transcript";
-import { toastError } from "../../state/toast";
+import { toast, toastError } from "../../state/toast";
+import { sessionRow } from "../composer/actions";
+import { RoleChip } from "../composer/RoleChip";
 import { ChatCtx } from "./ctx";
 import { Markdown } from "./markdown";
 
-export function respond(sessionId: string, reqId: string, behavior: "allow" | "allow_always" | "deny", message = "") {
-  return SessionService.Respond(sessionId, reqId, { behavior, message }).catch(toastError);
+export function respond(sessionId: string, reqId: string, behavior: "allow" | "allow_always" | "deny", message = "", executor = "") {
+  return SessionService.Respond(sessionId, reqId, { behavior, message, executor })
+    .then(async (r) => {
+      if (r?.forkedSessionId) {
+        toast("Plan handed off to the executor in a new session", "success");
+        await activateSession(r.forkedSessionId);
+      }
+    })
+    .catch(toastError);
 }
 
 export function permCommand(b: Block): string {
@@ -78,6 +90,14 @@ function PlanImpl(p: { b: Block }) {
   const [fb, setFb] = useState("");
   const [asking, setAsking] = useState(false);
   const pending = plan.state === "pending";
+  const row = sessionRow(sessionId);
+  const pid = row?.projectId ?? "";
+  useEffect(() => { if (pid && pending) void loadRoles(pid); }, [pid, pending]);
+  const roleExec = rolesByProject.value[pid]?.roles.executor ?? "";
+  // Changing the executor here only applies to this approval.
+  const [exec, setExec] = useState<string | null>(null);
+  const executor = exec ?? roleExec;
+  const spec = row?.specPath ?? "";
   return (
     <div class="rounded-md bg-panel2">
       <div class="flex items-center gap-2 px-2 py-1 text-[12px]">
@@ -91,7 +111,8 @@ function PlanImpl(p: { b: Block }) {
             <textarea class="field mb-2 h-16 resize-none" placeholder="What should change? (optional)" value={fb} autoFocus onInput={(e) => setFb(e.currentTarget.value)} />
           )}
           <div class="flex gap-1.5">
-            <button class="btn btn-primary" onClick={() => void respond(sessionId, plan.reqId, "allow")}>Approve</button>
+            <button class="btn btn-primary" onClick={() => void respond(sessionId, plan.reqId, "allow", "", executor)}>{executor ? "Approve →" : "Approve"}</button>
+            <RoleChip label={executor ? "" : "Execute with"} value={executor} placeholder="same model" title="Executor for this plan (project default is set in Project Settings)" onPick={setExec} />
             {asking
               ? <button class="btn" onClick={() => void respond(sessionId, plan.reqId, "deny", fb.trim())}>Send feedback</button>
               : <button class="btn" onClick={() => setAsking(true)}>Keep planning</button>}
@@ -99,6 +120,11 @@ function PlanImpl(p: { b: Block }) {
         </div>
       )}
       {!pending && plan.message && <div class="px-2 pb-1.5 text-[11px] text-faint">{plan.message}</div>}
+      {spec && pid && (
+        <div class="px-2 pb-1.5 text-[11px] text-faint">
+          Saved to <button class="font-mono hover:text-text hover:underline" onClick={() => openFile(`main:${pid}`, spec)}>{spec.split("/").slice(-2).join("/")}</button>
+        </div>
+      )}
     </div>
   );
 }

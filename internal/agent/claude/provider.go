@@ -125,6 +125,13 @@ func (p *Provider) Command(o agent.StartOpts) (agent.Cmd, error) {
 		}
 		args = append(args, "--settings", merged)
 	}
+	if len(o.Agents) > 0 {
+		b, err := json.Marshal(o.Agents)
+		if err != nil {
+			return agent.Cmd{}, err
+		}
+		args = append(args, "--agents", string(b))
+	}
 	var sys []string
 	for _, s := range o.AppendSystemPrompt {
 		if strings.TrimSpace(s) != "" {

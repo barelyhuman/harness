@@ -14,7 +14,8 @@ function Label(p: { text: string; pos: number[] }) {
 }
 
 // With onPick (no session yet) the picker only reports the choice; curKey marks the selected model.
-export function ModelPicker(p: { sessionId: string; row?: SessionRow; onClose: () => void; onPick?: (m: ModelInfo) => void; curKey?: string }) {
+// below opens the popover under its anchor instead of above it.
+export function ModelPicker(p: { sessionId: string; row?: SessionRow; onClose: () => void; onPick?: (m: ModelInfo) => void; curKey?: string; below?: boolean }) {
   const [q, setQ] = useState("");
   const [sel, setSel] = useState(0);
   const [ranked, setRanked] = useState<Item[] | null>(null);
@@ -76,7 +77,7 @@ export function ModelPicker(p: { sessionId: string; row?: SessionRow; onClose: (
   useEffect(() => { setSel(0); }, [q]);
 
   return (
-    <div class="pop absolute bottom-full left-0 z-30 mb-1 w-[320px] overflow-hidden rounded-lg bg-panel2 shadow-2xl" onKeyDown={onKey}>
+    <div class={`pop absolute ${p.below ? "top-full mt-1" : "bottom-full mb-1"} left-0 z-30 w-[320px] overflow-hidden rounded-lg bg-panel2 shadow-2xl`} onKeyDown={onKey}>
       {confirm ? (
         <div class="p-3 text-[12px]">
           <div class="font-medium">Switch to {cap(confirm.provider)}?</div>

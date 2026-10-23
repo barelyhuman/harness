@@ -93,6 +93,7 @@ type SessionRow struct {
 	Dirty     int    `json:"dirty"`
 	PRURL     string `json:"prUrl"`
 	PRState   string `json:"prState"`
+	SpecPath  string `json:"specPath"`
 }
 
 // runState is the event-derived state of a session's current turn.
@@ -100,11 +101,12 @@ type runState struct {
 	busy      bool
 	errored   bool
 	perms     map[string]bool
+	plans     map[string]string // plan proposal reqId -> plan text
 	toolPaths map[string]string
 }
 
 func newRunState() runState {
-	return runState{perms: map[string]bool{}, toolPaths: map[string]string{}}
+	return runState{perms: map[string]bool{}, plans: map[string]string{}, toolPaths: map[string]string{}}
 }
 
 func (r *runState) status() string {
@@ -134,19 +136,27 @@ func (r *runState) observe(ev agent.Event) (touchPath, psid string) {
 	case agent.KindPermissionRequest:
 		r.perms[agent.MustDecode[agent.PermissionRequest](ev).ReqID] = true
 	case agent.KindPlanProposal:
-		r.perms[agent.MustDecode[agent.PlanProposal](ev).ReqID] = true
+		d := agent.MustDecode[agent.PlanProposal](ev)
+		r.perms[d.ReqID] = true
+		r.plans[d.ReqID] = d.Text
 	case agent.KindPermissionResolved:
-		delete(r.perms, agent.MustDecode[agent.PermissionResolved](ev).ReqID)
+		id := agent.MustDecode[agent.PermissionResolved](ev).ReqID
+		delete(r.perms, id)
+		delete(r.plans, id)
 	case agent.KindPermissionCancelled:
-		delete(r.perms, agent.MustDecode[agent.PermissionCancelled](ev).ReqID)
+		id := agent.MustDecode[agent.PermissionCancelled](ev).ReqID
+		delete(r.perms, id)
+		delete(r.plans, id)
 	case agent.KindRunResult:
 		r.busy = false
 		r.perms = map[string]bool{}
+		r.plans = map[string]string{}
 		r.errored = agent.MustDecode[agent.RunResult](ev).Status == agent.ResultError
 	case agent.KindError:
 		if agent.MustDecode[agent.ErrorData](ev).Fatal {
 			r.busy, r.errored = false, true
 			r.perms = map[string]bool{}
+			r.plans = map[string]string{}
 		}
 	case agent.KindToolStart:
 		d := agent.MustDecode[agent.ToolStart](ev)
@@ -193,6 +203,9 @@ type supervisor struct {
 	projects *workspace.Projects
 	out      sink
 	touch    func(root, path string) bool
+	// roles resolves a project's agent roles (planner/executor/explorer,
+	// specs dir); nil means none configured.
+	roles func(projectID string) workspace.AgentRoles
 
 	flushEvery time.Duration
 
@@ -450,6 +463,12 @@ func (sr *sessRun) handle(c *host.Client, runID string, ev agent.Event) {
 			_ = sr.s.sessions.SetProviderSessionID(sr.id, psid)
 		}
 	}
+	switch ev.Kind {
+	case agent.KindModeChanged:
+		sr.persistMode(agent.MustDecode[agent.ModeChanged](ev).Mode)
+	case agent.KindPlanProposal:
+		sr.saveSpec(agent.MustDecode[agent.PlanProposal](ev).Text)
+	}
 	if touchPath != "" {
 		sr.s.invalidateDirty()
 	}
@@ -465,6 +484,43 @@ func (sr *sessRun) handle(c *host.Client, runID string, ev agent.Event) {
 	if drain {
 		sr.drainQueue()
 	}
+}
+
+// persistMode stores a provider-reported mode so the composer and the next
+// launch follow it (e.g. leaving plan mode after a plan is approved).
+func (sr *sessRun) persistMode(mode string) {
+	if mode == "" {
+		return
+	}
+	if sess, err := sr.s.sessions.Get(sr.id); err == nil && sess.Mode != mode {
+		if err := sr.s.sessions.SetMode(sr.id, mode); err == nil {
+			sr.s.schedulePush()
+		}
+	}
+}
+
+// saveSpec writes the proposed plan to the project's specs dir.
+func (sr *sessRun) saveSpec(plan string) {
+	sess, err := sr.s.sessions.Get(sr.id)
+	if err != nil {
+		return
+	}
+	prev := sess.SpecPath
+	path, err := writeSpec(sr.s.sessions, sr.s.projects, sr.s.rolesFor(sess.ProjectID), sr.id, plan)
+	if err != nil {
+		log.Printf("harness: write plan spec for %s: %v", sr.id, err)
+		return
+	}
+	if path != prev {
+		sr.s.schedulePush()
+	}
+}
+
+func (s *supervisor) rolesFor(projectID string) workspace.AgentRoles {
+	if s.roles == nil {
+		return workspace.AgentRoles{SpecsDir: DefaultSpecsDir}
+	}
+	return s.roles(projectID)
 }
 
 // consume pumps one client's events until the connection ends.
@@ -618,9 +674,10 @@ func (sr *sessRun) launch(um agent.UserMessage) error {
 		return err
 	}
 	runID := newRunID()
-	spec := host.Spec{RunID: runID, SessionID: sr.id, Provider: sess.Provider, DataDir: sr.s.dataDir,
-		StartOpts: agent.StartOpts{RunID: runID, Cwd: sc.Root, Model: localModelID(sess.Provider, sess.Model),
-			Mode: sess.Mode, Effort: sess.Effort, ResumeID: sess.ProviderSessionID}}
+	opts := agent.StartOpts{RunID: runID, Cwd: sc.Root, Model: localModelID(sess.Provider, sess.Model),
+		Mode: sess.Mode, Effort: sess.Effort, ResumeID: sess.ProviderSessionID}
+	sr.s.roleOpts(&opts, sess, sc.Root)
+	spec := host.Spec{RunID: runID, SessionID: sr.id, Provider: sess.Provider, DataDir: sr.s.dataDir, StartOpts: opts}
 	c, err := host.Launch(spec)
 	if err != nil {
 		return fmt.Errorf("launch agent host: %w", err)
@@ -645,6 +702,42 @@ VALUES (?,?,?,?,?,0,'running',?)`, runID, sr.id, pid, host.SocketPath(sr.s.dataD
 	sr.s.wg.Add(1)
 	go sr.consume(c, runID)
 	return c.Send(um)
+}
+
+// roleOpts adds the explorer subagent and the specs pointer to a launch.
+// Only Claude takes subagents and a system prompt; Cursor has its own
+// explore subagent and no system prompt over ACP.
+func (s *supervisor) roleOpts(o *agent.StartOpts, sess workspace.Session, root string) {
+	if sess.Provider != "claude" {
+		return
+	}
+	roles := s.rolesFor(sess.ProjectID)
+	explorer := false
+	if roles.Explorer != "" {
+		if agent.ModelProvider(roles.Explorer) == "claude" {
+			o.Agents = map[string]agent.SubagentDef{RoleExplorer: {Description: explorerDesc, Prompt: explorerPrompt,
+				Tools: explorerTools, Model: agent.ModelLocalID(roles.Explorer)}}
+			explorer = true
+		} else {
+			log.Printf("harness: explorer %s is not a claude model; skipped for %s", roles.Explorer, sess.ID)
+		}
+	}
+	p, err := s.projects.Get(sess.ProjectID)
+	if err != nil {
+		return
+	}
+	dir := specsDirAbs(p.Path, roles.SpecsDir)
+	if st, err := os.Stat(dir); err != nil || !st.IsDir() {
+		if explorer {
+			o.AppendSystemPrompt = append(o.AppendSystemPrompt,
+				"Delegate broad codebase searches to the `explorer` subagent to keep your own context small.")
+		}
+		return
+	}
+	if rel, err := filepath.Rel(root, dir); err != nil || strings.HasPrefix(rel, "..") {
+		o.AddDirs = append(o.AddDirs, dir)
+	}
+	o.AppendSystemPrompt = append(o.AppendSystemPrompt, specsPrompt(dir, explorer))
 }
 
 // localModelID strips a "<provider>/" prefix from a stored model key.
@@ -850,7 +943,7 @@ func (s *supervisor) Rows() []SessionRow {
 			}
 			out = append(out, SessionRow{ID: x.ID, ProjectID: x.ProjectID, Title: x.Title, Provider: x.Provider,
 				Model: x.Model, Mode: x.Mode, Effort: x.Effort, Status: st, Branch: x.Branch, Dirty: d,
-				PRURL: x.PRURL, PRState: x.PRState})
+				PRURL: x.PRURL, PRState: x.PRState, SpecPath: x.SpecPath})
 		}
 	}
 	return out

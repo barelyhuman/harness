@@ -11,6 +11,8 @@ import { transcriptFor, type Block } from "../../state/transcript";
 import { Composer } from "../composer/Composer";
 import { EFFORTS, isBusy, loadModels, models, pickerOpen, sessionRow } from "../composer/actions";
 import { ModelPicker } from "../composer/ModelPicker";
+import { RoleChip } from "../composer/RoleChip";
+import { loadRoles, rolesByProject, setRole } from "../../state/roles";
 import { ReviewBar } from "../review/ReviewBar";
 import { BlockView } from "./blocks";
 import { isBashPerm, respond } from "./cards";
@@ -150,13 +152,18 @@ function Empty(p: { scopeKey: string }) {
   const ta = useRef<HTMLTextAreaElement>(null);
   useEffect(() => { void loadModels(); }, []);
   useEffect(() => { ta.current?.focus(); }, [focusStart.value]);
-  const list = models.value;
-  const m = list.find((x) => x.key === pick?.key) ?? list.find((x) => x.favourite) ?? list[0];
-  const provider = m?.provider ?? "claude";
-  const mode = pick?.mode ?? "";
-  const effort = pick?.effort ?? "";
-  const set = (patch: Partial<NonNullable<typeof pick>>) => setPick({ key: m?.key ?? "claude/default", provider, mode, effort, ...patch });
   const pid = p.scopeKey.startsWith("main:") ? p.scopeKey.slice("main:".length) : activeScope.value?.projectId ?? currentProjectId.value ?? "";
+  useEffect(() => { if (pid) void loadRoles(pid); }, [pid]);
+  const roles = rolesByProject.value[pid]?.roles;
+  const list = models.value;
+  const picked = list.find((x) => x.key === pick?.key) ?? list.find((x) => x.favourite) ?? list[0];
+  const mode = pick?.mode ?? "";
+  // Planning runs on the planner model when one is set.
+  const planning = mode === "plan";
+  const m = (planning && roles?.planner && list.find((x) => x.key === roles.planner)) || picked;
+  const provider = m?.provider ?? "claude";
+  const effort = pick?.effort ?? "";
+  const set = (patch: Partial<NonNullable<typeof pick>>) => setPick({ key: picked?.key ?? "claude/default", provider, mode, effort, ...patch });
   const go = async () => {
     const prompt = text.trim();
     if (!pid || !prompt || busy) return;
@@ -189,9 +196,20 @@ function Empty(p: { scopeKey: string }) {
           onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); void go(); } }}
         />
         <div class="relative flex items-center gap-1.5 px-1.5 pb-2">
-          <button class={chip} title="Model" onClick={() => { void loadModels(); pickerOpen.value = !pickerOpen.value; }}>{m?.label ?? "model"}</button>
+          {planning && pid ? (
+            <>
+              <RoleChip label="Plan" value={m?.key ?? ""} title="Planner model (saved for this project)" onPick={(k) => void setRole(pid, "planner", k)} />
+              <span class="text-[11px] text-faint">→</span>
+              <RoleChip label="Execute" value={roles?.executor ?? ""} placeholder="same model" title="Executor model: takes over when you approve the plan" onPick={(k) => void setRole(pid, "executor", k)} />
+            </>
+          ) : (
+            <button class={chip} title="Model" onClick={() => { void loadModels(); pickerOpen.value = !pickerOpen.value; }}>{m?.label ?? "model"}</button>
+          )}
           <button class={chip} title="Mode" onClick={() => void Sess.NextMode(provider, mode).then((n) => set({ mode: n }))}>{mode || "mode"}</button>
           <button class={chip} title="Effort" onClick={() => set({ effort: EFFORTS[(EFFORTS.indexOf(effort) + 1) % EFFORTS.length] })}>{effort ? `effort: ${effort}` : "effort"}</button>
+          {pid && provider === "claude" && (
+            <RoleChip label="Explore" value={roles?.explorer ?? ""} placeholder="built-in" title="Explorer subagent model (Claude): fast read-only code search" onPick={(k) => void setRole(pid, "explorer", k)} />
+          )}
           <div class="flex-1" />
           {pickerOpen.value && (
             <>

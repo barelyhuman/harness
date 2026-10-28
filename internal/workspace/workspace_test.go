@@ -48,6 +48,27 @@ func setup(t *testing.T) (*Projects, *Sessions, Project) {
 	return ps, ss, p
 }
 
+func TestProjectsAgentRoles(t *testing.T) {
+	ps, _, p := setup(t)
+	if err := ps.SetAgentRoles(p.ID, AgentRoles{Planner: "claude/sonnet", SpecsDir: "plans"}); err != nil {
+		t.Fatal(err)
+	}
+	g, err := ps.Get(p.ID)
+	if err != nil || g.AgentRoles.Planner != "claude/sonnet" || g.AgentRoles.SpecsDir != "plans" {
+		t.Fatalf("%+v %v", g, err)
+	}
+	if err := ps.SetAgentRoles(p.ID, AgentRoles{}); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestProjectsTouchNotFound(t *testing.T) {
+	ps, _, _ := setup(t)
+	if err := ps.Touch("missing"); !errors.Is(err, ErrNotFound) {
+		t.Fatalf("%v", err)
+	}
+}
+
 func TestProjects(t *testing.T) {
 	ps, _, p := setup(t)
 	if filepath.Base(p.Path) != "myrepo" || p.Name != "myrepo" {

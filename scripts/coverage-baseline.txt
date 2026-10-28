@@ -1,0 +1,18 @@
+# Minimum statement coverage per package (enforced in CI). Regenerate with scripts/measure-coverage.sh.
+github.com/sid/harness/internal/agent 85.0
+github.com/sid/harness/internal/agent/acp 82.0
+github.com/sid/harness/internal/agent/claude 86.0
+github.com/sid/harness/internal/agent/cursor 68.0
+github.com/sid/harness/internal/app 66.0
+github.com/sid/harness/internal/fs 79.0
+github.com/sid/harness/internal/fuzzy 87.0
+github.com/sid/harness/internal/git 70.0
+github.com/sid/harness/internal/host 81.0
+github.com/sid/harness/internal/lsp 85.0
+github.com/sid/harness/internal/pty 85.0
+github.com/sid/harness/internal/search 83.0
+github.com/sid/harness/internal/store 66.0
+github.com/sid/harness/internal/stream 84.0
+github.com/sid/harness/internal/termlayout 89.0
+github.com/sid/harness/internal/transcript 85.0
+github.com/sid/harness/internal/workspace 71.0

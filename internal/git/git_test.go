@@ -41,12 +41,11 @@ func newRepo(t *testing.T) string {
 	return d
 }
 
-func lines(n int) string {
-	var b strings.Builder
-	for i := 1; i <= n; i++ {
-		b.WriteString("line " + string(rune('a'+i%26)) + "\n")
+func TestRepoRootNotRepo(t *testing.T) {
+	_, err := RepoRoot(t.TempDir())
+	if err == nil {
+		t.Fatal("expected error")
 	}
-	return b.String()
 }
 
 func TestStatusParsing(t *testing.T) {

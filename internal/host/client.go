@@ -193,9 +193,9 @@ func readLogFile(path string, fromSeq uint64) ([]agent.Event, error) {
 	r := bufio.NewReaderSize(f, 256<<10)
 	for {
 		line, err := r.ReadBytes('\n')
-		if len(bytes.TrimSpace(line)) > 0 && line[len(line)-1] == '\n' {
+		if len(bytes.TrimSpace(line)) > 0 {
 			var e agent.Event
-			if json.Unmarshal(line, &e) == nil && e.Seq >= fromSeq {
+			if json.Unmarshal(bytes.TrimSpace(line), &e) == nil && e.Seq >= fromSeq {
 				out = append(out, e)
 			}
 		}

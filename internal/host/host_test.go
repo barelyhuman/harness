@@ -92,7 +92,9 @@ func fakeCLI() {
 	var script []string
 	json.Unmarshal([]byte(os.Getenv("FAKE_SCRIPT")), &script)
 	for _, l := range script {
-		time.Sleep(40 * time.Millisecond)
+		if os.Getenv("FAKE_NO_DELAY") != "1" {
+			time.Sleep(40 * time.Millisecond)
+		}
 		fmt.Println(l)
 	}
 	if c := os.Getenv("FAKE_EXIT"); c != "" {
@@ -129,6 +131,7 @@ func tdir(t *testing.T) string {
 func txt(v string) string { return fmt.Sprintf(`{"t":"text","v":%q}`, v) }
 
 func launch(t *testing.T, dir, id string, script []string, extra ...string) (*Client, Spec) {
+	extra = append([]string{"FAKE_NO_DELAY=1"}, extra...)
 	sb, _ := json.Marshal(script)
 	spec := Spec{RunID: id, SessionID: "s", Provider: "fake", DataDir: dir,
 		StartOpts: agent.StartOpts{Cwd: dir, Env: append([]string{"FAKE_SCRIPT=" + string(sb)}, extra...)},

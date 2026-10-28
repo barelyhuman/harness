@@ -3,6 +3,7 @@ package search
 import (
 	"context"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"reflect"
 	"testing"
@@ -65,6 +66,9 @@ func collect(ch <-chan Result) (rs []Result) {
 }
 
 func TestGrep(t *testing.T) {
+	if _, err := exec.LookPath("rg"); err != nil {
+		t.Skip("ripgrep (rg) not on PATH")
+	}
 	dir := setup(t)
 	rs := collect(Grep(context.Background(), dir, "world", GrepOpts{}))
 	if len(rs) != 1 || rs[0].Path != "a.txt" || len(rs[0].Matches) != 2 {

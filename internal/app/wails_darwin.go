@@ -6,7 +6,7 @@ import "github.com/wailsapp/wails/v3/pkg/application"
 
 type wailsAdapter struct{ w *application.App }
 
-func (u *wailsAdapter) Quit()                      { u.w.Quit() }
+func (u *wailsAdapter) Quit()                        { u.w.Quit() }
 func (u *wailsAdapter) EmitEvent(name string, d any) { u.w.Event.Emit(name, d) }
 
 // Attach gives the App the Wails application (for Quit and events).

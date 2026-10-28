@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 	"time"
@@ -190,6 +191,18 @@ func isKind(k agent.Kind) func(agent.Event) bool {
 	return func(e agent.Event) bool { return e.Kind == k }
 }
 
+func waitScanDead(t *testing.T, dir string) {
+	t.Helper()
+	for i := 0; i < 50000; i++ {
+		s := Scan(dir)
+		if len(s) == 1 && !s[0].Alive {
+			return
+		}
+		runtime.Gosched()
+	}
+	t.Fatalf("host still alive: %+v", Scan(dir))
+}
+
 func contiguous(t *testing.T, evs []agent.Event, from uint64) {
 	t.Helper()
 	for i, e := range evs {
@@ -230,9 +243,7 @@ func TestLaunchEventsSendShutdown(t *testing.T) {
 		t.Fatalf("log %d %v", len(log), err)
 	}
 	contiguous(t, log, 1)
-	if s := Scan(dir); len(s) != 1 || s[0].Alive {
-		t.Fatalf("scan after exit %+v", s)
-	}
+	waitScanDead(t, dir)
 	if _, err := Attach(dir, "r1", 0); err != ErrHostGone {
 		t.Fatalf("attach after exit: %v", err)
 	}

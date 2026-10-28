@@ -112,6 +112,9 @@ func ParseHunks(path, diff string) ([]Hunk, error) {
 
 func parseHunkHeader(l string) (Hunk, error) {
 	h := Hunk{Header: l}
+	if len(l) < 3 {
+		return h, fmt.Errorf("git: bad hunk header %q", l)
+	}
 	end := strings.Index(l[3:], " @@")
 	if end < 0 {
 		return h, fmt.Errorf("git: bad hunk header %q", l)

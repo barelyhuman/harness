@@ -19,7 +19,6 @@ import (
 	"github.com/sid/harness/internal/stream"
 	"github.com/sid/harness/internal/termlayout"
 	"github.com/sid/harness/internal/workspace"
-	"github.com/wailsapp/wails/v3/pkg/application"
 )
 
 // Options override the default locations (tests).
@@ -59,7 +58,7 @@ type App struct {
 
 	appCh *stream.Channel // `app` channel: quit requests
 
-	wapp     *application.App
+	wapp     wailsBridge
 	quitOK   atomic.Bool
 	lastQuit atomic.Int64
 	once     sync.Once
@@ -158,22 +157,8 @@ func New(o Options) (*App, error) {
 	return a, nil
 }
 
-// Services returns the Wails service registrations.
-func (a *App) Services() []application.Service {
-	return []application.Service{
-		application.NewService(a.BusSvc),
-		application.NewService(a.ProjectSvc),
-		application.NewService(a.SessionSvc),
-		application.NewService(a.FSSvc),
-		application.NewService(a.SearchSvc),
-		application.NewService(a.GitSvc),
-		application.NewService(a.TermSvc),
-		application.NewService(a.UIStateSvc),
-		application.NewService(a.SettingsSvc),
-		application.NewService(a.AppSvc),
-		application.NewService(a.LSPSvc),
-	}
-}
+// ServiceCount is the number of Wails-registered services (stable across platforms).
+func (a *App) ServiceCount() int { return 11 }
 
 // Shutdown flushes pending layouts, kills all PTYs (agent hosts are not ours
 // to kill), stops the watchers, then closes the store and the bus. Idempotent.
@@ -197,10 +182,6 @@ func (a *App) Shutdown() {
 
 // ---- quit handling ----
 
-// Attach gives the App the Wails application (for Quit and events). Wire
-// ShouldQuit and QuitAllowed/RequestQuit into the Wails options/window hooks.
-func (a *App) Attach(w *application.App) { a.wapp = w }
-
 // QuitAllowed reports whether the app may quit now: the user confirmed, no
 // shell would be killed, or a second quit request arrived within 3s.
 func (a *App) QuitAllowed() bool {
@@ -218,7 +199,7 @@ func (a *App) RequestQuit() {
 	n := a.TermSvc.ShellsRunning()
 	_ = a.appCh.SendJSON(map[string]any{"type": "quit-request", "shells": n})
 	if a.wapp != nil {
-		a.wapp.Event.Emit("quit-requested", n)
+		a.wapp.EmitEvent("quit-requested", n)
 	}
 }
 

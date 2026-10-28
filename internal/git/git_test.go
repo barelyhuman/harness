@@ -41,12 +41,30 @@ func newRepo(t *testing.T) string {
 	return d
 }
 
-func lines(n int) string {
-	var b strings.Builder
-	for i := 1; i <= n; i++ {
-		b.WriteString("line " + string(rune('a'+i%26)) + "\n")
+func TestRepoRootNotRepo(t *testing.T) {
+	_, err := RepoRoot(t.TempDir())
+	if err == nil {
+		t.Fatal("expected error")
 	}
-	return b.String()
+}
+
+func TestCurrentBranchDetached(t *testing.T) {
+	d := newRepo(t)
+	sh(t, d, "checkout", "-q", "--detach", "HEAD")
+	b, err := CurrentBranch(d)
+	if err != nil || b != "HEAD" {
+		t.Fatalf("%q %v", b, err)
+	}
+}
+
+func TestBranchExists(t *testing.T) {
+	d := newRepo(t)
+	if !BranchExists(d, "main") {
+		t.Fatal("main should exist")
+	}
+	if BranchExists(d, "no-such-branch-ever") {
+		t.Fatal("missing branch reported")
+	}
 }
 
 func TestStatusParsing(t *testing.T) {

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"sync"
 	"testing"
@@ -77,25 +78,69 @@ func TestStartFeedConcurrency(t *testing.T) {
 				t.Fatalf("async=%v: %v", async, err)
 			}
 			cancel()
+			waitHandshakeLines(t, f, 5)
+			waitEvents(t, f, map[agent.Kind]int{
+				agent.KindSessionInit:  1,
+				agent.KindModelsList:   1,
+				agent.KindModelChanged: 1,
+				agent.KindModeChanged:  1,
+			})
 			f.mu.Lock()
 			var methods []string
 			for _, l := range f.lines {
 				methods = append(methods, l["method"].(string))
-			}
-			kinds := map[agent.Kind]int{}
-			for _, e := range f.evs {
-				kinds[e.Kind]++
 			}
 			f.mu.Unlock()
 			want := "initialize,authenticate,session/new,session/set_model,session/set_mode"
 			if strings.Join(methods, ",") != want {
 				t.Fatalf("methods %v", methods)
 			}
-			if kinds[agent.KindSessionInit] != 1 || kinds[agent.KindModelsList] != 1 || kinds[agent.KindModelChanged] != 1 || kinds[agent.KindModeChanged] != 1 {
-				t.Fatalf("events %v", kinds)
-			}
 		}
 	}
+}
+
+func waitEvents(t *testing.T, f *fakeAgent, want map[agent.Kind]int) {
+	t.Helper()
+	for i := 0; i < 100000; i++ {
+		f.mu.Lock()
+		kinds := map[agent.Kind]int{}
+		for _, e := range f.evs {
+			kinds[e.Kind]++
+		}
+		f.mu.Unlock()
+		ok := true
+		for k, n := range want {
+			if kinds[k] != n {
+				ok = false
+				break
+			}
+		}
+		if ok {
+			return
+		}
+		runtime.Gosched()
+	}
+	f.mu.Lock()
+	got := map[agent.Kind]int{}
+	for _, e := range f.evs {
+		got[e.Kind]++
+	}
+	f.mu.Unlock()
+	t.Fatalf("timed out waiting for events; got %v want %v", got, want)
+}
+
+func waitHandshakeLines(t *testing.T, f *fakeAgent, want int) {
+	t.Helper()
+	for i := 0; i < 100000; i++ {
+		f.mu.Lock()
+		n := len(f.lines)
+		f.mu.Unlock()
+		if n >= want {
+			return
+		}
+		runtime.Gosched()
+	}
+	t.Fatalf("timed out waiting for %d handshake lines", want)
 }
 
 func TestStartContextAndClose(t *testing.T) {

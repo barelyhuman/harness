@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.26.x"
+          cache: true
+
+      - name: Install test dependencies
+        run: brew install ripgrep
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Test (race, repeated)
+        run: go test -race -count=5 ./...
+
+      - name: Enforce coverage baseline
+        run: bash scripts/check-coverage.sh

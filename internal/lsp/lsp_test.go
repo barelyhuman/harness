@@ -383,7 +383,7 @@ func TestIdleShutdownAndRestart(t *testing.T) {
 
 func TestTouchExtendsTTLAndNeverStarts(t *testing.T) {
 	m, _ := fakeMgr(t, 400*time.Millisecond)
-	m.SetServers([]ServerConfig{{ID: "fake", Languages: []string{"go"}, Command: os.Args[0]}})
+	m.SetServers([]ServerConfig{{ID: "gopls", Languages: []string{"go"}, Command: os.Args[0]}})
 	root := t.TempDir()
 	if m.Touch(root, filepath.Join(root, "a.go")) {
 		t.Fatal("touch reported a server")

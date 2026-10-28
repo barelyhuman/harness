@@ -4,7 +4,6 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
-	"time"
 )
 
 func TestAppBootstrapAndServices(t *testing.T) {
@@ -15,8 +14,8 @@ func TestAppBootstrapAndServices(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer a.Shutdown()
-	if len(a.Services()) != 11 {
-		t.Fatalf("services: %d", len(a.Services()))
+	if a.ServiceCount() != 11 {
+		t.Fatalf("services: %d", a.ServiceCount())
 	}
 	if _, err := os.Stat(filepath.Join(tmp, "data", "harness.db")); err != nil {
 		t.Fatal(err)
@@ -58,15 +57,7 @@ func TestAppBootstrapAndServices(t *testing.T) {
 		t.Fatal(id, err)
 	}
 	a.SearchSvc.CancelGrep(id)
-	for i := 0; i < 100; i++ {
-		a.SearchSvc.mu.Lock()
-		n := len(a.SearchSvc.greps)
-		a.SearchSvc.mu.Unlock()
-		if n == 0 {
-			break
-		}
-		time.Sleep(20 * time.Millisecond)
-	}
+	waitGrepIdle(t, a.SearchSvc)
 	if a.TermSvc.ShellsRunning() != 0 || !a.QuitAllowed() {
 		t.Fatal("no shells: quit must be allowed")
 	}

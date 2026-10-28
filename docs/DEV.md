@@ -49,7 +49,7 @@ Import style:
 
 ## Notes
 
-- Agent host mode: `./bin/harness --agent-host <run>` (stub, returns "not implemented").
+- Agent host mode: `./bin/harness --agent-host --run <id> --spec <path>` runs a detached agent host (see `internal/host`). The GUI app launches hosts automatically for sessions; this flag is for debugging and tests.
 - Linux, Windows, iOS, Android template scaffolding was removed (macOS only). `build/windows/` and
   `build/build/` are scratch dirs created by the icon task and are git-ignored.
 - ld "built for newer macOS version" warnings during Go link are harmless.

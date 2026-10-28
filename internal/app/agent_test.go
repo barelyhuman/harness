@@ -57,6 +57,12 @@ func (s *fakeSession) Feed(line []byte) ([]agent.Event, error) {
 		return []agent.Event{agent.NewEvent(agent.KindModeChanged, "", agent.ModeChanged{Mode: m.V})}, nil
 	case "result":
 		return []agent.Event{agent.NewEvent(agent.KindRunResult, "", agent.RunResult{Status: "success"})}, nil
+	case "tool":
+		in, _ := json.Marshal(map[string]string{"file_path": m.V})
+		return []agent.Event{
+			agent.NewEvent(agent.KindToolStart, "", agent.ToolStart{ID: "t1", Name: "Write", Input: in}),
+			agent.NewEvent(agent.KindToolResult, "", agent.ToolResult{ID: "t1", OK: true}),
+		}, nil
 	}
 	return nil, nil
 }
@@ -118,6 +124,8 @@ func fakeCLI() {
 					break
 				}
 			}
+		case "tools":
+			printJSON(map[string]string{"t": "tool", "v": "a.txt"})
 		case "ask":
 			printJSON(map[string]string{"t": "perm", "id": "req1"})
 			for {
@@ -131,6 +139,8 @@ func fakeCLI() {
 			}
 		case "slow":
 			time.Sleep(400 * time.Millisecond)
+		case "crash":
+			os.Exit(3)
 		}
 		printJSON(map[string]string{"t": "text", "v": "echo " + u})
 		printJSON(map[string]string{"t": "result"})
@@ -588,6 +598,62 @@ func TestModesAndEffort(t *testing.T) {
 
 // ListSessions (used by the frontend's refresh) must report archived sessions
 // with the same status as the `sessions` push, or they reappear as live.
+func TestToolResultTouchesLSP(t *testing.T) {
+	e := newEnv(t)
+	s := e.session(t, "fake", "fake/m1", "")
+	if err := e.svc.Send(s.ID, SendMessage{Text: "tools"}); err != nil {
+		t.Fatal(err)
+	}
+	waitFor(t, "idle", func() bool { return e.dbStatus(s.ID) == StatusIdle })
+	if !strings.Contains(e.transcript(t, s.ID), "echo tools") {
+		t.Fatal(e.transcript(t, s.ID))
+	}
+}
+
+func TestPlanApprovalPersistsMode(t *testing.T) {
+	e := newEnv(t)
+	s := e.session(t, "fake", "fake/m1", "")
+	if err := e.svc.Send(s.ID, SendMessage{Text: "plan"}); err != nil {
+		t.Fatal(err)
+	}
+	waitFor(t, "needs_approval", func() bool { return e.dbStatus(s.ID) == StatusNeedsApproval })
+	if _, err := e.svc.Respond(s.ID, "req1", RespondOpts{Behavior: "allow"}); err != nil {
+		t.Fatal(err)
+	}
+	waitFor(t, "idle", func() bool { return e.dbStatus(s.ID) == StatusIdle })
+	got, _ := e.svc.sessions.Get(s.ID)
+	if got.Mode != "default" {
+		t.Fatalf("mode %q", got.Mode)
+	}
+}
+
+func TestHostCrashDuringRun(t *testing.T) {
+	e := newEnv(t)
+	s := e.session(t, "fake", "fake/m1", "")
+	if err := e.svc.Send(s.ID, SendMessage{Text: "crash"}); err != nil {
+		t.Fatal(err)
+	}
+	waitFor(t, "error", func() bool { return e.dbStatus(s.ID) == StatusError })
+	var st string
+	e.st.DB.QueryRow(`SELECT status FROM runs WHERE session_id = ? ORDER BY started DESC LIMIT 1`, s.ID).Scan(&st)
+	if st != "crashed" {
+		t.Fatalf("run status %q", st)
+	}
+}
+
+func TestInterruptClearsBusy(t *testing.T) {
+	e := newEnv(t)
+	s := e.session(t, "fake", "fake/m1", "")
+	if err := e.svc.Send(s.ID, SendMessage{Text: "slow"}); err != nil {
+		t.Fatal(err)
+	}
+	waitFor(t, "running", func() bool { return e.dbStatus(s.ID) == StatusRunning })
+	if err := e.svc.Interrupt(s.ID); err != nil {
+		t.Fatal(err)
+	}
+	waitFor(t, "idle", func() bool { return e.dbStatus(s.ID) == StatusIdle })
+}
+
 func TestListSessionsReportsArchivedStatus(t *testing.T) {
 	e := newEnv(t)
 	s := e.session(t, "fake", "m1", workspace.ScopeMain)

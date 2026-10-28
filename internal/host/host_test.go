@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 	"time"
@@ -92,7 +93,9 @@ func fakeCLI() {
 	var script []string
 	json.Unmarshal([]byte(os.Getenv("FAKE_SCRIPT")), &script)
 	for _, l := range script {
-		time.Sleep(40 * time.Millisecond)
+		if os.Getenv("FAKE_NO_DELAY") != "1" {
+			time.Sleep(40 * time.Millisecond)
+		}
 		fmt.Println(l)
 	}
 	if c := os.Getenv("FAKE_EXIT"); c != "" {
@@ -129,6 +132,7 @@ func tdir(t *testing.T) string {
 func txt(v string) string { return fmt.Sprintf(`{"t":"text","v":%q}`, v) }
 
 func launch(t *testing.T, dir, id string, script []string, extra ...string) (*Client, Spec) {
+	extra = append([]string{"FAKE_NO_DELAY=1"}, extra...)
 	sb, _ := json.Marshal(script)
 	spec := Spec{RunID: id, SessionID: "s", Provider: "fake", DataDir: dir,
 		StartOpts: agent.StartOpts{Cwd: dir, Env: append([]string{"FAKE_SCRIPT=" + string(sb)}, extra...)},
@@ -187,6 +191,18 @@ func isKind(k agent.Kind) func(agent.Event) bool {
 	return func(e agent.Event) bool { return e.Kind == k }
 }
 
+func waitScanDead(t *testing.T, dir string) {
+	t.Helper()
+	for i := 0; i < 50000; i++ {
+		s := Scan(dir)
+		if len(s) == 1 && !s[0].Alive {
+			return
+		}
+		runtime.Gosched()
+	}
+	t.Fatalf("host still alive: %+v", Scan(dir))
+}
+
 func contiguous(t *testing.T, evs []agent.Event, from uint64) {
 	t.Helper()
 	for i, e := range evs {
@@ -227,9 +243,7 @@ func TestLaunchEventsSendShutdown(t *testing.T) {
 		t.Fatalf("log %d %v", len(log), err)
 	}
 	contiguous(t, log, 1)
-	if s := Scan(dir); len(s) != 1 || s[0].Alive {
-		t.Fatalf("scan after exit %+v", s)
-	}
+	waitScanDead(t, dir)
 	if _, err := Attach(dir, "r1", 0); err != ErrHostGone {
 		t.Fatalf("attach after exit: %v", err)
 	}

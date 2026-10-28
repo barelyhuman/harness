@@ -48,6 +48,51 @@ func setup(t *testing.T) (*Projects, *Sessions, Project) {
 	return ps, ss, p
 }
 
+func TestRenameAndStatus(t *testing.T) {
+	_, ss, p := setup(t)
+	s, err := ss.Create(p.ID, CreateOpts{Title: "rename me"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := ss.Rename(s.ID, "new title"); err != nil {
+		t.Fatal(err)
+	}
+	if err := ss.SetStatus(s.ID, "running"); err != nil {
+		t.Fatal(err)
+	}
+	if err := ss.SetProviderSessionID(s.ID, "ps-1"); err != nil {
+		t.Fatal(err)
+	}
+	g, err := ss.Get(s.ID)
+	if err != nil || g.Title != "new title" || g.Status != "running" || g.ProviderSessionID != "ps-1" {
+		t.Fatalf("%+v %v", g, err)
+	}
+	if err := ss.SetPR(s.ID, "http://example/pr/1", "OPEN"); err != nil {
+		t.Fatal(err)
+	}
+	g, _ = ss.Get(s.ID)
+	if g.PRURL == "" || g.PRState != "OPEN" {
+		t.Fatalf("%+v", g)
+	}
+}
+
+func TestRestoreTwice(t *testing.T) {
+	_, ss, p := setup(t)
+	s, err := ss.Create(p.ID, CreateOpts{Title: "r", ScopeKind: ScopeWorktree})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := ss.Archive(s.ID, false); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := ss.Restore(s.ID); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := ss.Restore(s.ID); err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestProjectsAgentRoles(t *testing.T) {
 	ps, _, p := setup(t)
 	if err := ps.SetAgentRoles(p.ID, AgentRoles{Planner: "claude/sonnet", SpecsDir: "plans"}); err != nil {

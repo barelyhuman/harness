@@ -48,6 +48,25 @@ func TestRepoRootNotRepo(t *testing.T) {
 	}
 }
 
+func TestCurrentBranchDetached(t *testing.T) {
+	d := newRepo(t)
+	sh(t, d, "checkout", "-q", "--detach", "HEAD")
+	b, err := CurrentBranch(d)
+	if err != nil || b != "HEAD" {
+		t.Fatalf("%q %v", b, err)
+	}
+}
+
+func TestBranchExists(t *testing.T) {
+	d := newRepo(t)
+	if !BranchExists(d, "main") {
+		t.Fatal("main should exist")
+	}
+	if BranchExists(d, "no-such-branch-ever") {
+		t.Fatal("missing branch reported")
+	}
+}
+
 func TestStatusParsing(t *testing.T) {
 	d := newRepo(t)
 	write(t, d, "old name.txt", "some content\nmore\nlines here\n")
